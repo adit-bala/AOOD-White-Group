@@ -30,3 +30,17 @@ ToDo List Proposal
 - Go back to Github Desktop which probably says “Can’t find AOOD White Group”
 - Click locate and click the new src folder
 ### Done setting up
+
+## How to submit Code Changes
+
+Tyler: Talk about how to pull here
+
+### Push to Origin
+- Open Github Desktop
+- Your modifications should be reflected on the screen
+- In the top comment box add what the code is doing (ex. Changed Font of ActionItem) and add any other concerns in the description
+- Click on Commit to main and then Push to Origin
+- Your code should now be reflected in **your** forked Github repo, but not the main repo
+### Pull Request to Main Repo
+- In your repo, there should be a gray box talking about commits being ahead or behind of the main branch. In that box, click make a pull request. 
+- Add a comment about what you are trying to add and then submit the pull request
