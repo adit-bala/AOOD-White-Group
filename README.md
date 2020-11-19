@@ -33,6 +33,17 @@ ToDo List Proposal
 
 ## How to submit Code Changes
 
+### Push to Origin (aka update your repository with your changes)
+- Open Github Desktop
+- Your modifications should be reflected on the screen
+- In the top comment box add what the code is doing (ex. Changed Font of ActionItem) and add any other concerns in the description
+- Click on Commit to main and then Push to Origin
+- Your code should now be reflected in **your** forked Github repo, but not the main repo
+
+### Pull Request to Main Repo (aka update Aditya's repository with your changes)
+- In your repo, there should be a gray box talking about commits being ahead or behind of the main branch. In that box, click make a pull request. 
+- Add a comment about what you are trying to add and then submit the pull request
+
 ### Update your project with everyone’s changes
 In Github Desktop:
 - Click Current Branch main at the top
@@ -41,14 +52,3 @@ In Github Desktop:
 - Click merge upstream/main into main
 - Click the blue push origin button to update your forked repository
 Now make sure to right click your project in Eclipse and choose Refresh to get the changes
-
-### Push to Origin (aka update your repository with your changes)
-- Open Github Desktop
-- Your modifications should be reflected on the screen
-- In the top comment box add what the code is doing (ex. Changed Font of ActionItem) and add any other concerns in the description
-- Click on Commit to main and then Push to Origin
-- Your code should now be reflected in **your** forked Github repo, but not the main repo
-
-### Pull Request to Main Repo (aka update Aditya's repository with your changes
-- In your repo, there should be a gray box talking about commits being ahead or behind of the main branch. In that box, click make a pull request. 
-- Add a comment about what you are trying to add and then submit the pull request
