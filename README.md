@@ -33,7 +33,13 @@ ToDo List Proposal
 
 ## How to submit Code Changes
 
-Tyler: Talk about how to pull here
+### Update your project with everyone’s changes
+In Github Desktop:
+- Click Current Branch main at the top
+- Click choose a branch to merge into main
+- Choose upstream/main (upstream = Aditya’s repository with all the updates)
+- Click merge upstream/main into main
+- Click the blue push origin button to update your forked repository
 
 ### Push to Origin
 - Open Github Desktop
