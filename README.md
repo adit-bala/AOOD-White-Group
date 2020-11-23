@@ -40,7 +40,6 @@ In Github Desktop:
 - Choose upstream/main (upstream = Aditya’s repository with all the updates)
 - Click merge upstream/main into main
 - Click the blue push origin button to update your forked repository
-- Click Fetch Origin
 Now make sure to right click your project in Eclipse and choose Refresh to get the changes
 
 ### Push to Origin (aka update your repository with your changes)
