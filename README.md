@@ -36,7 +36,7 @@ ToDo List Proposal
 ### Update your project with everyone’s changes
 In Github Desktop:
 - Click Current Branch main at the top
-- Click choose a branch to merge into main
+- Click THE BUTTON AT THE BOTTOM **choose a branch to merge into main**
 - Choose upstream/main (upstream = Aditya’s repository with all the updates)
 - Click merge upstream/main into main
 - Click the blue push origin button to update your forked repository
