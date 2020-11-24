@@ -8,6 +8,6 @@ public class Test {
 		System.out.println("Alex Chen is done");
 		System.out.println("Jeff Cheng is done");
 		System.out.println("Cissy Wang is done");
-		System.out.println("Enric Jiao is done");
+		
 	}
 }
