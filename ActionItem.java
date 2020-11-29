@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /*
@@ -9,7 +10,7 @@ enum Priority {
 	URGENT, CURRENT, EVENTUAL, INACTIVE, COMPLETED
 }
 
-class ActionItem {
+class ActionItem implements Serializable {
 	private String title;
 	private LocalDate eventualByDate;
 	private Priority priority;
@@ -27,5 +28,8 @@ class ActionItem {
 	}
 	public void setEventualByDate(LocalDate eventualByDate) {
 		this.eventualByDate = eventualByDate;
+	}
+	public LocalDate getEventualByDate() {
+		return this.eventualByDate;
 	}
 }

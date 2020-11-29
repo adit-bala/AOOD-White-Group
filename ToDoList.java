@@ -1,8 +1,5 @@
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
-import javax.swing.SwingUtilities;
 
 /*
 	Mock implementation for testing purposes.
@@ -22,7 +19,7 @@ class ToDoList {
 	private ActionItem getInactiveTestItem() {
 		ActionItem test = new ActionItem();
 		test.setTitle("Inactive ActionItem title");
-		test.setPriority(Priority.URGENT);
+		test.setPriority(Priority.INACTIVE);
 		test.setEventualByDate(LocalDate.now().plusDays(2));
 		
 		return test;
