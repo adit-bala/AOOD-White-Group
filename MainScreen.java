@@ -8,10 +8,19 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
+import javax.swing.border.EmptyBorder;
 
+import ClosedActionItemsScreen.CustomBorder;
+
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
@@ -25,6 +34,7 @@ class MainScreen extends JPanel {
 	private List<DefaultListModel<ActionItemEntry>> itemLists;
 	private ActionItemEntry[] items;
 	private ToDoList userList;
+	private JTextField NewActionItem;
 	private MouseListener mouseListener = new MouseAdapter() {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -70,7 +80,33 @@ class MainScreen extends JPanel {
 		scrollPane.setBorder(null);
 		scrollPane.setPreferredSize(new Dimension(200, 500));
 		this.add(scrollPane);
+		NewActionItem = new JTextField("New Action Item...", 100);
+		NewActionItem.setToolTipText("Please enter the name of a new action item");
+		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
+		NewActionItem.setFont(new Font("Chivo Regular", Font.PLAIN, 14));
+		NewActionItem.setBackground(Color.white);
+		NewActionItem.setForeground(Color.gray.brighter());
+		NewActionItem.setColumns(30);
+		NewActionItem.setBorder(BorderFactory.createCompoundBorder(
+                new CustomBorder(), 
+                new EmptyBorder(new Insets(15, 25, 15, 25))));
+		this.add(NewActionItem);
 	}
+	
+	 @SuppressWarnings("serial")
+	    class CustomBorder extends AbstractBorder{
+	        @Override
+	        public void paintBorder(Component c, Graphics g, int x, int y,
+	                int width, int height) {
+	            // TODO Auto-generated method stubs
+	            super.paintBorder(c, g, x, y, width, height);
+	            Graphics2D g2d = (Graphics2D)g;
+	            g2d.setStroke(new BasicStroke(12));
+	            g2d.setColor(Color.blue);
+	            g2d.drawRoundRect(x, y, width - 1, height - 1, 25, 25);
+	        }   
+	    }
+	 
 	private void makeItemList() {
 		items = new ActionItemEntry[userList.getNumActionItems()];
 		for (int i=0;i<userList.getNumActionItems();i++) {

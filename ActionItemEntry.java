@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 class ActionItemEntry extends JLabel implements ListCellRenderer<Object>, Transferable {
-	private ActionItem item;
+	//private ActionItem item;
 	private JPanel panel;
 	protected static DataFlavor actionFlavor = new DataFlavor(ActionItemEntry.class, "Action Item Entry");
 	protected static DataFlavor[] supportedFlavors = { actionFlavor };

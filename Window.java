@@ -6,7 +6,7 @@ import javax.swing.*;
 
 class Window {
 	private JFrame frame;
-	private MenuBar menuBar;
+	//private MenuBar menuBar;
 	private JPanel currentScreenPanel;
 	boolean isMainScreen;
 	boolean isEditActionItemScreen;
@@ -18,8 +18,8 @@ class Window {
 		frame = new JFrame("To Do List");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		currentScreenPanel = new MainScreen();
-		menuBar = new MenuBar(currentScreenPanel);
-		frame.setJMenuBar(menuBar);
+		//menuBar = new MenuBar(currentScreenPanel);
+		//frame.setJMenuBar(menuBar);
 		frame.setContentPane(currentScreenPanel);
 		frame.pack();
 		frame.setVisible(true);
