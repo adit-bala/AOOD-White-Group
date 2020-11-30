@@ -6,11 +6,19 @@ public class ToDoList {
 	private List<ActionItem> completeItems;
 
 	public List<ActionItem> getIncompleteItems() {
-		return incompleteItems; //need deep copy
+		List<ActionItem> incompleteItems = new List<ActionItem>();
+		for (int i=0; i<this.incompleteItems.size(); i++) {
+			incompleteItems.add(this.incompleteItems.get(i).copy());
+		}
+		return incompleteItems;
 	}
 
 	public List<ActionItem> getCompleteItems() {
-		return completeItems; // need deep copy
+		List<ActionItem> completeItems = new List<ActionItem>();
+		for (int i=0; i<this.completeItems.size(); i++) {
+			completeItems.add(this.completeItems.get(i).copy());
+		}
+		return completeItems;
 	}
 
 	public void moveActionItem(int oldIndex, int newIndex) {
