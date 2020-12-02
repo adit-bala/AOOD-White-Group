@@ -1,5 +1,5 @@
 # AOOD-White-Group
-ToDo List Proposal
+ToDo List
 
 ## How to use Github Desktop with Eclipse
 ### Getting Started
