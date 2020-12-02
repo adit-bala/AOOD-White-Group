@@ -2,6 +2,7 @@ import java.awt.Event;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -14,16 +15,22 @@ public class HistoryScreen extends JPanel {
 	/*
 	 * Instance variables
 	 */
-	private JLabel pageTitle;
-	private JLabel nameHistory;
-	private JLabel priorityHistory;
-	private JLabel commentHistory;
+	JPanel titlePanel;
+	JLabel titleLabel;
+	
+	JPanel nameHistoryPanel;
+	JLabel nameHistoryLabel;
+	
+	JPanel priorityHistoryPanel;
+	JLabel priorityHistoryLabel;
+	
+	JPanel commentHistoryPanel;
+	JLabel commentHistoryLabel;
 	private List<Event> events;
 	private List<Event> titleChangeEvents = new List<Event>();
 	private List<Event> priorityChangeEvents = new List<Event>();
 	private List<Event> commentChangeEvents = new List<Event>();
 	private ActionItem currentItem;
-	private GridBagConstraints layoutConstraints = new GridBagConstraints();
 	int numberOfTitleChanges = 0;
 	int numberOfPriorityChanges = 0;
 	int numberOfComments = 0;
@@ -45,95 +52,46 @@ public class HistoryScreen extends JPanel {
 			}
 		}
 		
-		pageTitle = new JLabel("History of [Action Item]");
-		nameHistory = new JLabel("Name History");
-		priorityHistory = new JLabel("Priority History");
-		commentHistory = new JLabel("Comment History");
+		setLayout(new GridLayout(0,1,0,0));
 		
-		pageTitle.setFont(new Font("EB Garamond", Font.BOLD, 72));
-		nameHistory.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
-		priorityHistory.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
-		commentHistory.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		titleLabel = new JLabel("History of " + item);
+		titleLabel.setFont(new Font("EB Garamond", Font.BOLD, 72));
+		add(titleLabel);
 		
-		this.setLayout(new GridBagLayout());
-		/*
-		 * page title
-		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 0;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		this.add(pageTitle, layoutConstraints);
-		/*
-		 * name history
-		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 1;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		this.add(nameHistory, layoutConstraints);
-		
+		nameHistoryLabel = new JLabel("Name History");
+		nameHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		add(nameHistoryLabel);
 		for (int i=0; i < titleChangeEvents.size(); i++) {
-			layoutConstraints.gridx = 0;
-			layoutConstraints.gridy = 2+i;
-			layoutConstraints.gridheight = 1;
-			layoutConstraints.gridwidth = 8;
-			layoutConstraints.fill = GridBagConstraints.BOTH;
 			eventPanel = new JPanel();
 			eventDescription = new JLabel();
 			eventDescription.setText("NAME: \n" + titleChangeEvents.get(i).label());
 			eventPanel.setSize(100,100);
 			eventPanel.add(eventDescription);
-			this.add(eventPanel, layoutConstraints);
+			this.add(eventPanel);
 		}
-		/*
-		 * priority history
-		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 2+titleChangeEvents.size()+1;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		this.add(priorityHistory, layoutConstraints);
 		
+		priorityHistoryLabel = new JLabel("Priority History");
+		priorityHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		add(priorityHistoryLabel);
 		for (int i=0; i < priorityChangeEvents.size(); i++) {
-			layoutConstraints.gridx = 0;
-			layoutConstraints.gridy = 2+titleChangeEvents.size()+1+i;
-			layoutConstraints.gridheight = 1;
-			layoutConstraints.gridwidth = 8;
-			layoutConstraints.fill = GridBagConstraints.BOTH;
 			eventPanel = new JPanel();
 			eventDescription = new JLabel();
 			eventDescription.setText(priorityChangeEvents.get(i).label());
 			eventPanel.setSize(100,100);
 			eventPanel.add(eventDescription);
-			this.add(eventPanel, layoutConstraints);
+			this.add(eventPanel);
 		}
-		
-		/*
-		 * comment history
-		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 3;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		this.add(commentHistory, layoutConstraints);
-		
+
+		commentHistoryLabel = new JLabel("Comment History");
+		commentHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		add(commentHistoryLabel);
 		for (int i=0; i < commentChangeEvents.size(); i++) {
-			layoutConstraints.gridx = 0;
-			layoutConstraints.gridy = 2+titleChangeEvents.size()+1+priorityChangeEvents.size()+1+i;
-			layoutConstraints.gridheight = 1;
-			layoutConstraints.gridwidth = 8;
-			layoutConstraints.fill = GridBagConstraints.BOTH;
 			eventPanel = new JPanel();
 			eventDescription = new JLabel();
 			eventDescription.setText("Commented: \n" + priorityChangeEvents.get(i).label());
 			eventPanel.setSize(100,100);
 			eventPanel.add(eventDescription);
-			this.add(eventPanel, layoutConstraints);
+			this.add(eventPanel);
 		}
 	}
 	

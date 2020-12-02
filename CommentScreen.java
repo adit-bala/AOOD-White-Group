@@ -30,9 +30,9 @@ public class CommentScreen extends JPanel implements ActionListener{
 	JLabel spacerLabel;
 	GridBagConstraints gbc = new GridBagConstraints();
 	
-	private ActionItem actionItem = new ActionItem();
-	CommentScreen (ActionItem item) {
-		actionItem = item;
+	//private ActionItem actionItem = new ActionItem();
+	CommentScreen (/*ActionItem item*/) {
+		//actionItem = item;
 		setLayout(new GridBagLayout());
 		gbc.insets = new Insets(5,5,5,5);
 		
@@ -98,7 +98,7 @@ public class CommentScreen extends JPanel implements ActionListener{
 		String eventName = event.getActionCommand();
 		if (eventName.contentEquals("commit")) {
 			System.out.println(this.getComment());
-			actionItem.setComment(this.getComment());
+			//actionItem.setComment(this.getComment());
 		} else if (eventName.contentEquals("delete")) {
 			
 		}
