@@ -8,12 +8,19 @@ public class PriorityChangeEvent extends HistoryEvent {
 
 	PriorityChangeEvent(LocalDate dateTime, Priority oldPriority,
 			Priority newPriority) {
-		super(dateTime);
+		super(dateTime, HistoryEvent.PRIORITY_CHANGE);
 		this.oldPriority = oldPriority;
 		this.newPriority = newPriority;
-		TYPE = HistoryEvent.PRIORITY_CHANGE;
 	}
-
+	
+	public Priority getOldPriority() {
+		return oldPriority;
+	}
+	
+	public Priority getNewPriority() {
+		return newPriority;
+	}
+	
 	public String label() {
 		return ("Priority changed from " + oldPriority + " to " + newPriority);
 	}

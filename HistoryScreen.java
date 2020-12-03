@@ -44,13 +44,13 @@ public class HistoryScreen extends JPanel {
 		currentItem = item;
 		events = currentItem.getHistory();
 		for (int i=0; i < events.size(); i++) {
-			if (events.get(i).TYPE == HistoryEvent.TITLE_CHANGE) {
+			if (events.get(i).getType() == HistoryEvent.TITLE_CHANGE) {
 				numberOfTitleChanges++;
 				titleChangeEvents.add(events.get(i));
-			} else if (events.get(i).TYPE == HistoryEvent.PRIORITY_CHANGE) {
+			} else if (events.get(i).getType() == HistoryEvent.PRIORITY_CHANGE) {
 				numberOfPriorityChanges++;
 				priorityChangeEvents.add(events.get(i));
-			} else if (events.get(i).TYPE == HistoryEvent.COMMENT_CHANGE) {
+			} else if (events.get(i).getType() == HistoryEvent.COMMENT_CHANGE) {
 				numberOfComments++;
 				commentChangeEvents.add(events.get(i));
 			}
