@@ -65,42 +65,32 @@ public class HistoryScreen extends JPanel {
 		nameHistoryLabel = new JLabel("Name History");
 		nameHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
 		add(nameHistoryLabel);
-		for (int i=0; i < titleChangeEvents.size(); i++) {
-			eventPanel = new JPanel();
-			eventDescription = new JLabel();
-			eventDescription.setText("NAME: \n" + titleChangeEvents.get(i).label());
-			eventPanel.setSize(100,100);
-			eventPanel.add(eventDescription);
-			this.add(eventPanel);
-		}
+		addEvents(titleChangeEvents);
 		
 		priorityHistoryLabel = new JLabel("Priority History");
 		priorityHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
 		add(priorityHistoryLabel);
-		for (int i=0; i < priorityChangeEvents.size(); i++) {
-			eventPanel = new JPanel();
-			eventDescription = new JLabel();
-			eventDescription.setText(priorityChangeEvents.get(i).label());
-			eventPanel.setSize(100,100);
-			eventPanel.add(eventDescription);
-			this.add(eventPanel);
-		}
+		addEvents(priorityChangeEvents);
 
 		commentHistoryLabel = new JLabel("Comment History");
 		commentHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
 		add(commentHistoryLabel);
-		for (int i=0; i < commentChangeEvents.size(); i++) {
-			eventPanel = new JPanel();
-			eventDescription = new JLabel();
-			eventDescription.setText("Commented: \n" + priorityChangeEvents.get(i).label());
-			eventPanel.setSize(100,100);
-			eventPanel.add(eventDescription);
-			this.add(eventPanel);
-		}
+		addEvents(commentChangeEvents);
 	}
 	
 	public void actionPeformed () {
 		
+	}
+	
+	private void addEvents (List<HistoryEvent> eventList) {
+		for (int i=0; i < eventList.size(); i++) {
+			eventPanel = new JPanel();
+			eventDescription = new JLabel();
+			eventDescription.setText(eventList.get(i).label());
+			eventPanel.setSize(100,100);
+			eventPanel.add(eventDescription);
+			this.add(eventPanel);
+		}
 	}
 	
 	public static void main (String[] args) {
