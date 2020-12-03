@@ -26,13 +26,8 @@ public class ToDoList {
 		ActionItem temp = incompleteItems.get(oldIndex);
 		incompleteItems.remove(temp);
 		incompleteItems.add(newIndex,temp);
-		if (oldIndex<newIndex) {
-			if (temp.getPriority() != incompleteItems.get(newIndex - 1).getPriority())
-				temp.setPriority(incompleteItems.get(newIndex - 1).getPriority());
-		} else {
-			if (temp.getPriority() != incompleteItems.get(newIndex + 1).getPriority())
-				temp.setPriority(incompleteItems.get(newIndex + 1).getPriority());
-		}
+		if (incompleteItems.get(newIndex).getPriority() != incompleteItems.get(newIndex - 1).getPriority())
+			incompleteItems.get(newIndex).setPriority(incompleteItems.get(newIndex - 1).getPriority());
 	}
 
 	public void completeActionItem(int index) {
