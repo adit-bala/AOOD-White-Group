@@ -9,7 +9,7 @@ import java.io.IOException;
 public class FontLoader {
 	public static Font loadFont(String path, float size) {
 		try {
-			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(12f);
+			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(size);
 		    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		    //register the font
 		    ge.registerFont(customFont);
