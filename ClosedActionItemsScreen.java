@@ -20,6 +20,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import backend.ActionItem;
+import backend.FontLoader;
 
 /*
  * This class shows all events in an Action Item's history
@@ -40,7 +41,7 @@ public class ClosedActionItemsScreen extends JPanel {
 		pageTitle = new JLabel("Closed Action Items");
 		// dates = new JLabel("Wednesday, 02 December 2020");
 
-		pageTitle.setFont(new Font("EB Garamond", Font.BOLD, 72));
+		pageTitle.setFont(FontLoader.loadFont("res/Chivo/Chivo-Black.ttf", 72));
 		// dates.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
 
 		scrollPane = new JScrollPane();
@@ -75,7 +76,7 @@ public class ClosedActionItemsScreen extends JPanel {
 	}
 
 	public void actionPeformed() {
-
+		
 	}
 
 	public static void main(String[] args) {
