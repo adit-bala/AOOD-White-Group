@@ -5,8 +5,10 @@ public class PriorityChangeEvent extends Event{
 	private Priority oldPriority;
 	private Priority newPriority;
 	
-	PriorityChangeEvent(LocalDate dateTime, Priority oldPriority, Priority newPriority){
+	PriorityChangeEvent(LocalDate dateTime, Priority OldPriority, Priority NewPriority){
 		super(dateTime);
+		oldPriority = OldPriority;
+		newPriority = NewPriority;
 	}
 	
 	public String label() {
