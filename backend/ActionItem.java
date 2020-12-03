@@ -1,9 +1,10 @@
 package backend;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ActionItem {
+public class ActionItem implements Serializable {
 	
 	private String title;
 	private Priority priority;
@@ -11,7 +12,7 @@ public class ActionItem {
 	private LocalDate currentByDate;
 	private LocalDate eventualByDate;
 	private String comment;
-	private ArrayList <HistoryEvent> history;
+	private ArrayList <HistoryEvent> history = new ArrayList<HistoryEvent>();
 	
 	public String getTitle() {
 		return title;
@@ -87,13 +88,13 @@ public class ActionItem {
 	public void updatePriority() {
 		LocalDate current = LocalDate.now();
 		if(current.compareTo(urgentByDate) < 0) {
-			priority = Priority.Urgent;
+			priority = Priority.URGENT;
 		}
 		else if(current.compareTo(currentByDate) < 0) {
-			priority = Priority.Current;
+			priority = Priority.CURRENT;
 		}
 		else if(current.compareTo(eventualByDate) < 0) {
-			priority = Priority.Eventual;
+			priority = Priority.EVENTUAL;
 		}
 	}
 	

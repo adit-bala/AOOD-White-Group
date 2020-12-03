@@ -7,8 +7,10 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 
 import backend.ActionItem;
+import backend.Priority;
 
 class ActionItemEntry extends JLabel
 		implements ListCellRenderer<Object>, Transferable {
@@ -37,10 +39,20 @@ class ActionItemEntry extends JLabel
 			int index, boolean isSelected, boolean cellHasFocus) {
 		panel.removeAll();
 		panel.setLayout(new BorderLayout());
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+		panel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5), BorderFactory.createLineBorder(new Color(230, 230, 230), 15, true)));
 		panel.setBackground(Color.white);
-		this.setText(value.toString());
-		this.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 100));
+		this.setText(value.toString());	
+		Priority p = ((ActionItemEntry) value).getActionItem().getPriority();
+		if (p == Priority.URGENT)
+			this.setFont(MainScreen.BOLD_FONT);
+		else if (p == Priority.INACTIVE)
+			this.setFont(MainScreen.ITALIC_FONT);
+		else if (p == Priority.EVENTUAL)
+			this.setFont(MainScreen.LIGHT_ITALIC_FONT);
+		else
+			this.setFont(MainScreen.NORMAL_FONT);
+		this.setForeground(Color.decode("#134D37"));
+		this.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 300));
 		this.setBackground(new Color(230, 230, 230));
 		this.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(this);

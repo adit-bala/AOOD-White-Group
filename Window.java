@@ -17,7 +17,7 @@ class Window {
 	Window() {
 		frame = new JFrame("To Do List");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		currentScreenPanel = new MainScreen();
+		currentScreenPanel = new MainScreen(frame);
 		//menuBar = new MenuBar(currentScreenPanel);
 		//frame.setJMenuBar(menuBar);
 		frame.setContentPane(currentScreenPanel);
