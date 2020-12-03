@@ -3,11 +3,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import backend.ActionItem;
+import backend.HistoryEvent;
 /*
  * This class shows all events in an Action Item's history
  */
@@ -26,10 +30,10 @@ public class HistoryScreen extends JPanel {
 	
 	JPanel commentHistoryPanel;
 	JLabel commentHistoryLabel;
-	private List<Event> events;
-	private List<Event> titleChangeEvents = new List<Event>();
-	private List<Event> priorityChangeEvents = new List<Event>();
-	private List<Event> commentChangeEvents = new List<Event>();
+	private List<HistoryEvent> events;
+	private List<HistoryEvent> titleChangeEvents = new ArrayList<HistoryEvent>();
+	private List<HistoryEvent> priorityChangeEvents = new ArrayList<HistoryEvent>();
+	private List<HistoryEvent> commentChangeEvents = new ArrayList<HistoryEvent>();
 	private ActionItem currentItem;
 	int numberOfTitleChanges = 0;
 	int numberOfPriorityChanges = 0;
@@ -38,15 +42,15 @@ public class HistoryScreen extends JPanel {
 	private JLabel eventDescription;
 	HistoryScreen (ActionItem item) {
 		currentItem = item;
-		events = currentItem.getHistory;
+		events = currentItem.getHistory();
 		for (int i=0; i < events.size(); i++) {
-			if (events.get(i)/*method getting int value*/ == TITLE_CHANGE value) {
+			if (events.get(i).TYPE == HistoryEvent.TITLE_CHANGE) {
 				numberOfTitleChanges++;
 				titleChangeEvents.add(events.get(i));
-			} else if (events.get(i)/*method getting int value*/ == PRIORITY_CHANGE value) {
+			} else if (events.get(i).TYPE == HistoryEvent.PRIORITY_CHANGE) {
 				numberOfPriorityChanges++;
 				priorityChangeEvents.add(events.get(i));
-			} else if (events.get(i)/*method getting int value*/ == COMMENT_CHANGE value) {
+			} else if (events.get(i).TYPE == HistoryEvent.COMMENT_CHANGE) {
 				numberOfComments++;
 				commentChangeEvents.add(events.get(i));
 			}

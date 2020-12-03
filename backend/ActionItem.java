@@ -1,3 +1,5 @@
+package backend;
+
 import java.util.ArrayList;
 import java.time.LocalDate;
 
@@ -9,7 +11,7 @@ public class ActionItem {
 	private LocalDate currentByDate;
 	private LocalDate eventualByDate;
 	private String comment;
-	private ArrayList <Event> history;
+	private ArrayList <HistoryEvent> history;
 	
 	public String getTitle() {
 		return title;
@@ -78,7 +80,7 @@ public class ActionItem {
 		comment = newComment;
 	}
 	
-	public void addEventToHistory(Event newEvent) {
+	public void addEventToHistory(HistoryEvent newEvent) {
 		history.add(newEvent);
 	}
 	
