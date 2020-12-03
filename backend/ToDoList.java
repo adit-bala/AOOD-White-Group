@@ -1,3 +1,5 @@
+package backend;
+
 import java.time.*;
 import java.util.*;
 
@@ -6,7 +8,7 @@ public class ToDoList {
 	private List<ActionItem> completeItems;
 
 	public List<ActionItem> getIncompleteItems() {
-		List<ActionItem> incompleteItems = new List<ActionItem>();
+		List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
 		for (int i=0; i<this.incompleteItems.size(); i++) {
 			incompleteItems.add(this.incompleteItems.get(i).copy());
 		}
@@ -14,7 +16,7 @@ public class ToDoList {
 	}
 
 	public List<ActionItem> getCompleteItems() {
-		List<ActionItem> completeItems = new List<ActionItem>();
+		List<ActionItem> completeItems = new ArrayList<ActionItem>();
 		for (int i=0; i<this.completeItems.size(); i++) {
 			completeItems.add(this.completeItems.get(i).copy());
 		}
@@ -23,9 +25,9 @@ public class ToDoList {
 
 	public void moveActionItem(int oldIndex, int newIndex) {
 		ActionItem temp = incompleteItems.get(oldIndex);
-		incompleteItems.add(temp, newIndex);
-		if (incompleteItems.getPriority(newIndex) != incompleteItems.getPriority(newIndex - 1))
-			incompleteItems.getPriority(newIndex).setPriority(incompleteItems.getPriority(newIndex - 1));
+		incompleteItems.add(newIndex, temp);
+		if (incompleteItems.get(newIndex).getPriority() != incompleteItems.get(newIndex - 1).getPriority())
+			incompleteItems.get(newIndex).setPriority(incompleteItems.get(newIndex - 1).getPriority());
 	}
 
 	public void completeActionItem(int index) {
@@ -44,6 +46,6 @@ public class ToDoList {
 	}
 
 	public void addActionItem(ActionItem item) {
-		incompleteItems.add(item, 0);
+		incompleteItems.add(0, item);
 	}
 }

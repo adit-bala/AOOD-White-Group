@@ -18,6 +18,9 @@ import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
+import backend.ActionItem;
+
 /*
  * This class shows all events in an Action Item's history
  */
@@ -28,20 +31,20 @@ public class ClosedActionItemsScreen extends JPanel {
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
 	private List<ActionItem> completedActionItems;
-	//private JLabel dates;
-	
+	// private JLabel dates;
+
 	private GridBagConstraints layoutConstraints = new GridBagConstraints();
-	
-	ClosedActionItemsScreen () {
-		
+
+	ClosedActionItemsScreen() {
+
 		pageTitle = new JLabel("Closed Action Items");
-		//dates = new JLabel("Wednesday, 02 December 2020");
-		
+		// dates = new JLabel("Wednesday, 02 December 2020");
+
 		pageTitle.setFont(new Font("EB Garamond", Font.BOLD, 72));
-		//dates.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
-		
+		// dates.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+
 		scrollPane = new JScrollPane();
-		
+
 		this.setLayout(new GridBagLayout());
 		/*
 		 * page title
@@ -60,26 +63,26 @@ public class ClosedActionItemsScreen extends JPanel {
 		layoutConstraints.gridheight = 1;
 		layoutConstraints.gridwidth = 8;
 		layoutConstraints.fill = GridBagConstraints.BOTH;
-		//this.add(NewActionItem, layoutConstraints);
+		// this.add(NewActionItem, layoutConstraints);
 		/*
 		 * priority history
 		 */
 	}
-	
-	
+
 	public void paintComponent(Graphics g) {
-		//code will get completedActionItems from the ToDoList Classes and display it to the user
+		// code will get completedActionItems from the ToDoList Classes and
+		// display it to the user
 	}
-	
-	public void actionPeformed () {
-		
+
+	public void actionPeformed() {
+
 	}
-	
-	public static void main (String[] args) {
+
+	public static void main(String[] args) {
 		ClosedActionItemsScreen screen = new ClosedActionItemsScreen();
 		JFrame frame = new JFrame();
 		frame.setContentPane(screen);
 		frame.pack();
-        frame.setVisible(true);
+		frame.setVisible(true);
 	}
 }

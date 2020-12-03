@@ -12,6 +12,9 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
 
 import ClosedActionItemsScreen.CustomBorder;
+import backend.ActionItem;
+import backend.Priority;
+import backend.ToDoList;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -108,9 +111,10 @@ class MainScreen extends JPanel {
 	    }
 	 
 	private void makeItemList() {
-		items = new ActionItemEntry[userList.getNumActionItems()];
-		for (int i=0;i<userList.getNumActionItems();i++) {
-			items[i] = makeEntry(userList.getIncompleteActionItemAtIndex(i));
+		// changed this a little because the methods are different by Ms. Gerb request -Tyler
+		items = new ActionItemEntry[userList.getIncompleteItems().size()];
+		for (int i=0;i<userList.getIncompleteItems().size();i++) {
+			items[i] = makeEntry(userList.getIncompleteItems().get(i));
 		}
 		Arrays.sort(items, new Comparator<ActionItemEntry>() {
 			@Override
