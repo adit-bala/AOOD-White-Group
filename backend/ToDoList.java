@@ -1,4 +1,5 @@
 package backend;
+
 import java.time.*;
 import java.util.*;
 
@@ -8,7 +9,7 @@ public class ToDoList {
 
 	public List<ActionItem> getIncompleteItems() {
 		List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
-		for (int i=0; i<this.incompleteItems.size(); i++) {
+		for (int i = 0; i < this.incompleteItems.size(); i++) {
 			incompleteItems.add(this.incompleteItems.get(i).copy());
 		}
 		return incompleteItems;
@@ -16,7 +17,7 @@ public class ToDoList {
 
 	public List<ActionItem> getCompleteItems() {
 		List<ActionItem> completeItems = new ArrayList<ActionItem>();
-		for (int i=0; i<this.completeItems.size(); i++) {
+		for (int i = 0; i < this.completeItems.size(); i++) {
 			completeItems.add(this.completeItems.get(i).copy());
 		}
 		return completeItems;
@@ -40,33 +41,31 @@ public class ToDoList {
 		incompleteItems.remove(index);
 	}
 
-	public void updateActionItem(int index, String title, Priority priority, LocalDate urgentDate,
-			LocalDate currentDate, LocalDate eventualDate, String comment) {
+	public void updateActionItem(int index, String title, Priority priority,
+			LocalDate urgentDate, LocalDate currentDate, LocalDate eventualDate,
+			String comment) {
 		ActionItem item = incompleteItems.get(index);
-		if (!title.equals(item.getTitle())){
-			item.addEventToHistory(new TitleChangeEvent(LocalDate.now(),item.getTitle(),title));
+		if (!title.equals(item.getTitle())) {
+			item.addEventToHistory(new TitleChangeEvent(LocalDate.now(),
+					item.getTitle(), title));
 			item.setTitle(title);
 		}
-		if (priority!=item.getPriority()) {
-			item.addEventToHistory(new PriorityChangeEvent(LocalDate.now(),item.getPriority(),priority));
+		if (priority != item.getPriority()) {
+			item.addEventToHistory(new PriorityChangeEvent(LocalDate.now(),
+					item.getPriority(), priority));
 			item.setPriority(priority);
 		}
-		if (!urgentDate.equals(item.getUrgentByDate())) {
-			item.setUrgentByDate(urgentDate);
-		}
-		if (!currentDate.equals(item.getCurrentByDate())) {
-			item.setCurrentByDate(currentDate);
-		}
-		if (!eventualDate.equals(item.getEventualByDate())) {
-			item.setEventualByDate(eventualDate);
-		}
+		item.setUrgentByDate(urgentDate);
+		item.setCurrentByDate(currentDate);
+		item.setEventualByDate(eventualDate);
 		if (!comment.equals(item.getComment())) {
 			int type = CommentChangeEvent.EDIT;
-			if(comment.equals(""))
+			if (comment.equals(""))
 				type = CommentChangeEvent.DELETE;
 			else if (item.getComment().equals(""))
 				type = CommentChangeEvent.ADD;
-			item.addEventToHistory(new CommentChangeEvent(LocalDate.now(),type,comment));
+			item.addEventToHistory(
+					new CommentChangeEvent(LocalDate.now(), type, comment));
 			item.setComment(comment);
 		}
 	}
@@ -76,6 +75,12 @@ public class ToDoList {
 	}
 
 	public void addActionItem(ActionItem item) {
-		incompleteItems.add(0,item);
+		incompleteItems.add(0, item);
+	}
+	
+	
+	// this is for restoring from a backup
+	public void addCompleteActionItem(ActionItem item) {
+		completeItems.add(0, item);
 	}
 }

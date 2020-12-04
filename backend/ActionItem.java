@@ -37,7 +37,6 @@ public class ActionItem implements Serializable {
 	public LocalDate getActiveByDate() {
 		//does not account for same date
 		LocalDate returned;
-		System.out.println(currentByDate);
 		if (urgentByDate.compareTo(currentByDate) < 0) {
 			returned = urgentByDate;
 		}else {

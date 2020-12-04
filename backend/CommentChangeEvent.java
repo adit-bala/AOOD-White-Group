@@ -10,15 +10,18 @@ public class CommentChangeEvent extends HistoryEvent {
 	private int eventType;
 	private String comment;
 
-	CommentChangeEvent(LocalDate dateTime, int type, String comment) {
-		super(dateTime);
-		this.eventType = type;
+	CommentChangeEvent(LocalDate dateTime, int cceType, String comment) {
+		super(dateTime, HistoryEvent.COMMENT_CHANGE);
+		this.eventType = cceType;
 		this.comment = comment;
-		TYPE = HistoryEvent.COMMENT_CHANGE;
 	}
 
-	public int getType() {
+	public int getCommentChangeEventType() {
 		return eventType;
+	}
+	
+	public String getComment() {
+		return comment;
 	}
 
 	public String label() {
