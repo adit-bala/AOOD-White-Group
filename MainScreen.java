@@ -6,15 +6,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
-import ClosedActionItemsScreen.CustomBorder;
+//import ClosedActionItemsScreen.CustomBorder;
 import backend.ActionItem;
 import backend.Priority;
 import backend.ToDoList;
+import backend.FontLoader;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -31,6 +34,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Dimension;
 
 class MainScreen extends JPanel {
+	private JFrame frame;
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
 	private JPanel itemPanel;
@@ -38,6 +42,13 @@ class MainScreen extends JPanel {
 	private ActionItemEntry[] items;
 	private ToDoList userList;
 	private JTextField NewActionItem;
+	public static final Color THEME_MEDIUM = Color.decode("#56997F");
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font HEADING_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 30);
+	public static final Font BOLD_FONT = FontLoader.loadFont("src/fonts/Chivo-Bold.ttf", 15);
+	public static final Font NORMAL_FONT = FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 15);
+	public static final Font ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-Italic.ttf", 15);
+	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-LightItalic.ttf", 15);
 	private MouseListener mouseListener = new MouseAdapter() {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -47,10 +58,10 @@ class MainScreen extends JPanel {
 	    		ActionItemEntry o = (ActionItemEntry) list.getModel().getElementAt(index);
 		    	if (SwingUtilities.isRightMouseButton(e)) {
 					System.out.println("Right clicked on item " + o.getActionItem() + "!");
-					// TODO: open popup
+					setHistoryScreen(o.getActionItem());
 				} else if (e.getClickCount() == 2) {
 					System.out.println("Double clicked on item " + o.getActionItem() + "!");
-		    		// TODO: open edit action item window
+		    		setActionItemScreen(o.getActionItem());
 		    	}
 		    }
 	    }
@@ -61,19 +72,21 @@ class MainScreen extends JPanel {
 	    	
 	    }
 	};
-	MainScreen() {
+	MainScreen(JFrame frame) {
+		this.frame = frame;
 		userList = new ToDoList(); // where does this come from ?
+		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		this.setBackground(Color.white);
 		pageTitle = new JLabel("TO-DO");
-		pageTitle.setFont(new Font("Garamond", Font.BOLD, 100));
+		pageTitle.setFont(TITLE_FONT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 		titlePanel.setBackground(Color.white);
 		JPanel underline = new JPanel();
-		underline.setBackground(new Color(0, 200, 0));
-		underline.setMaximumSize(new Dimension(800, 10));
+		underline.setBorder(new LineBorder(THEME_MEDIUM, 5, true));
+		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(pageTitle);
 		titlePanel.add(underline);
 		this.add(titlePanel);
@@ -81,7 +94,7 @@ class MainScreen extends JPanel {
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
-		scrollPane.setPreferredSize(new Dimension(200, 500));
+		this.setPreferredSize(new Dimension(1024, 1366));
 		this.add(scrollPane);
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
@@ -95,6 +108,40 @@ class MainScreen extends JPanel {
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
 		this.add(NewActionItem);
 	}
+	private void setActionItemScreen(ActionItem item) {
+		frame.setContentPane(new EditActionItemScreen(item));
+		frame.revalidate();
+	}
+	private void setHistoryScreen(ActionItem item) {
+		frame.setContentPane(new HistoryScreen(item));
+		frame.revalidate();
+	}
+	private void TEST() {
+		ActionItem[] urgent = new ActionItem[5];
+		ActionItem[] current = new ActionItem[5];
+		ActionItem[] inactive = new ActionItem[5];
+		ActionItem[] inactive2 = new ActionItem[5];
+		for (int i=0;i<5;i++) {
+			urgent[i] = new ActionItem();
+			urgent[i].setPriority(Priority.URGENT);
+			urgent[i].setTitle("Active Action Item");
+			current[i] = new ActionItem();
+			current[i].setPriority(Priority.CURRENT);
+			current[i].setTitle("Current Action Item");
+			inactive[i] = new ActionItem();
+			inactive[i].setPriority(Priority.INACTIVE);
+			inactive[i].setTitle("Inactive Action Item");
+			inactive[i].setEventualByDate(LocalDate.now().plusDays(2));
+			inactive2[i] = new ActionItem();
+			inactive2[i].setPriority(Priority.INACTIVE);
+			inactive2[i].setTitle("Other Inactive Action Item");
+			inactive2[i].setEventualByDate(LocalDate.now().plusDays(4));
+			userList.addActionItem(urgent[i]);
+			userList.addActionItem(current[i]);
+			userList.addActionItem(inactive[i]);
+			userList.addActionItem(inactive2[i]);
+		}
+	}
 	
 	 @SuppressWarnings("serial")
 	    class CustomBorder extends AbstractBorder{
@@ -105,7 +152,7 @@ class MainScreen extends JPanel {
 	            super.paintBorder(c, g, x, y, width, height);
 	            Graphics2D g2d = (Graphics2D)g;
 	            g2d.setStroke(new BasicStroke(12));
-	            g2d.setColor(Color.blue);
+	            g2d.setColor(THEME_MEDIUM);
 	            g2d.drawRoundRect(x, y, width - 1, height - 1, 25, 25);
 	        }   
 	    }
@@ -160,72 +207,100 @@ class MainScreen extends JPanel {
 		list.setDropMode(DropMode.INSERT);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setTransferHandler(new TransferHandler() {
-            private int index;
-            private boolean beforeIndex = false; //Start with `false` therefore if it is removed from or added to the list it still works
-            private boolean last = false;
-            
-            @Override
-            public int getSourceActions(JComponent comp) {
-                return MOVE;
-            }
+	           private Transferable transferItem;
+	            
+	            @Override
+	            public int getSourceActions(JComponent comp) {
+	                return MOVE;
+	            }
 
-            @Override
-            public Transferable createTransferable(JComponent comp) {
-                index = list.getSelectedIndex(); 
-                if (index == actionItemEntries.size() - 1)
-                	last = true;
-                else
-                	last = false;
-                return actionItemEntries.get(index); // new Transferable
-            }
+	            @Override
+	            public Transferable createTransferable(JComponent comp) {
+	                int index = list.getSelectedIndex(); 
+	                transferItem = actionItemEntries.get(index);
+	                return transferItem;
+	            }
 
-            @Override
-            public void exportDone(JComponent comp, Transferable trans, int action) {
-            	// refresh all priorities here (if greater than previous...)
-                if (action == MOVE) {
-                    if(beforeIndex && !last) {
-                        actionItemEntries.remove(index + 1);
-                    }
-                    else {
-                        actionItemEntries.remove(index);
-                    }
-                    
-                }
-            }
+	            @Override
+	            public void exportDone(JComponent comp, Transferable trans, int action) {
+	            	if (action == MOVE) {
+	            		actionItemEntries.remove(actionItemEntries.indexOf(transferItem));
+	            	}
+	            }
 
-            @Override
-            public boolean canImport(TransferHandler.TransferSupport support) {
-                return support.isDataFlavorSupported(ActionItemEntry.actionFlavor); // change to action item flavor
-            }
+	            @Override
+	            public boolean canImport(TransferHandler.TransferSupport support) {
+	                return support.isDataFlavorSupported(ActionItemEntry.actionFlavor);
+	            }
 
-            @Override
-            public boolean importData(TransferHandler.TransferSupport support) {
-                try {
-                    ActionItemEntry s = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor); // get transferred action item
-                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-                    actionItemEntries.add(dl.getIndex(), s); // action item
-                    beforeIndex = dl.getIndex() < index ? true : false;
-                    //updatePriorities();
-                    return true;
-                } catch (UnsupportedFlavorException | IOException e) {
-                    e.printStackTrace();
-                }
+	            @Override
+	            public boolean importData(TransferHandler.TransferSupport support) {
+	                try {
+	                    ActionItemEntry item = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
+	                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+	                    int index = dl.getIndex();
+	                    actionItemEntries.add(index, item);
+	                    Priority itemPriority = item.getActionItem().getPriority();
+	                    if (index > 0) {
+	                    	ActionItemEntry prev = actionItemEntries.get(index-1);
+	                    	Priority prevPriority = prev.getActionItem().getPriority();
+	                    	LocalDate prevEventualByDate = prev.getActionItem().getEventualByDate();
+	                    	if (prevPriority.compareTo(itemPriority) > 0) {
+	                    		item.getActionItem().setPriority(prevPriority);
+	                    		if (prevPriority == Priority.INACTIVE)
+	                    			item.getActionItem().setEventualByDate(prevEventualByDate);
+	                    	}
+	                    } else {
+	                    	if (itemPriority != Priority.INACTIVE) {
+	                    		if (index < actionItemEntries.size()-1 &&  actionItemEntries.get(index+1).getActionItem().getPriority() == Priority.INACTIVE) {
+	                    			item.getActionItem().setPriority(actionItemEntries.get(index+1).getActionItem().getPriority());
+	                    			item.getActionItem().setEventualByDate(actionItemEntries.get(index+1).getActionItem().getEventualByDate());
+	                    		}
+	                    	}
+	                    }
+	                    if (index < actionItemEntries.size() - 1) {
+	                    	ActionItemEntry next = actionItemEntries.get(index+1);
+	                    	Priority nextPriority = next.getActionItem().getPriority();
+	                    	LocalDate nextEventualByDate = next.getActionItem().getEventualByDate();
+	                    	if (nextPriority.compareTo(itemPriority) < 0)
+	                    		item.getActionItem().setPriority(nextPriority);
+	                    	if (item.getActionItem().getPriority() == Priority.INACTIVE && nextPriority == Priority.INACTIVE)
+	                    		item.getActionItem().setEventualByDate(nextEventualByDate);
+	                    	
+	                    } else {
+	                    	if (itemPriority == Priority.INACTIVE) {
+	                    		if (index > 0 &&  actionItemEntries.get(index-1).getActionItem().getPriority() != Priority.INACTIVE)
+	                    			item.getActionItem().setPriority(actionItemEntries.get(index-1).getActionItem().getPriority());
+	                    		else if (index == 0)
+	                    			item.getActionItem().setPriority(Priority.EVENTUAL);
+	                    	}
+	                    }
+	                    return true;
+	                } catch (UnsupportedFlavorException | IOException e) {
+	                    e.printStackTrace();
+	                }
 
-                return false;
-            }
-        });
-		JPanel p = new JPanel();
-		p.setLayout(new BorderLayout());
-		p.add(list);
-		itemPanel.add(p);
-	}
+	                return false;
+	            }
+	        });
+			JPanel p = new JPanel();
+			p.setLayout(new BorderLayout());
+			p.add(list);
+			itemPanel.add(p);
+		}
 	private JPanel makeDateLabel(LocalDate d) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(Color.white);
-		JLabel label = new JLabel(d.toString());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+		String day = d.getDayOfWeek().toString();
+		day = day.substring(0, 1) + day.substring(1).toLowerCase();
+		String formattedString = day + ", " + d.format(formatter);
+		JLabel label = new JLabel(formattedString);
 		label.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		label.setFont(HEADING_FONT);
 		panel.add(label);
+		panel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 		return panel;
 	}
 	private void renderAllItemLists() { // assumes list already sorted properly
@@ -245,7 +320,7 @@ class MainScreen extends JPanel {
 						renderItemList(Arrays.copyOfRange(items, start, i));
 						start = i;
 					} else if (!prevDate.toString().equals(currDate.toString())) {
-						itemPanel.add(makeDateLabel(currDate));
+						itemPanel.add(makeDateLabel(prevDate));
 						renderItemList(Arrays.copyOfRange(items, start, i));
 						start = i;
 					}
