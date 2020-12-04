@@ -1,9 +1,10 @@
 package backend;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ActionItem {
+public class ActionItem implements Serializable {
 	
 	private String title;
 	private Priority priority;
