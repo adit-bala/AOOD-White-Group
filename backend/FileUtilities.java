@@ -1,12 +1,20 @@
 package backend;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import javax.swing.JPanel;
+
 import org.json.*;
+
+import backend.samples.SampleToDoList;
 
 public class FileUtilities {
 
@@ -83,15 +91,87 @@ public class FileUtilities {
 		return item;
 	}
 
-	public static void main(String[] args) {
-		ToDoList list = new ToDoList();
-		ActionItem item = new ActionItem();
-		item.setTitle("Eat cuddy");
-		item.setPriority(Priority.URGENT);
-		item.setComment("");
-		list.addActionItem(item);
-		list.updateActionItem(0, "New Title", Priority.EVENTUAL,
-				LocalDate.now(), null, null, "LOL");
-		writeBackup(list, "test.json");
+	public static void printToDoList(JPanel toDoListPanel)
+			throws PrinterException {
+		PrinterJob job = PrinterJob.getPrinterJob();
+		job.setPrintable(new ToDoListPrinter(toDoListPanel));
+		boolean ok = job.printDialog();
+		if (ok) {
+			job.print();
+		}
 	}
+
+	public static void printActionItem(JPanel editItemPanel,
+			JPanel commentPanel, JPanel historyPanel) throws PrinterException {
+		PrinterJob job = PrinterJob.getPrinterJob();
+		job.setPrintable(new ActionItemPrinter(editItemPanel, commentPanel,
+				historyPanel));
+		boolean ok = job.printDialog();
+		if (ok) {
+			job.print();
+		}
+	}
+
+//	public static void main(String[] args) {
+//		ToDoList list = new SampleToDoList();
+//		list.moveActionItem(2, 0);
+//		writeBackup(list, "test.json");
+//	}
+}
+
+class ToDoListPrinter implements Printable {
+
+	private Component compToPrint;
+
+	ToDoListPrinter(Component comp) {
+		this.compToPrint = comp;
+	}
+
+	@Override
+	public int print(Graphics g, PageFormat pf, int page)
+			throws PrinterException {
+		if (page > 0)
+			return NO_SUCH_PAGE;
+
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.translate(pf.getImageableX(), pf.getImageableY());
+		compToPrint.printAll(g);
+
+		return PAGE_EXISTS;
+	}
+
+}
+
+class ActionItemPrinter implements Printable {
+
+	private Component editComp, commentComp, historyComp;
+
+	ActionItemPrinter(Component editComp, Component commentComp,
+			Component historyComp) {
+		this.editComp = editComp;
+		this.commentComp = commentComp;
+		this.historyComp = historyComp;
+	}
+
+	@Override
+	public int print(Graphics g, PageFormat pf, int page)
+			throws PrinterException {
+		Component compToPrint;
+		if (page == 0) {
+			compToPrint = editComp;
+		} else if (page == 1) {
+			compToPrint = commentComp;
+		} else if (page == 2) {
+			compToPrint = historyComp;
+		} else {
+			return NO_SUCH_PAGE;
+		}
+
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.translate(pf.getImageableX(), pf.getImageableY());
+		compToPrint.printAll(g);
+
+		return PAGE_EXISTS;
+	}
+
 }

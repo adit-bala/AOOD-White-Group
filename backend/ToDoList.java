@@ -78,7 +78,6 @@ public class ToDoList {
 		incompleteItems.add(0, item);
 	}
 	
-	
 	// this is for restoring from a backup
 	public void addCompleteActionItem(ActionItem item) {
 		completeItems.add(0, item);
