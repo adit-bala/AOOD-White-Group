@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import org.json.*;
 
+import backend.samples.SampleToDoList;
+
 public class FileUtilities {
 
 	public static void writeBackup(ToDoList toDoList, String filePath) {
@@ -110,17 +112,11 @@ public class FileUtilities {
 		}
 	}
 
-	public static void main(String[] args) {
-		ToDoList list = new ToDoList();
-		ActionItem item = new ActionItem();
-		item.setTitle("Eat cuddy");
-		item.setPriority(Priority.URGENT);
-		item.setComment("");
-		list.addActionItem(item);
-		list.updateActionItem(0, "New Title", Priority.EVENTUAL,
-				LocalDate.now(), null, null, "LOL");
-		writeBackup(list, "test.json");
-	}
+//	public static void main(String[] args) {
+//		ToDoList list = new SampleToDoList();
+//		list.moveActionItem(2, 0);
+//		writeBackup(list, "test.json");
+//	}
 }
 
 class ToDoListPrinter implements Printable {
