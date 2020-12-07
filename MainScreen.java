@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import backend.ActionItem;
 import backend.Priority;
 import backend.ToDoList;
+import backend.samples.SampleToDoList;
 import backend.FontLoader;
 
 import java.awt.BasicStroke;
@@ -43,12 +44,12 @@ class MainScreen extends JPanel {
 	private ToDoList userList;
 	private JTextField NewActionItem;
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 100);
-	public static final Font HEADING_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 30);
-	public static final Font BOLD_FONT = FontLoader.loadFont("src/fonts/Chivo-Bold.ttf", 15);
-	public static final Font NORMAL_FONT = FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 15);
-	public static final Font ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-Italic.ttf", 15);
-	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-LightItalic.ttf", 15);
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font HEADING_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
+	public static final Font BOLD_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 15);
+	public static final Font NORMAL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 15);
+	public static final Font ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 15);
+	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 15);
 	private MouseListener mouseListener = new MouseAdapter() {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -74,7 +75,7 @@ class MainScreen extends JPanel {
 	};
 	MainScreen(JFrame frame) {
 		this.frame = frame;
-		userList = new ToDoList(); // where does this come from ?
+		userList = new SampleToDoList(); // where does this come from ?
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -94,7 +95,7 @@ class MainScreen extends JPanel {
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
-		this.setPreferredSize(new Dimension(1024, 1366));
+		// this.setPreferredSize(new Dimension(1024, 1366)); height too big for most laptop screens so won't be proportional
 		this.add(scrollPane);
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
@@ -106,6 +107,7 @@ class MainScreen extends JPanel {
 		NewActionItem.setBorder(BorderFactory.createCompoundBorder(
                 new CustomBorder(), 
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
+		NewActionItem.setMaximumSize(new Dimension(9999, 100));
 		this.add(NewActionItem);
 	}
 	private void setActionItemScreen(ActionItem item) {
