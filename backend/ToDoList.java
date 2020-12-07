@@ -26,8 +26,8 @@ public class ToDoList {
 	public void moveActionItem(int oldIndex, int newIndex) {
 		ActionItem temp = incompleteItems.get(oldIndex);
 		incompleteItems.remove(temp);
-		incompleteItems.add(newIndex,temp);
-		if (oldIndex<newIndex) {
+		incompleteItems.add(newIndex, temp);
+		if (oldIndex < newIndex) {
 			if (temp.getPriority() != incompleteItems.get(newIndex - 1).getPriority())
 				temp.setPriority(incompleteItems.get(newIndex - 1).getPriority());
 		} else {
@@ -41,18 +41,15 @@ public class ToDoList {
 		incompleteItems.remove(index);
 	}
 
-	public void updateActionItem(int index, String title, Priority priority,
-			LocalDate urgentDate, LocalDate currentDate, LocalDate eventualDate,
-			String comment) {
+	public void updateActionItem(int index, String title, Priority priority, LocalDate urgentDate,
+			LocalDate currentDate, LocalDate eventualDate, String comment) {
 		ActionItem item = incompleteItems.get(index);
 		if (!title.equals(item.getTitle())) {
-			item.addEventToHistory(new TitleChangeEvent(LocalDate.now(),
-					item.getTitle(), title));
+			item.addEventToHistory(new TitleChangeEvent(LocalDate.now(), item.getTitle(), title));
 			item.setTitle(title);
 		}
 		if (priority != item.getPriority()) {
-			item.addEventToHistory(new PriorityChangeEvent(LocalDate.now(),
-					item.getPriority(), priority));
+			item.addEventToHistory(new PriorityChangeEvent(LocalDate.now(), item.getPriority(), priority));
 			item.setPriority(priority);
 		}
 		item.setUrgentByDate(urgentDate);
@@ -64,8 +61,7 @@ public class ToDoList {
 				type = CommentChangeEvent.DELETE;
 			else if (item.getComment().equals(""))
 				type = CommentChangeEvent.ADD;
-			item.addEventToHistory(
-					new CommentChangeEvent(LocalDate.now(), type, comment));
+			item.addEventToHistory(new CommentChangeEvent(LocalDate.now(), type, comment));
 			item.setComment(comment);
 		}
 	}
@@ -75,11 +71,12 @@ public class ToDoList {
 	}
 
 	public void addActionItem(ActionItem item) {
+		item.setPriority(Priority.URGENT);
 		incompleteItems.add(0, item);
 	}
-	
+
 	// this is for restoring from a backup
 	public void addCompleteActionItem(ActionItem item) {
-		completeItems.add(0, item);
+		completeItems.add(item);
 	}
 }
