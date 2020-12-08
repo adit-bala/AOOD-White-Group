@@ -1,22 +1,21 @@
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneLayout;
 
 import backend.ActionItem;
+import backend.CommentChangeEvent;
 import backend.FontLoader;
 import backend.samples.SampleActionItem1;
 
@@ -29,118 +28,99 @@ public class CommentScreen extends JPanel implements ActionListener {
 	 */
 	JPanel titlePanel;
 	JLabel titleLabel;
+	
+	JPanel commentAreaPanel;
 	JTextArea commentInput;
-	JScrollPane textScrollPane;
+	JScrollPane scrollPane;
+	
 	JButton commitButton;
 	JButton deleteButton;
-	JPanel buttonPanel;
-	JPanel buttonSpacer;
-	JLabel spacerLabel;
-	//JPanel greenLinePanel;
-	GridBagConstraints gbc = new GridBagConstraints();
+	
+	CommentChangeEvent commentEvent;
 	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
-	//public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 60);
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
-
 	private ActionItem actionItem;
-	CommentScreen(ActionItem item) {
-		actionItem = item;
-		
-		setLayout(new GridBagLayout());
-		//gbc.insets = new Insets(5, 5, 5, 5);
-		
-		// title
-		
-		titlePanel = new JPanel();
-		titlePanel.setLayout(new GridLayout(0,1,0,0));
-		titleLabel = new JLabel("Comment");
-		
-		JPanel greenLinePanel = new greenLinePanel();
-		
-		titleLabel.setFont(TITLE_FONT);
-		
-		titlePanel.add(titleLabel);
-		titlePanel.add(greenLinePanel);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		
-		add(titlePanel, gbc);
-		// button
-		
-		buttonPanel = new JPanel();
 
+	CommentScreen(ActionItem item) {
+		actionItem = item;	
+		/*
+		 * title of screen
+		 */
+	    setLayout(null);
+	    titlePanel = new JPanel();
+		titleLabel = new JLabel("Comment");
+		titleLabel.setFont(TITLE_FONT);
+		titlePanel.setBounds(30,0,420,120);
+		titlePanel.add(titleLabel);
+		add(titlePanel);
+		
+		/*
+		 * green line underneath title
+		 */
+		GreenLinePanel greenLine = new GreenLinePanel();
+		greenLine.setBounds(0,120,250,25);
+		add(greenLine);
+		
+		/*
+		 * commenting area
+		 */
+		commentAreaPanel = new JPanel();
+		commentInput = new JTextArea(24,37);
+		scrollPane = new JScrollPane(commentInput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		commentInput.setText(item.getComment());
+		commentInput.setBackground(Color.decode("#e8e8e8"));
+		commentInput.setForeground(Color.decode("#56997F"));
+		
+		commentInput.setLineWrap(true);
+		commentInput.setWrapStyleWord(true);
+		commentInput.setFont(LABEL_FONT);
+		commentAreaPanel.setBounds(30,150,964,900);
+		
+		commentAreaPanel.add(scrollPane);
+		add(commentAreaPanel);
+		
+		/*
+		 * buttons
+		 */
 		commitButton = new JButton("COMMIT");
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		buttonPanel.add(commitButton, gbc);
-		commitButton.setActionCommand("commit");
 		commitButton.addActionListener(this);
+		commitButton.setActionCommand("commit");
+		commitButton.setFont(LABEL_FONT);
+		commitButton.setPreferredSize(new Dimension(100,100));
+		commitButton.setMaximumSize(commitButton.getSize());
 		commitButton.setBackground(Color.decode("#56997F"));
 		commitButton.setForeground(Color.WHITE);
+		commitButton.setFocusable(false);
+		commitButton.setBorder(BorderFactory.createEtchedBorder());
+		commitButton.setBounds(30,1080,200,200);
+		add(commitButton);
 		
-		
-
-		buttonSpacer = new JPanel();
-		spacerLabel = new JLabel(
-				"                                                                  ");
-		buttonSpacer.add(spacerLabel);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridwidth = 5;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		buttonPanel.add(buttonSpacer, gbc);
-
 		deleteButton = new JButton("DELETE");
-		gbc.gridx = 6;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		buttonPanel.add(deleteButton, gbc);
-		deleteButton.setActionCommand("delete");
 		deleteButton.addActionListener(this);
+		deleteButton.setActionCommand("delete");
+		deleteButton.setFont(LABEL_FONT);
+		deleteButton.setPreferredSize(new Dimension(100,100));
+		deleteButton.setMaximumSize(deleteButton.getSize());
 		deleteButton.setBackground(Color.decode("#56997F"));
 		deleteButton.setForeground(Color.WHITE);
-
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		
-		add(buttonPanel, gbc);
-
-		// comment area
-		commentInput = new JTextArea(item.getComment(), 30, 30);
-		commentInput.setSelectedTextColor(Color.decode("#56997F"));
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-
-		gbc.gridwidth = 3;
-		gbc.gridheight = 3;
-		gbc.fill = GridBagConstraints.BOTH;
-		commentInput.setLineWrap(true);
-		textScrollPane = new JScrollPane(commentInput,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		add(textScrollPane, gbc);
-		textScrollPane.setFont(LABEL_FONT);
-
+		deleteButton.setFocusable(false);
+		deleteButton.setBorder(BorderFactory.createEtchedBorder());
+		deleteButton.setBounds(794,1080,200,200);
+		add(deleteButton);
 	}
-	
-	public class greenLinePanel extends JPanel {
-		public void paintComponent (Graphics g) {
+	public class GreenLinePanel extends JPanel {
+		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.setColor(Color.decode("#56997F"));
-			g.fillRect(10, 0, 580, 20);
+			g.fillRect(50, 0, 250, 10);
 		}
 	}
 	
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
 		if (eventName.contentEquals("commit")) {
-			//System.out.println(this.getComment());
-			actionItem.setComment(this.getComment());
+			actionItem.updateActionItem(actionItem.getTitle(), actionItem.getPriority(), actionItem.getUrgentByDate(),
+					actionItem.getCurrentByDate(), actionItem.getEventualByDate(), this.getComment());
 		} else if (eventName.contentEquals("delete")) {
 			actionItem.setComment("");
 			commentInput.setText("");
@@ -148,18 +128,21 @@ public class CommentScreen extends JPanel implements ActionListener {
 	}
 
 	public String getComment() {
-		String comment = commentInput.getText();
+		String comment = "";
+		if (commentInput.getText() != "") {
+			comment = commentInput.getText();
+		}
 		return comment;
 	}
 
 	public static void main(String[] args) {
 		SampleActionItem1 item = new SampleActionItem1();
-		//System.out.println(item.getComment());
 		CommentScreen screen = new CommentScreen(item);
 		JFrame frame = new JFrame();
+		screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
-
+		
 	}
 }
