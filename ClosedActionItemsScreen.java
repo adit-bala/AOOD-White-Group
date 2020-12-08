@@ -1,6 +1,7 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,6 +11,8 @@ import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 
 import backend.ActionItem;
 import backend.FontLoader;
+import backend.samples.*;
 
 /*
  * This class shows all events in an Action Item's history
@@ -34,45 +38,30 @@ public class ClosedActionItemsScreen extends JPanel {
 	private List<ActionItem> completedActionItems;
 	// private JLabel dates;
 
-	private GridBagConstraints layoutConstraints = new GridBagConstraints();
 
 	ClosedActionItemsScreen() {
-
+		
 		pageTitle = new JLabel("Closed Action Items");
-		// dates = new JLabel("Wednesday, 02 December 2020");
-
-		pageTitle.setFont(FontLoader.loadFont("res/Chivo/Chivo-Black.ttf", 72));
-		// dates.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
-
+		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
 		scrollPane = new JScrollPane();
-
-		this.setLayout(new GridBagLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		/*
 		 * page title
 		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 0;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		this.add(pageTitle, layoutConstraints);
-		/*
-		 * name history
-		 */
-		layoutConstraints.gridx = 0;
-		layoutConstraints.gridy = 1;
-		layoutConstraints.gridheight = 1;
-		layoutConstraints.gridwidth = 8;
-		layoutConstraints.fill = GridBagConstraints.BOTH;
-		// this.add(NewActionItem, layoutConstraints);
-		/*
-		 * priority history
-		 */
+		this.add(pageTitle);
+	
 	}
 
 	public void paintComponent(Graphics g) {
-		// code will get completedActionItems from the ToDoList Classes and
-		// display it to the user
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.decode("#56997F"));
+		g2d.fillRect(50, 100, 250, 10);
+		SampleToDoList test = new SampleToDoList();
+		completedActionItems = test.getCompleteItems();
+		for(int i = completedActionItems.size()-1; i >= 0; i--) {
+			System.out.println(completedActionItems.size());
+			this.add(new ActionItemEntry(completedActionItems.get(i)));
+		}
 	}
 
 	public void actionPeformed() {
@@ -81,6 +70,7 @@ public class ClosedActionItemsScreen extends JPanel {
 
 	public static void main(String[] args) {
 		ClosedActionItemsScreen screen = new ClosedActionItemsScreen();
+		screen.setPreferredSize(new Dimension(1024, 1366));
 		JFrame frame = new JFrame();
 		frame.setContentPane(screen);
 		frame.pack();
