@@ -5,111 +5,118 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public class ActionItem implements Serializable {
-	
+
 	private String title;
 	private Priority priority;
 	private LocalDate urgentByDate;
 	private LocalDate currentByDate;
 	private LocalDate eventualByDate;
 	private String comment;
-	private ArrayList <HistoryEvent> history = new ArrayList<HistoryEvent>();
-	
+	private ArrayList<HistoryEvent> history = new ArrayList<HistoryEvent>();
+
+	public ActionItem() {
+	}
+
+	// Convenience method so I can make sample action items easier
+	protected ActionItem(String title, Priority priority,
+			LocalDate urgentByDate, LocalDate currentByDate,
+			LocalDate eventualByDate, String comment) {
+		this.title = title;
+		this.priority = priority;
+		this.urgentByDate = urgentByDate;
+		this.currentByDate = currentByDate;
+		this.eventualByDate = eventualByDate;
+		this.comment = comment;
+	}
+
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public Priority getPriority() {
 		return priority;
 	}
-	
+
 	public LocalDate getUrgentByDate() {
 		return urgentByDate;
 	}
-	
+
 	public LocalDate getCurrentByDate() {
 		return currentByDate;
 	}
-	
+
 	public LocalDate getEventualByDate() {
 		return eventualByDate;
 	}
-	
+
 	public LocalDate getActiveByDate() {
-		//does not account for same date
+		// does not account for same date
 		LocalDate returned;
 		if (urgentByDate.compareTo(currentByDate) < 0) {
 			returned = urgentByDate;
-		}else {
+		} else {
 			returned = currentByDate;
 		}
-		if(returned.compareTo(eventualByDate) > 0) {
+		if (returned.compareTo(eventualByDate) > 0) {
 			returned = eventualByDate;
 		}
 		return returned;
 	}
-	
+
 	public String getComment() {
 		return comment;
 	}
-	
+
 	public ArrayList getHistory() {
 		return history;
 	}
-	
+
 	public void setTitle(String newTitle) {
 		title = newTitle;
 	}
-	
+
 	public void setPriority(Priority newPriority) {
 		priority = newPriority;
 	}
-	
+
 	public void setUrgentByDate(LocalDate newUrgentByDate) {
 		urgentByDate = newUrgentByDate;
 	}
-	
+
 	public void setCurrentByDate(LocalDate newCurrentByDate) {
 		currentByDate = newCurrentByDate;
 	}
-	
+
 	public void setEventualByDate(LocalDate newEventualByDate) {
 		eventualByDate = newEventualByDate;
 	}
-	
+
 	public void setComment(String newComment) {
 		comment = newComment;
 	}
-	
+
 	public void addEventToHistory(HistoryEvent newEvent) {
 		history.add(newEvent);
 	}
-	
+
 	public void updatePriority() {
 		LocalDate current = LocalDate.now();
-		if(current.compareTo(urgentByDate) < 0) {
+		if (current.compareTo(urgentByDate) < 0) {
 			priority = Priority.URGENT;
-		}
-		else if(current.compareTo(currentByDate) < 0) {
+		} else if (current.compareTo(currentByDate) < 0) {
 			priority = Priority.CURRENT;
-		}
-		else if(current.compareTo(eventualByDate) < 0) {
+		} else if (current.compareTo(eventualByDate) < 0) {
 			priority = Priority.EVENTUAL;
 		}
 	}
-	
+
 	public ActionItem copy() {
-		ActionItem copy = new ActionItem();
-		copy.setTitle(title);
-		copy.setPriority(priority);
-		copy.setUrgentByDate(urgentByDate);
-		copy.setCurrentByDate(currentByDate);
-		copy.setEventualByDate(eventualByDate);
-		copy.setComment(comment);
-		for(int i = 0; i < history.size(); i++) {
+		ActionItem copy = new ActionItem(title, priority, urgentByDate,
+				currentByDate, eventualByDate, comment);
+		for (int i = 0; i < history.size(); i++) {
 			copy.addEventToHistory(history.get(i));
 		}
 		return copy;
 	}
-
 
 }
