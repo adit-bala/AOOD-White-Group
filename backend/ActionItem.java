@@ -19,8 +19,7 @@ public class ActionItem implements Serializable {
 	}
 
 	// Convenience method so I can make sample action items easier
-	protected ActionItem(String title, Priority priority,
-			LocalDate urgentByDate, LocalDate currentByDate,
+	protected ActionItem(String title, Priority priority, LocalDate urgentByDate, LocalDate currentByDate,
 			LocalDate eventualByDate, String comment) {
 		this.title = title;
 		this.priority = priority;
@@ -63,6 +62,7 @@ public class ActionItem implements Serializable {
 		}
 		return returned;
 	}
+
 	public LocalDate getCompletedByDate() {
 		return completedByDate;
 	}
@@ -98,7 +98,7 @@ public class ActionItem implements Serializable {
 	public void setComment(String newComment) {
 		comment = newComment;
 	}
-	
+
 	public void setCompletedByDate(LocalDate completedByDate) {
 		this.completedByDate = completedByDate;
 	}
@@ -118,13 +118,27 @@ public class ActionItem implements Serializable {
 		}
 	}
 
-	public ActionItem copy() {
-		ActionItem copy = new ActionItem(title, priority, urgentByDate,
-				currentByDate, eventualByDate, comment);
-		for (int i = 0; i < history.size(); i++) {
-			copy.addEventToHistory(history.get(i));
+	public void updateActionItem(String title, Priority priority, LocalDate urgentDate, LocalDate currentDate,
+			LocalDate eventualDate, String comment) {
+		if (!title.equals(this.title)) {
+			addEventToHistory(new TitleChangeEvent(LocalDate.now(), this.title, title));
+			setTitle(title);
 		}
-		return copy;
+		if (priority != this.priority) {
+			addEventToHistory(new PriorityChangeEvent(LocalDate.now(), this.priority, priority));
+			setPriority(priority);
+		}
+		setUrgentByDate(urgentDate);
+		setCurrentByDate(currentDate);
+		setEventualByDate(eventualDate);
+		if (!comment.equals(this.comment)) {
+			int type = CommentChangeEvent.EDIT;
+			if (comment.equals(""))
+				type = CommentChangeEvent.DELETE;
+			else if (this.comment.equals(""))
+				type = CommentChangeEvent.ADD;
+			addEventToHistory(new CommentChangeEvent(LocalDate.now(), type, comment));
+			setComment(comment);
+		}
 	}
-
 }

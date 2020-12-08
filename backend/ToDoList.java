@@ -7,20 +7,32 @@ public class ToDoList {
 	private List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
 	private List<ActionItem> completeItems = new ArrayList<ActionItem>();
 
-	public List<ActionItem> getIncompleteItems() {
-		List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
-		for (int i = 0; i < this.incompleteItems.size(); i++) {
-			incompleteItems.add(this.incompleteItems.get(i).copy());
-		}
-		return incompleteItems;
+	/*
+	 * public List<ActionItem> getIncompleteItems() { List<ActionItem>
+	 * incompleteItems = new ArrayList<ActionItem>(); for (int i = 0; i <
+	 * this.incompleteItems.size(); i++) {
+	 * incompleteItems.add(this.incompleteItems.get(i).copy()); } return
+	 * incompleteItems; }
+	 * 
+	 * (public List<ActionItem> getCompleteItems() { List<ActionItem> completeItems
+	 * = new ArrayList<ActionItem>(); for (int i = 0; i < this.completeItems.size();
+	 * i++) { completeItems.add(this.completeItems.get(i).copy()); } return
+	 * completeItems; }
+	 */
+	public ActionItem getIncompleteItemAtIndex(int index) {
+		return incompleteItems.get(index);
 	}
 
-	public List<ActionItem> getCompleteItems() {
-		List<ActionItem> completeItems = new ArrayList<ActionItem>();
-		for (int i = 0; i < this.completeItems.size(); i++) {
-			completeItems.add(this.completeItems.get(i).copy());
-		}
-		return completeItems;
+	public int getNumIncompleteItems() {
+		return incompleteItems.size();
+	}
+
+	public ActionItem getCompleteItemAtIndex(int index) {
+		return completeItems.get(index);
+	}
+
+	public int getNumCompleteItems() {
+		return completeItems.size();
 	}
 
 	public void moveActionItem(int oldIndex, int newIndex) {
@@ -40,32 +52,7 @@ public class ToDoList {
 		incompleteItems.get(index).setCompletedByDate(LocalDate.now());
 		completeItems.add(incompleteItems.get(index));
 		incompleteItems.remove(index);
-		
-	}
 
-	public void updateActionItem(int index, String title, Priority priority, LocalDate urgentDate,
-			LocalDate currentDate, LocalDate eventualDate, String comment) {
-		ActionItem item = incompleteItems.get(index);
-		if (!title.equals(item.getTitle())) {
-			item.addEventToHistory(new TitleChangeEvent(LocalDate.now(), item.getTitle(), title));
-			item.setTitle(title);
-		}
-		if (priority != item.getPriority()) {
-			item.addEventToHistory(new PriorityChangeEvent(LocalDate.now(), item.getPriority(), priority));
-			item.setPriority(priority);
-		}
-		item.setUrgentByDate(urgentDate);
-		item.setCurrentByDate(currentDate);
-		item.setEventualByDate(eventualDate);
-		if (!comment.equals(item.getComment())) {
-			int type = CommentChangeEvent.EDIT;
-			if (comment.equals(""))
-				type = CommentChangeEvent.DELETE;
-			else if (item.getComment().equals(""))
-				type = CommentChangeEvent.ADD;
-			item.addEventToHistory(new CommentChangeEvent(LocalDate.now(), type, comment));
-			item.setComment(comment);
-		}
 	}
 
 	public void deleteActionItem(int index) {
