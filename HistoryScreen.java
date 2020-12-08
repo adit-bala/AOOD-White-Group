@@ -1,3 +1,5 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Event;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -7,17 +9,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import backend.ActionItem;
+import backend.FontLoader;
 import backend.HistoryEvent;
+import backend.Priority;
+import backend.samples.SampleActionItem1;
 /*
  * This class shows all events in an Action Item's history
  */
@@ -48,8 +59,14 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	private JPanel eventPanel;
 	private JLabel eventDescription;
 	
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 60);
+	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
+	
+	
 	boolean isAlreadyOneClick;
 	HistoryScreen (ActionItem item) {
+		this.setBackground(Color.WHITE);
 		currentItem = item;
 		events = currentItem.getHistory();
 		for (int i=0; i < events.size(); i++) {
@@ -67,22 +84,22 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		
 		setLayout(new GridLayout(0,1,0,0));
 		
-		titleLabel = new JLabel("History of " + item);
-		titleLabel.setFont(new Font("EB Garamond", Font.BOLD, 72));
+		titleLabel = new JLabel("History of " + item.getTitle());
+		titleLabel.setFont(TITLE_FONT);
 		add(titleLabel);
 		
 		nameHistoryLabel = new JLabel("Name History");
-		nameHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		nameHistoryLabel.setFont(HEADER_FONT);
 		add(nameHistoryLabel);
 		addEvents(titleChangeEvents);
 		
 		priorityHistoryLabel = new JLabel("Priority History");
-		priorityHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		priorityHistoryLabel.setFont(HEADER_FONT);
 		add(priorityHistoryLabel);
 		addEvents(priorityChangeEvents);
 
 		commentHistoryLabel = new JLabel("Comment History");
-		commentHistoryLabel.setFont(new Font("Chivo Regular", Font.PLAIN, 30));
+		commentHistoryLabel.setFont(HEADER_FONT);
 		add(commentHistoryLabel);
 		addEvents(commentChangeEvents);
 	}
@@ -94,9 +111,12 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	private void addEvents (List<HistoryEvent> eventList) {
 		for (int i=0; i < eventList.size(); i++) {
 			eventPanel = new JPanel();
+			eventPanel.setBackground(Color.WHITE);
 			eventDescription = new JLabel();
 			eventDescription.setText(eventList.get(i).label());
+			eventDescription.setFont(LABEL_FONT);
 			eventPanel.setSize(100,100);
+			eventPanel.add(makeDateLabel(eventList.get(i).getDateTime()));
 			eventPanel.add(eventDescription);
 			this.add(eventPanel);
 			if (eventList == commentChangeEvents) {
@@ -104,6 +124,22 @@ public class HistoryScreen extends JPanel implements MouseListener {
 				eventPanel.addMouseListener(this);
 			}
 		}
+	}
+	
+	private JPanel makeDateLabel(LocalDate d) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.setBackground(Color.white);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+		String day = d.getDayOfWeek().toString();
+		day = day.substring(0, 1) + day.substring(1).toLowerCase();
+		String formattedString = day + ", " + d.format(formatter);
+		JLabel label = new JLabel(formattedString);
+		label.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		label.setFont(HEADER_FONT);
+		panel.add(label);
+		panel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+		return panel;
 	}
 	
 	/*
@@ -125,6 +161,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	        }, 500);
 	    }
 	}
+
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -151,10 +188,18 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	}
 	
 	public static void main (String[] args) {
-		HistoryScreen screen = new HistoryScreen();
+		SampleActionItem1 item = new SampleActionItem1();
+		item.setComment("hello");
+		//System.out.println(item.getHistory().get(0));
+		for (int i=0; i < item.getHistory().size(); i++) {
+			System.out.println(item.getHistory().get(i));
+		}
+		HistoryScreen screen = new HistoryScreen(item);
 		JFrame frame = new JFrame();
+		//frame.setBackground(Color.WHITE);
 		frame.setContentPane(screen);
 		frame.pack();
         frame.setVisible(true);
 	}
+
 }
