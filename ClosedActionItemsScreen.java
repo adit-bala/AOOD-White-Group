@@ -35,6 +35,7 @@ public class ClosedActionItemsScreen extends JPanel {
 	 * Instance variables
 	 */
 	private JLabel pageTitle;
+	private JPanel ItemList;
 	private JScrollPane scrollPane;
 	private List<ActionItem> completedActionItems;
 	// private JLabel dates;
@@ -45,25 +46,29 @@ public class ClosedActionItemsScreen extends JPanel {
 		pageTitle = new JLabel("Closed Action Items");
 		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
 		scrollPane = new JScrollPane();
+		ItemList = new JPanel();
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		/*
 		 * page title
 		 */
 		this.add(pageTitle);
-		SampleToDoList test = new SampleToDoList();
-		completedActionItems = test.getCompleteItems();
-		for(int i = completedActionItems.size()-1; i >= 0; i--) {
-			System.out.println(completedActionItems.size());
-			this.add(new ActionItemEntry(completedActionItems.get(i)));
-		}
+		//this.add(scrollPane);
+		
+		
 		
 	
 	}
 
 	public void paintComponent(Graphics g) {
-//		Graphics2D g2d = (Graphics2D) g;
-//		g2d.setColor(Color.decode("#56997F"));	
-//		g2d.fillRect(50, 100, 250, 10);
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.decode("#56997F"));	
+		g2d.fillRect(50, 100, 250, 10);
+		SampleToDoList test = new SampleToDoList();
+		completedActionItems = test.getCompleteItems();
+		for(int i = completedActionItems.size()-1; i >= 0; i--) {
+			this.add(new ActionItemEntry(completedActionItems.get(i)));
+		}
 	}
 
 	public void actionPeformed() {
