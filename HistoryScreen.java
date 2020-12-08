@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import backend.ActionItem;
+import backend.CommentChangeEvent;
 import backend.FontLoader;
 import backend.HistoryEvent;
 import backend.Priority;
