@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,19 +50,20 @@ public class ClosedActionItemsScreen extends JPanel {
 		 * page title
 		 */
 		this.add(pageTitle);
-	
-	}
-
-	public void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.decode("#56997F"));
-		g2d.fillRect(50, 100, 250, 10);
 		SampleToDoList test = new SampleToDoList();
 		completedActionItems = test.getCompleteItems();
 		for(int i = completedActionItems.size()-1; i >= 0; i--) {
 			System.out.println(completedActionItems.size());
 			this.add(new ActionItemEntry(completedActionItems.get(i)));
 		}
+		
+	
+	}
+
+	public void paintComponent(Graphics g) {
+//		Graphics2D g2d = (Graphics2D) g;
+//		g2d.setColor(Color.decode("#56997F"));	
+//		g2d.fillRect(50, 100, 250, 10);
 	}
 
 	public void actionPeformed() {
@@ -75,5 +77,6 @@ public class ClosedActionItemsScreen extends JPanel {
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
+		screen.repaint();
 	}
 }
