@@ -37,8 +37,10 @@ public class ToDoList {
 	}
 
 	public void completeActionItem(int index) {
+		incompleteItems.get(index).setCompletedByDate(LocalDate.now());
 		completeItems.add(incompleteItems.get(index));
 		incompleteItems.remove(index);
+		
 	}
 
 	public void updateActionItem(int index, String title, Priority priority, LocalDate urgentDate,

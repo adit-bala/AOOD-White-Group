@@ -11,6 +11,7 @@ public class ActionItem implements Serializable {
 	private LocalDate urgentByDate;
 	private LocalDate currentByDate;
 	private LocalDate eventualByDate;
+	private LocalDate completedByDate;
 	private String comment;
 	private ArrayList<HistoryEvent> history = new ArrayList<HistoryEvent>();
 
@@ -62,6 +63,9 @@ public class ActionItem implements Serializable {
 		}
 		return returned;
 	}
+	public LocalDate getCompletedByDate() {
+		return completedByDate;
+	}
 
 	public String getComment() {
 		return comment;
@@ -93,6 +97,10 @@ public class ActionItem implements Serializable {
 
 	public void setComment(String newComment) {
 		comment = newComment;
+	}
+	
+	public void setCompletedByDate(LocalDate completedByDate) {
+		this.completedByDate = completedByDate;
 	}
 
 	public void addEventToHistory(HistoryEvent newEvent) {
