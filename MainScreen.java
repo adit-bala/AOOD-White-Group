@@ -109,6 +109,11 @@ class MainScreen extends JPanel {
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
 		NewActionItem.setMaximumSize(new Dimension(9999, 100));
 		this.add(NewActionItem);
+		ActionItem item = new ActionItem();
+		item.setTitle("Bruh");
+		item.setPriority(Priority.URGENT);
+		//itemPanel.add(new ActionItemEntry(item));
+		//itemPanel.add(new ActionItemEntry(item));
 	}
 	private void setActionItemScreen(ActionItem item) {
 		frame.setContentPane(new EditActionItemScreen(item));
@@ -160,10 +165,9 @@ class MainScreen extends JPanel {
 	    }
 	 
 	private void makeItemList() {
-		// changed this a little because the methods are different by Ms. Gerb request -Tyler
-		items = new ActionItemEntry[userList.getIncompleteItems().size()];
-		for (int i=0;i<userList.getIncompleteItems().size();i++) {
-			items[i] = makeEntry(userList.getIncompleteItems().get(i));
+		items = new ActionItemEntry[userList.getNumIncompleteItems()];
+		for (int i=0;i<userList.getNumIncompleteItems();i++) {
+			items[i] = makeEntry(userList.getIncompleteItemAtIndex(i));
 		}
 		Arrays.sort(items, new Comparator<ActionItemEntry>() {
 			@Override
@@ -277,11 +281,11 @@ class MainScreen extends JPanel {
 	                    			item.getActionItem().setPriority(Priority.EVENTUAL);
 	                    	}
 	                    }
+	                    updateActionItem(item.getActionItem());
 	                    return true;
 	                } catch (UnsupportedFlavorException | IOException e) {
 	                    e.printStackTrace();
 	                }
-
 	                return false;
 	            }
 	        });
@@ -290,6 +294,9 @@ class MainScreen extends JPanel {
 			p.add(list);
 			itemPanel.add(p);
 		}
+	private void updateActionItem(ActionItem item) {
+		item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+	}
 	private JPanel makeDateLabel(LocalDate d) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());

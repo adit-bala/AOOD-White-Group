@@ -23,7 +23,6 @@ class ActionItemEntry extends JPanel
 	protected static DataFlavor[] supportedFlavors = { actionFlavor };
 
 	ActionItemEntry(ActionItem item) {
-		setOpaque(true);
 		this.item = item;
 		this.initItem(item.getTitle(), item.getPriority());
 	}
@@ -47,7 +46,7 @@ class ActionItemEntry extends JPanel
 		this.setLayout(new BorderLayout());
 		this.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5), BorderFactory.createLineBorder(new Color(230, 230, 230), 15, true)));
 		this.setBackground(Color.white);
-		this.setMaximumSize(new Dimension(9999, 50));
+		this.setMaximumSize(new Dimension(9999, 70));
 		label = new JLabel();
 		label.setText(s);	
 		if (p == Priority.URGENT)
@@ -59,7 +58,7 @@ class ActionItemEntry extends JPanel
 		else
 			label.setFont(MainScreen.NORMAL_FONT);
 		label.setForeground(Color.decode("#134D37"));
-		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 300));
+		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 300));
 		label.setOpaque(true);
 		label.setBackground(new Color(230, 230, 230));
 		label.setHorizontalAlignment(SwingConstants.CENTER);
