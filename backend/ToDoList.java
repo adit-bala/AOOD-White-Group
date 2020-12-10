@@ -49,7 +49,7 @@ public class ToDoList {
 	}
 
 	public void completeActionItem(int index) {
-		incompleteItems.get(index).setCompletedByDate(LocalDate.now());
+		incompleteItems.get(index).setCompletedByDate(LocalDateTime.now());
 		completeItems.add(incompleteItems.get(index));
 		incompleteItems.remove(index);
 
