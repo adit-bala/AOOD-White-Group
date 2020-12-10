@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.swing.JPanel;
 
@@ -34,8 +34,7 @@ public class FileUtilities {
 	public static ToDoList restoreFrom(String filePath) {
 		ToDoList list = new ToDoList();
 		try {
-			JSONObject source = new JSONObject(
-					new JSONTokener(new FileReader(filePath)));
+			JSONObject source = new JSONObject(new JSONTokener(new FileReader(filePath)));
 			JSONArray completeItems = source.getJSONArray("completeItems");
 			for (int i = completeItems.length() - 1; i >= 0; i--) {
 				JSONObject itemSource = completeItems.getJSONObject(i);
@@ -59,40 +58,32 @@ public class FileUtilities {
 		item.setPriority(Priority.valueOf(itemSource.getString("priority")));
 		item.setComment(itemSource.getString("comment"));
 		if (itemSource.has("urgentByDate"))
-			item.setUrgentByDate(
-					LocalDate.parse(itemSource.getString("urgentByDate")));
+			item.setUrgentByDate(LocalDateTime.parse(itemSource.getString("urgentByDate")));
 		if (itemSource.has("currentByDate"))
-			item.setCurrentByDate(
-					LocalDate.parse(itemSource.getString("currentByDate")));
+			item.setCurrentByDate(LocalDateTime.parse(itemSource.getString("currentByDate")));
 		if (itemSource.has("eventualByDate"))
-			item.setEventualByDate(
-					LocalDate.parse(itemSource.getString("eventualByDate")));
+			item.setEventualByDate(LocalDateTime.parse(itemSource.getString("eventualByDate")));
 		JSONArray history = itemSource.getJSONArray("history");
 		for (int j = 0; j < history.length(); j++) {
 			JSONObject eventSource = history.getJSONObject(j);
 			int type = eventSource.getInt("type");
-			LocalDate dateTime = LocalDate
-					.parse(eventSource.getString("dateTime"));
+			LocalDateTime dateTime = LocalDateTime.parse(eventSource.getString("dateTime"));
 			if (type == HistoryEvent.COMMENT_CHANGE) {
-				item.addEventToHistory(new CommentChangeEvent(dateTime,
-						eventSource.getInt("commentChangeEventType"),
+				item.addEventToHistory(new CommentChangeEvent(dateTime, eventSource.getInt("commentChangeEventType"),
 						eventSource.getString("comment")));
 			} else if (type == HistoryEvent.PRIORITY_CHANGE) {
-				item.addEventToHistory(new PriorityChangeEvent(dateTime,
-						Priority.valueOf(eventSource.getString("oldPriority")),
-						Priority.valueOf(
-								eventSource.getString("newPriority"))));
+				item.addEventToHistory(
+						new PriorityChangeEvent(dateTime, Priority.valueOf(eventSource.getString("oldPriority")),
+								Priority.valueOf(eventSource.getString("newPriority"))));
 			} else {
-				item.addEventToHistory(new TitleChangeEvent(dateTime,
-						eventSource.getString("oldTitle"),
+				item.addEventToHistory(new TitleChangeEvent(dateTime, eventSource.getString("oldTitle"),
 						eventSource.getString("newTitle")));
 			}
 		}
 		return item;
 	}
 
-	public static void printToDoList(JPanel toDoListPanel)
-			throws PrinterException {
+	public static void printToDoList(JPanel toDoListPanel) throws PrinterException {
 		PrinterJob job = PrinterJob.getPrinterJob();
 		job.setPrintable(new ToDoListPrinter(toDoListPanel));
 		boolean ok = job.printDialog();
@@ -101,11 +92,10 @@ public class FileUtilities {
 		}
 	}
 
-	public static void printActionItem(JPanel editItemPanel,
-			JPanel commentPanel, JPanel historyPanel) throws PrinterException {
+	public static void printActionItem(JPanel editItemPanel, JPanel commentPanel, JPanel historyPanel)
+			throws PrinterException {
 		PrinterJob job = PrinterJob.getPrinterJob();
-		job.setPrintable(new ActionItemPrinter(editItemPanel, commentPanel,
-				historyPanel));
+		job.setPrintable(new ActionItemPrinter(editItemPanel, commentPanel, historyPanel));
 		boolean ok = job.printDialog();
 		if (ok) {
 			job.print();
@@ -128,8 +118,7 @@ class ToDoListPrinter implements Printable {
 	}
 
 	@Override
-	public int print(Graphics g, PageFormat pf, int page)
-			throws PrinterException {
+	public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
 		if (page > 0)
 			return NO_SUCH_PAGE;
 
@@ -146,16 +135,14 @@ class ActionItemPrinter implements Printable {
 
 	private Component editComp, commentComp, historyComp;
 
-	ActionItemPrinter(Component editComp, Component commentComp,
-			Component historyComp) {
+	ActionItemPrinter(Component editComp, Component commentComp, Component historyComp) {
 		this.editComp = editComp;
 		this.commentComp = commentComp;
 		this.historyComp = historyComp;
 	}
 
 	@Override
-	public int print(Graphics g, PageFormat pf, int page)
-			throws PrinterException {
+	public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
 		Component compToPrint;
 		if (page == 0) {
 			compToPrint = editComp;
