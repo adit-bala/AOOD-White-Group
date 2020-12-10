@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -26,6 +27,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
 import backend.ActionItem;
 import backend.CommentChangeEvent;
@@ -42,6 +45,9 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	 */
 	JPanel titlePanel;
 	JLabel titleLabel;
+	
+	JPanel historyPanel;
+	JScrollPane historyScroll;
 	
 	JPanel nameHistoryPanel;
 	JLabel nameHistoryLabel;
@@ -62,13 +68,13 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	List<HistoryEvent> titleChangeEvents = new ArrayList<HistoryEvent>();
 	List<HistoryEvent> priorityChangeEvents = new ArrayList<HistoryEvent>();
 	List<HistoryEvent> commentChangeEvents = new ArrayList<HistoryEvent>();
-	List<JPanel> commentPanelList = new ArrayList<JPanel>();
-	private ActionItem currentItem;
 	int numberOfTitleChanges = 0;
 	int numberOfPriorityChanges = 0;
 	int numberOfComments = 0;
 	private JPanel eventPanel;
 	private JLabel eventDescription;
+	private JLabel eventTime;
+	private ActionItem actionItem;
 	
 	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
 	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
@@ -76,19 +82,19 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	
 	boolean isAlreadyOneClick;
 	HistoryScreen (ActionItem item) {
+		actionItem = item;
+		events = actionItem.getHistory();
 		this.setBackground(Color.WHITE);
-		currentItem = item;
-		events = currentItem.getHistory();
-		for (int i=0; i < events.size(); i++) {
-			if (events.get(i).getType() == HistoryEvent.TITLE_CHANGE) {
+		for (int i=0; i < item.getHistory().size(); i++) {
+			if (((HistoryEvent) item.getHistory().get(i)).getType() == HistoryEvent.TITLE_CHANGE) {
 				numberOfTitleChanges++;
-				titleChangeEvents.add(events.get(i));
-			} else if (events.get(i).getType() == HistoryEvent.PRIORITY_CHANGE) {
+				titleChangeEvents.add((HistoryEvent) item.getHistory().get(i));
+			} else if (((HistoryEvent) item.getHistory().get(i)).getType() == HistoryEvent.PRIORITY_CHANGE) {
 				numberOfPriorityChanges++;
-				priorityChangeEvents.add(events.get(i));
-			} else if (events.get(i).getType() == HistoryEvent.COMMENT_CHANGE) {
+				priorityChangeEvents.add((HistoryEvent) item.getHistory().get(i));
+			} else if (((HistoryEvent) item.getHistory().get(i)).getType() == HistoryEvent.COMMENT_CHANGE) {
 				numberOfComments++;
-				commentChangeEvents.add(events.get(i));
+				commentChangeEvents.add((HistoryEvent) item.getHistory().get(i));
 			}
 		}
 		/*
@@ -106,101 +112,61 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		GreenLinePanel greenLine = new GreenLinePanel();
 		greenLine.setBounds(0,120,250,25);
 		add(greenLine);
-		
 		/*
-		 * name history
+		 * history
 		 */
-		nameHistoryLabel = new JLabel("Name History");
-		nameHistoryLabel.setFont(HEADER_FONT);
-		nameHistoryLabel.setBounds(30,145,994,100);
-		add(nameHistoryLabel);
-		//addEvents(titleChangeEvents);
+		historyPanel = new JPanel();
+		historyPanel.setLayout(new GridLayout(0,1,0,0));
 		
-		nameHistory = new JPanel();
-		nameHistory.setPreferredSize(new Dimension(964,300));
-		nameHistory.setLayout(new GridLayout(0,1,0,0));
-		nameHistoryScroll = new JScrollPane(nameHistory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		nameHistoryScroll.setBounds(30,245,964,300);
-		add(nameHistoryScroll);
-		/*
-		 * priority history
-		 */
-		priorityHistoryLabel = new JLabel("Priority History");
-		priorityHistoryLabel.setFont(HEADER_FONT);
-		priorityHistoryLabel.setBounds(30,545,994,100);
-		add(priorityHistoryLabel);
-		//addEvents(priorityChangeEvents);
+		historyScroll = new JScrollPane(historyPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		historyScroll.setBounds(30,145,954,1100);
 
-		priorityHistory = new JPanel();
-		priorityHistory.setPreferredSize(new Dimension(964,300));
-		priorityHistory.setLayout(new GridLayout(0,1,0,0));
-		priorityHistoryScroll = new JScrollPane(priorityHistory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		priorityHistoryScroll.setBounds(30,645,964,300);
-		add(priorityHistoryScroll);
-		/*
-		 * comment history
-		 */
-		commentHistoryLabel = new JLabel("Comment History");
-		commentHistoryLabel.setFont(HEADER_FONT);
-		commentHistoryLabel.setBounds(30,945,994,100);
-		add(commentHistoryLabel);
-		//addEvents(commentChangeEvents);
-		
-		
-		
-		
-		commentHistory = new JPanel();
-		commentHistory.setPreferredSize(new Dimension(964,300));
-		commentHistory.setLayout(new GridLayout(0,1,0,0));
-		commentHistoryScroll = new JScrollPane(commentHistory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		commentHistoryScroll.setBounds(30,1045,964,300);
-		addEvents(commentHistoryScroll, commentChangeEvents);
-		/*
-		eventPanel = new JPanel();
-		eventPanel.setBackground(Color.WHITE);
-		eventDescription = new JLabel();
-		eventDescription.setText(commentChangeEvents.get(0).label());
-		eventDescription.setFont(LABEL_FONT);
-		eventPanel.setPreferredSize(new Dimension(964,100));
-		eventPanel.add(eventDescription);
-		commentHistory.add(eventPanel);
-		commentPanelList.add(eventPanel);
-		eventPanel.addMouseListener(this);
-		
-		eventPanel = new JPanel();
-		eventPanel.setBackground(Color.WHITE);
-		eventDescription = new JLabel();
-		eventDescription.setText(commentChangeEvents.get(0).label());
-		eventDescription.setFont(LABEL_FONT);
-		eventPanel.setPreferredSize(new Dimension(964,100));
-		eventPanel.add(eventDescription);
-		commentHistory.add(eventPanel);
-		commentPanelList.add(eventPanel);
-		eventPanel.addMouseListener(this);
-		*/
-		
-		add(commentHistoryScroll);
-		
+		addEvents();
+		add(historyScroll);	
 	}
 	
 	/*
 	 * adds events (JPanels) to the screen
 	 * if comment event, also adds mouse listener
 	 */
-	private void addEvents (JScrollPane scrollPanel, List<HistoryEvent> eventList) {
-		for (int i=0; i < eventList.size(); i++) {
+	
+	private void addEvents () {
+		int num = 0;
+		for (int i=0; i < events.size(); i++) {
 			eventPanel = new JPanel();
-			eventPanel.setBackground(Color.WHITE);
+			eventPanel.setLayout(new GridLayout(0,1,0,0));
+			eventTime = new JLabel();
+			eventTime.setFont(LABEL_FONT);
+			eventTime.setSize(964,50);
+			eventTime.setText(events.get(i).getDateTime().toString());
+			eventTime.setBounds(0,0,964,20);
+			
 			eventDescription = new JLabel();
-			eventDescription.setText(eventList.get(i).label());
 			eventDescription.setFont(LABEL_FONT);
-			eventPanel.setPreferredSize(new Dimension(964,100));
+			eventDescription.setSize(964,50);
+			eventDescription.setText(events.get(i).label());
+			
+			eventDescription.setBounds(0,20,964,80);
+			
+			eventPanel.add(eventTime);
 			eventPanel.add(eventDescription);
-			scrollPanel.add(eventPanel);
-			if (eventList == commentChangeEvents) {
-				commentPanelList.add(eventPanel);
+			eventPanel.setPreferredSize(new Dimension(964,100));
+			eventPanel.setSize(new Dimension(964,100));
+			eventPanel.setBackground(Color.WHITE);
+			historyPanel.add(eventPanel);
+			Border raisedetched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+			eventPanel.setBorder(raisedetched);
+			
+			if (events.get(i).getType() == 2) {
 				eventPanel.addMouseListener(this);
 			}
+			num = i;
+		}
+		if (num < 11) {
+			JPanel spacer = new JPanel();
+			spacer.setSize(new Dimension(964, 1100-num*100));
+			spacer.setBackground(Color.WHITE);
+			historyPanel.add(spacer);
 		}
 	}
 	
@@ -261,10 +227,6 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	
 	public static void main (String[] args) {
 		SampleActionItem1 item = new SampleActionItem1();
-		item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(),
-				item.getCurrentByDate(), item.getEventualByDate(), "sdfsfdfs");
-		item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(),
-				item.getCurrentByDate(), item.getEventualByDate(), "adfadas");
 		HistoryScreen screen = new HistoryScreen(item);
 		JFrame frame = new JFrame();
 		screen.setPreferredSize(new Dimension(1024, 1366));
