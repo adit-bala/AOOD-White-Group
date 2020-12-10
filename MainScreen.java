@@ -1,6 +1,9 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -12,6 +15,7 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
 
 //import ClosedActionItemsScreen.CustomBorder;
 import backend.ActionItem;
@@ -34,7 +38,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Dimension;
 
-class MainScreen extends JPanel {
+class MainScreen extends JPanel implements ActionListener{
 	private JFrame frame;
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
@@ -100,7 +104,7 @@ class MainScreen extends JPanel {
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
 		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
-		NewActionItem.setFont(new Font("Chivo Regular", Font.PLAIN, 14));
+		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 14));
 		NewActionItem.setBackground(Color.white);
 		NewActionItem.setForeground(Color.gray.brighter());
 		NewActionItem.setColumns(30);
@@ -108,6 +112,7 @@ class MainScreen extends JPanel {
                 new CustomBorder(), 
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
 		NewActionItem.setMaximumSize(new Dimension(9999, 100));
+		NewActionItem.addActionListener(this);
 		this.add(NewActionItem);
 		ActionItem item = new ActionItem();
 		item.setTitle("Bruh");
@@ -349,6 +354,11 @@ class MainScreen extends JPanel {
 		
 	}
 	public void priorityChange() {
+		
+	}
+	
+	public void actionPerformed(ActionEvent event) {
+		ActionItem test = new ActionItem(NewActionItem.getText(), Priority.URGENT, LocalDate.now(), null, null, null);
 		
 	}
 	/*
