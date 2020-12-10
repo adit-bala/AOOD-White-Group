@@ -20,10 +20,13 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		
 		createBackup = new JMenuItem("Create Backup");
 		createBackup.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
+		createBackup.setActionCommand("Create");
 		restoreBackup = new JMenuItem("Restore Backup...");
 		restoreBackup.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
+		restoreBackup.setActionCommand("Restore");
 		printList = new JMenuItem("Print List");
 		printList.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
+		printList.setActionCommand("Print");
 		file.add(createBackup);
 		file.add(restoreBackup);
 		file.add(printList);
@@ -39,9 +42,9 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		quit.setActionCommand("Quit");
 		quit.addActionListener(this); 
 		
-		mainScreen.add(file);
-		mainScreen.add(completedActionItems);
-		mainScreen.add(quit);
+		this.add(file);
+		this.add(completedActionItems);
+		this.add(quit);
 	
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -51,9 +54,11 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			 * screens change from main to cai screen
 			 */
 		} else if (eventName.equals("Quit")) {
-			
+			System.exit(0);
 		}
-		else
+	}
+	public void changeBar() {
+		
 	}
 	public static void main (String[] args) {
 		JFrame frame = new JFrame();
