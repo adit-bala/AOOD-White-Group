@@ -47,12 +47,10 @@ public class CommentScreen extends JPanel implements ActionListener {
 		 * title of screen
 		 */
 	    setLayout(null);
-	    titlePanel = new JPanel();
 		titleLabel = new JLabel("Comment");
 		titleLabel.setFont(TITLE_FONT);
-		titlePanel.setBounds(30,0,420,120);
-		titlePanel.add(titleLabel);
-		add(titlePanel);
+		titleLabel.setBounds(30,0,994,120);
+		add(titleLabel);
 		
 		/*
 		 * green line underneath title

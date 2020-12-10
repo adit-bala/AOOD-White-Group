@@ -10,5 +10,9 @@ public class SampleActionItem1 extends ActionItem {
 		super("Get groceries", Priority.CURRENT, LocalDateTime.now().plusDays(1),
 				null, null,
 				"Mauris a metus vitae massa scelerisque viverra. Aliquam mollis ante nec rhoncus posuere. Duis at venenatis odio, vitae venenatis lacus.");
+		this.updateActionItem(this.getTitle(), this.getPriority(), this.getUrgentByDate(),
+				this.getCurrentByDate(), this.getEventualByDate(), "sdfsfdfs");
+		this.updateActionItem(this.getTitle(), this.getPriority(), this.getUrgentByDate(),
+				this.getCurrentByDate(), this.getEventualByDate(), "adfadas");
 	}
 }
