@@ -358,8 +358,6 @@ class MainScreen extends JPanel implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent event) {
-		ActionItem test = new ActionItem(NewActionItem.getText(), Priority.URGENT, LocalDate.now(), null, null, null);
-		
 	}
 	/*
 	public List<ActionItem> orderByDate {

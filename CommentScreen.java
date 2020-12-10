@@ -1,18 +1,21 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneLayout;
+import javax.swing.border.LineBorder;
 
 import backend.ActionItem;
 import backend.CommentChangeEvent;
@@ -46,24 +49,32 @@ public class CommentScreen extends JPanel implements ActionListener {
 		/*
 		 * title of screen
 		 */
-	    setLayout(null);
+		setBorder(BorderFactory.createEmptyBorder(20, 40, 30, 40));
+	    setLayout(new GridBagLayout());
 		titleLabel = new JLabel("Comment");
 		titleLabel.setFont(TITLE_FONT);
-		titleLabel.setBounds(30,0,994,120);
-		add(titleLabel);
+		titlePanel = new JPanel();
+		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+		JPanel underline = new JPanel();
+		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		underline.setMaximumSize(new Dimension(610, 10));
+		titlePanel.add(titleLabel);
+		titlePanel.add(underline);
+		titleLabel = new JLabel("Comment");
+		titleLabel.setFont(TITLE_FONT);
 		
-		/*
-		 * green line underneath title
-		 */
-		GreenLinePanel greenLine = new GreenLinePanel();
-		greenLine.setBounds(0,120,250,25);
-		add(greenLine);
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 3;
+		c.anchor = GridBagConstraints.LINE_START;
+		add(titlePanel, c);
 		
 		/*
 		 * commenting area
 		 */
-		commentAreaPanel = new JPanel();
-		commentInput = new JTextArea(24,37);
+		commentInput = new JTextArea();
+		commentInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		scrollPane = new JScrollPane(commentInput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		commentInput.setText(item.getComment());
 		commentInput.setBackground(Color.decode("#e8e8e8"));
@@ -72,46 +83,60 @@ public class CommentScreen extends JPanel implements ActionListener {
 		commentInput.setLineWrap(true);
 		commentInput.setWrapStyleWord(true);
 		commentInput.setFont(LABEL_FONT);
-		commentAreaPanel.setBounds(30,150,964,900);
 		
-		commentAreaPanel.add(scrollPane);
-		add(commentAreaPanel);
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 3;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(20, 0, 20, 0);
+		add(scrollPane, c);
 		
 		/*
 		 * buttons
 		 */
+		
 		commitButton = new JButton("COMMIT");
 		commitButton.addActionListener(this);
 		commitButton.setActionCommand("commit");
 		commitButton.setFont(LABEL_FONT);
-		commitButton.setPreferredSize(new Dimension(100,100));
-		commitButton.setMaximumSize(commitButton.getSize());
 		commitButton.setBackground(Color.decode("#56997F"));
 		commitButton.setForeground(Color.WHITE);
 		commitButton.setFocusable(false);
 		commitButton.setBorder(BorderFactory.createEtchedBorder());
-		commitButton.setBounds(30,1080,200,200);
-		add(commitButton);
+		commitButton.setPreferredSize(new Dimension(0, 60));
+		commitButton.setMinimumSize(new Dimension(0, 60));
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0 / 3;
+		c.weighty = 0.1;
+		c.anchor = GridBagConstraints.LINE_START;
+		add(commitButton, c);
+		
+		JPanel empty = new JPanel();
+		empty.setPreferredSize(new Dimension(0, 0));
+		empty.setMinimumSize(new Dimension(0, 0));
+		c.gridx = 1;
+		add(empty, c);
 		
 		deleteButton = new JButton("DELETE");
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("delete");
 		deleteButton.setFont(LABEL_FONT);
-		deleteButton.setPreferredSize(new Dimension(100,100));
-		deleteButton.setMaximumSize(deleteButton.getSize());
 		deleteButton.setBackground(Color.decode("#56997F"));
 		deleteButton.setForeground(Color.WHITE);
 		deleteButton.setFocusable(false);
 		deleteButton.setBorder(BorderFactory.createEtchedBorder());
-		deleteButton.setBounds(794,1080,200,200);
-		add(deleteButton);
-	}
-	public class GreenLinePanel extends JPanel {
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.setColor(Color.decode("#56997F"));
-			g.fillRect(50, 0, 250, 10);
-		}
+		deleteButton.setPreferredSize(new Dimension(0, 60));
+		deleteButton.setMinimumSize(new Dimension(0, 60));
+		c.gridx = 2;
+		c.anchor = GridBagConstraints.LINE_END;
+		add(deleteButton, c);
 	}
 	
 	public void actionPerformed(ActionEvent event) {
