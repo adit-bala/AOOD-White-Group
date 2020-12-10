@@ -2,16 +2,16 @@ package backend;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ActionItem implements Serializable {
 
 	private String title;
 	private Priority priority;
-	private LocalDate urgentByDate;
-	private LocalDate currentByDate;
-	private LocalDate eventualByDate;
-	private LocalDate completedByDate;
+	private LocalDateTime urgentByDate;
+	private LocalDateTime currentByDate;
+	private LocalDateTime eventualByDate;
+	private LocalDateTime completedByDate;
 	private String comment;
 	private ArrayList<HistoryEvent> history = new ArrayList<HistoryEvent>();
 
@@ -19,8 +19,8 @@ public class ActionItem implements Serializable {
 	}
 
 	// Convenience method so I can make sample action items easier
-	protected ActionItem(String title, Priority priority, LocalDate urgentByDate, LocalDate currentByDate,
-			LocalDate eventualByDate, String comment) {
+	protected ActionItem(String title, Priority priority, LocalDateTime urgentByDate, LocalDateTime currentByDate,
+			LocalDateTime eventualByDate, String comment) {
 		this.title = title;
 		this.priority = priority;
 		this.urgentByDate = urgentByDate;
@@ -37,21 +37,21 @@ public class ActionItem implements Serializable {
 		return priority;
 	}
 
-	public LocalDate getUrgentByDate() {
+	public LocalDateTime getUrgentByDate() {
 		return urgentByDate;
 	}
 
-	public LocalDate getCurrentByDate() {
+	public LocalDateTime getCurrentByDate() {
 		return currentByDate;
 	}
 
-	public LocalDate getEventualByDate() {
+	public LocalDateTime getEventualByDate() {
 		return eventualByDate;
 	}
 
-	public LocalDate getActiveByDate() {
+	public LocalDateTime getActiveByDate() {
 		// does not account for same date
-		LocalDate returned;
+		LocalDateTime returned;
 		if (urgentByDate.compareTo(currentByDate) < 0) {
 			returned = urgentByDate;
 		} else {
@@ -63,7 +63,7 @@ public class ActionItem implements Serializable {
 		return returned;
 	}
 
-	public LocalDate getCompletedByDate() {
+	public LocalDateTime getCompletedByDate() {
 		return completedByDate;
 	}
 
@@ -83,15 +83,15 @@ public class ActionItem implements Serializable {
 		priority = newPriority;
 	}
 
-	public void setUrgentByDate(LocalDate newUrgentByDate) {
+	public void setUrgentByDate(LocalDateTime newUrgentByDate) {
 		urgentByDate = newUrgentByDate;
 	}
 
-	public void setCurrentByDate(LocalDate newCurrentByDate) {
+	public void setCurrentByDate(LocalDateTime newCurrentByDate) {
 		currentByDate = newCurrentByDate;
 	}
 
-	public void setEventualByDate(LocalDate newEventualByDate) {
+	public void setEventualByDate(LocalDateTime newEventualByDate) {
 		eventualByDate = newEventualByDate;
 	}
 
@@ -99,7 +99,7 @@ public class ActionItem implements Serializable {
 		comment = newComment;
 	}
 
-	public void setCompletedByDate(LocalDate completedByDate) {
+	public void setCompletedByDate(LocalDateTime completedByDate) {
 		this.completedByDate = completedByDate;
 	}
 
@@ -108,7 +108,7 @@ public class ActionItem implements Serializable {
 	}
 
 	public void updatePriority() {
-		LocalDate current = LocalDate.now();
+		LocalDateTime current = LocalDateTime.now();
 		if (current.compareTo(urgentByDate) < 0) {
 			priority = Priority.URGENT;
 		} else if (current.compareTo(currentByDate) < 0) {
@@ -118,14 +118,14 @@ public class ActionItem implements Serializable {
 		}
 	}
 
-	public void updateActionItem(String title, Priority priority, LocalDate urgentDate, LocalDate currentDate,
-			LocalDate eventualDate, String comment) {
+	public void updateActionItem(String title, Priority priority, LocalDateTime urgentDate, LocalDateTime currentDate,
+			LocalDateTime eventualDate, String comment) {
 		if (!title.equals(this.title)) {
-			addEventToHistory(new TitleChangeEvent(LocalDate.now(), this.title, title));
+			addEventToHistory(new TitleChangeEvent(LocalDateTime.now(), this.title, title));
 			setTitle(title);
 		}
 		if (priority != this.priority) {
-			addEventToHistory(new PriorityChangeEvent(LocalDate.now(), this.priority, priority));
+			addEventToHistory(new PriorityChangeEvent(LocalDateTime.now(), this.priority, priority));
 			setPriority(priority);
 		}
 		setUrgentByDate(urgentDate);
@@ -137,7 +137,7 @@ public class ActionItem implements Serializable {
 				type = CommentChangeEvent.DELETE;
 			else if (this.comment.equals(""))
 				type = CommentChangeEvent.ADD;
-			addEventToHistory(new CommentChangeEvent(LocalDate.now(), type, comment));
+			addEventToHistory(new CommentChangeEvent(LocalDateTime.now(), type, comment));
 			setComment(comment);
 		}
 	}

@@ -1,6 +1,6 @@
 package backend;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CommentChangeEvent extends HistoryEvent {
 
@@ -10,7 +10,7 @@ public class CommentChangeEvent extends HistoryEvent {
 	private int eventType;
 	private String comment;
 
-	CommentChangeEvent(LocalDate dateTime, int cceType, String comment) {
+	CommentChangeEvent(LocalDateTime dateTime, int cceType, String comment) {
 		super(dateTime, HistoryEvent.COMMENT_CHANGE);
 		this.eventType = cceType;
 		this.comment = comment;

@@ -1,13 +1,13 @@
 package backend;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TitleChangeEvent extends HistoryEvent{
 	
 	private String oldTitle;
 	private String newTitle;
 	
-	TitleChangeEvent(LocalDate dateTime, String oldTitle, String newTitle){
+	TitleChangeEvent(LocalDateTime dateTime, String oldTitle, String newTitle){
 		super(dateTime, HistoryEvent.TITLE_CHANGE);
 		this.oldTitle = oldTitle;
 		this.newTitle = newTitle;

@@ -1,6 +1,6 @@
 package backend;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.json.JSONPropertyName;
 
@@ -11,9 +11,9 @@ public abstract class HistoryEvent {
 	
 	private int type;
 	
-	private LocalDate dateTime;
+	private LocalDateTime dateTime;
 
-	HistoryEvent(LocalDate time, int type) {
+	HistoryEvent(LocalDateTime time, int type) {
 		this.type = type;
 		dateTime = time;
 	}
@@ -22,7 +22,7 @@ public abstract class HistoryEvent {
 		return type;
 	}
 
-	public LocalDate getDateTime() {
+	public LocalDateTime getDateTime() {
 		return dateTime;
 	}
 
