@@ -1,14 +1,15 @@
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -20,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.AbstractBorder;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 import backend.ActionItem;
 import backend.FontLoader;
@@ -35,44 +34,46 @@ public class ClosedActionItemsScreen extends JPanel {
 	 * Instance variables
 	 */
 	private JLabel pageTitle;
-	private JPanel ItemList;
 	private JScrollPane scrollPane;
-	private List<ActionItem> completedActionItems;
+	private HashMap<String, ArrayList<ActionItemEntry>> dates = new HashMap<String,  ArrayList<ActionItemEntry>>();
 	// private JLabel dates;
 
-
 	ClosedActionItemsScreen() {
-		
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		pageTitle = new JLabel("Closed Action Items");
 		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
-		scrollPane = new JScrollPane();
-		ItemList = new JPanel();
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		/*
-		 * page title
-		 */
+		pageTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(pageTitle);
-		//this.add(scrollPane);
-		
-		
-		
-	
+//		scrollPane = new JScrollPane(this);
+//		scrollPane.setPreferredSize(new Dimension(250, 80));
+//		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
+
+		this.add(Box.createRigidArea(new Dimension(0, 50)));
+		SampleToDoList test = new SampleToDoList();
+		for (int i = test.getNumCompleteItems() - 1; i >= 0; i--) {
+			LocalDate currDate = test.getCompleteItemAtIndex(i).getCompletedByDate();
+			dates.add("" + Capitalize(currDate.getDayOfWeek().toString().toLowerCase()) + ", "
+					+ currDate.getDayOfMonth() + " " + Capitalize(currDate.getMonth().toString().toLowerCase()) + " "
+					+ currDate.getYear(), new ActionItemEntry(test.getCompleteItemAtIndex(i)));
+		}
+		// this.add(scrollPane);
+
+	}
+
+	private String Capitalize(String old) {
+		return old.substring(0, 1).toUpperCase() + old.substring(1);
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.decode("#56997F"));	
+		g2d.setColor(Color.decode("#56997F"));
 		g2d.fillRect(50, 100, 250, 10);
-		SampleToDoList test = new SampleToDoList();
-		completedActionItems = test.getCompleteItems();
-		for(int i = completedActionItems.size()-1; i >= 0; i--) {
-			this.add(new ActionItemEntry(completedActionItems.get(i)));
-		}
+
 	}
 
 	public void actionPeformed() {
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -83,5 +84,6 @@ public class ClosedActionItemsScreen extends JPanel {
 		frame.pack();
 		frame.setVisible(true);
 		screen.repaint();
+
 	}
 }
