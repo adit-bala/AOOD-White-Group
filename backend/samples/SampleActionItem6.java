@@ -1,6 +1,6 @@
 package backend.samples;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import backend.ActionItem;
 import backend.Priority;
@@ -13,8 +13,8 @@ public class SampleActionItem6 extends ActionItem {
 				"Nunc a tristique nulla, nec porta urna. Maecenas nec tortor lobortis neque lacinia sodales vel iaculis elit. In tristique molestie.");
 	}
 	
-	public LocalDate getCompletedByDate() {
-		return LocalDate.now();
+	public LocalDateTime getCompletedByDate() {
+		return LocalDateTime.now();
 	}	
 	
 }
