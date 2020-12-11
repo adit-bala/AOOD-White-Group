@@ -1,10 +1,11 @@
 package backend;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import org.json.JSONPropertyName;
+//import org.json.JSONPropertyName;
 
-public abstract class HistoryEvent {
+public abstract class HistoryEvent implements Serializable {
 	public static final int TITLE_CHANGE = 0;
 	public static final int PRIORITY_CHANGE = 1;
 	public static final int COMMENT_CHANGE = 2;
@@ -26,7 +27,7 @@ public abstract class HistoryEvent {
 		return dateTime;
 	}
 
-	@JSONPropertyName("label")
+	//@JSONPropertyName("label")
 	public abstract String label();
 
 }
