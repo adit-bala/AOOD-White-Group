@@ -73,6 +73,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		actionItem = item;
 		events = actionItem.getHistory();
 		this.setBackground(Color.WHITE);
+		/*
 		for (int i=0; i < item.getHistory().size(); i++) {
 			if (((HistoryEvent) item.getHistory().get(i)).getType() == HistoryEvent.TITLE_CHANGE) {
 				numberOfTitleChanges++;
@@ -85,6 +86,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 				commentChangeEvents.add((HistoryEvent) item.getHistory().get(i));
 			}
 		}
+		*/
 		/*
 		 * title
 		 */
@@ -132,14 +134,14 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime.setSize(964,50);
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy hh:mm:ss");
-			eventTime.setText(events.get(i).getDateTime().format(formatter));
+			eventTime.setText(events.get(events.size()-1-i).getDateTime().format(formatter));
 			eventTime.setBounds(0,0,964,20);
 			
 			eventDescriptionPanel = new JPanel();
 			eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
 			eventDescription.setSize(964,50);
-			eventDescription.setText(events.get(i).label());
+			eventDescription.setText(events.get(events.size()-1-i).label());
 			
 			eventDescriptionPanel.setForeground(Color.decode("#e8e8e8"));
 			eventDescriptionPanel.setBounds(0,20,964,80);
