@@ -18,6 +18,9 @@ class ActionItemEntry extends JPanel
 	// private ActionItem item;
 	private JLabel label;
 	private ActionItem item;
+	private int index;
+	private ActionItemEntry prevItemEntry;
+	private ActionItemEntry nextItemEntry;
 	protected static DataFlavor actionFlavor = new DataFlavor(
 			ActionItemEntry.class, "Action Item Entry");
 	protected static DataFlavor[] supportedFlavors = { actionFlavor };
@@ -26,11 +29,35 @@ class ActionItemEntry extends JPanel
 		this.item = item;
 		this.initItem(item.getTitle(), item.getPriority());
 	}
+	
+	public void setIndex(int i) {
+		this.index = i;
+	}
+	
+	public int getIndex() {
+		return this.index;
+	}
 
 	public ActionItem getActionItem() {
 		return this.item;
 	}
+	
+	public void setPrev(ActionItemEntry item) {
+		this.prevItemEntry = item;
+	}
 
+	public void setNext(ActionItemEntry item) {
+		this.nextItemEntry = item;
+	}
+	
+	public ActionItemEntry getPrev() {
+		return this.prevItemEntry;
+	}
+	
+	public ActionItemEntry getNext() {
+		return this.nextItemEntry;
+	}
+	
 	public String toString() {
 		return item.getTitle();
 	}

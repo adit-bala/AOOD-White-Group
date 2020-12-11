@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
@@ -44,7 +45,7 @@ class MainScreen extends JPanel implements ActionListener{
 	private JScrollPane scrollPane;
 	private JPanel itemPanel;
 	private List<DefaultListModel<ActionItemEntry>> itemLists;
-	private ActionItemEntry[] items;
+	private ArrayList<ActionItemEntry> items;
 	private ToDoList userList;
 	private JTextField NewActionItem;
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
@@ -95,7 +96,7 @@ class MainScreen extends JPanel implements ActionListener{
 		titlePanel.add(pageTitle);
 		titlePanel.add(underline);
 		this.add(titlePanel);
-		makeItemList();
+		initItemList();
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
@@ -114,11 +115,6 @@ class MainScreen extends JPanel implements ActionListener{
 		NewActionItem.setMaximumSize(new Dimension(9999, 100));
 		NewActionItem.addActionListener(this);
 		this.add(NewActionItem);
-		ActionItem item = new ActionItem();
-		item.setTitle("Bruh");
-		item.setPriority(Priority.URGENT);
-		//itemPanel.add(new ActionItemEntry(item));
-		//itemPanel.add(new ActionItemEntry(item));
 	}
 	private void setActionItemScreen(ActionItem item) {
 		frame.setContentPane(new EditActionItemScreen(item));
@@ -143,11 +139,11 @@ class MainScreen extends JPanel implements ActionListener{
 			inactive[i] = new ActionItem();
 			inactive[i].setPriority(Priority.INACTIVE);
 			inactive[i].setTitle("Inactive Action Item");
-			inactive[i].setEventualByDate(LocalDate.now().plusDays(2));
+			inactive[i].setEventualByDate(LocalDateTime.now().plusDays(2));
 			inactive2[i] = new ActionItem();
 			inactive2[i].setPriority(Priority.INACTIVE);
 			inactive2[i].setTitle("Other Inactive Action Item");
-			inactive2[i].setEventualByDate(LocalDate.now().plusDays(4));
+			inactive2[i].setEventualByDate(LocalDateTime.now().plusDays(4));
 			userList.addActionItem(urgent[i]);
 			userList.addActionItem(current[i]);
 			userList.addActionItem(inactive[i]);
@@ -169,12 +165,12 @@ class MainScreen extends JPanel implements ActionListener{
 	        }   
 	    }
 	 
-	private void makeItemList() {
-		items = new ActionItemEntry[userList.getNumIncompleteItems()];
+	private void initItemList() { // only call first time
+		items = new ArrayList<ActionItemEntry>();
 		for (int i=0;i<userList.getNumIncompleteItems();i++) {
-			items[i] = makeEntry(userList.getIncompleteItemAtIndex(i));
+			items.add(makeEntry(userList.getIncompleteItemAtIndex(i)));
 		}
-		Arrays.sort(items, new Comparator<ActionItemEntry>() {
+		Collections.sort(items, new Comparator<ActionItemEntry>() {
 			@Override
 		    public int compare(ActionItemEntry o1, ActionItemEntry o2) {
 				ActionItem item1 = o1.getActionItem();
@@ -185,9 +181,9 @@ class MainScreen extends JPanel implements ActionListener{
 		    }
 		});
 	}
-	private void renderItemList(ActionItemEntry[] items) {
+	private void renderItemList(List<ActionItemEntry> listItems) {
 		DefaultListModel<ActionItemEntry> actionItemEntries = new DefaultListModel<ActionItemEntry>();
-		for (ActionItemEntry entry : items)
+		for (ActionItemEntry entry : listItems)
 			actionItemEntries.addElement(entry);
 		itemLists.add(actionItemEntries);
 		JList<ActionItemEntry> list = new JList<ActionItemEntry>(actionItemEntries) {
@@ -235,7 +231,14 @@ class MainScreen extends JPanel implements ActionListener{
 	            @Override
 	            public void exportDone(JComponent comp, Transferable trans, int action) {
 	            	if (action == MOVE) {
+	            		//System.out.println("Successful");
 	            		actionItemEntries.remove(actionItemEntries.indexOf(transferItem));
+	            		if (actionItemEntries.size() == 0) {
+	            			if (Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent()) != 0) {
+		            			itemPanel.remove(Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent())-1);
+		            			itemPanel.remove(list.getParent());
+	            			}
+	            		}
 	            	}
 	            }
 
@@ -247,46 +250,57 @@ class MainScreen extends JPanel implements ActionListener{
 	            @Override
 	            public boolean importData(TransferHandler.TransferSupport support) {
 	                try {
-	                    ActionItemEntry item = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
+	                    ActionItemEntry itemEntry = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
 	                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-	                    int index = dl.getIndex();
-	                    actionItemEntries.add(index, item);
-	                    Priority itemPriority = item.getActionItem().getPriority();
-	                    if (index > 0) {
-	                    	ActionItemEntry prev = actionItemEntries.get(index-1);
+	                    items.remove(itemEntry.getIndex());
+	                    updateAllIndexes();
+	                    int dropIndex = dl.getIndex();
+	                    actionItemEntries.add(dropIndex, itemEntry);
+	                    if (dropIndex < actionItemEntries.size()-1) {
+	                    	items.add(actionItemEntries.get(dropIndex+1).getIndex(), itemEntry);
+	                    }
+	                    else if (dropIndex > 0) {
+	                    	items.add(actionItemEntries.get(dropIndex-1).getIndex()+1, itemEntry);
+	                    }
+	                    updateAllIndexes();
+	                    ActionItem item = items.get(itemEntry.getIndex()).getActionItem();
+	                    Priority itemPriority = item.getPriority();
+	                    ActionItemEntry prev = itemEntry.getPrev();
+	                    ActionItemEntry next = itemEntry.getNext();
+	                    if (dropIndex > 0) {
 	                    	Priority prevPriority = prev.getActionItem().getPriority();
-	                    	LocalDate prevEventualByDate = prev.getActionItem().getEventualByDate();
 	                    	if (prevPriority.compareTo(itemPriority) > 0) {
-	                    		item.getActionItem().setPriority(prevPriority);
-	                    		if (prevPriority == Priority.INACTIVE)
-	                    			item.getActionItem().setEventualByDate(prevEventualByDate);
+	                    		updateActionItemPriority(itemEntry, prevPriority);
 	                    	}
 	                    } else {
 	                    	if (itemPriority != Priority.INACTIVE) {
-	                    		if (index < actionItemEntries.size()-1 &&  actionItemEntries.get(index+1).getActionItem().getPriority() == Priority.INACTIVE) {
-	                    			item.getActionItem().setPriority(actionItemEntries.get(index+1).getActionItem().getPriority());
-	                    			item.getActionItem().setEventualByDate(actionItemEntries.get(index+1).getActionItem().getEventualByDate());
+	                    		if (dropIndex < actionItemEntries.size()-1 && next.getActionItem().getPriority() == Priority.INACTIVE) {
+	                    			updateActionItemPriority(itemEntry, next.getActionItem().getPriority());
 	                    		}
 	                    	}
 	                    }
-	                    if (index < actionItemEntries.size() - 1) {
-	                    	ActionItemEntry next = actionItemEntries.get(index+1);
+	                    if (dropIndex < actionItemEntries.size() - 1) {
 	                    	Priority nextPriority = next.getActionItem().getPriority();
-	                    	LocalDate nextEventualByDate = next.getActionItem().getEventualByDate();
-	                    	if (nextPriority.compareTo(itemPriority) < 0)
-	                    		item.getActionItem().setPriority(nextPriority);
-	                    	if (item.getActionItem().getPriority() == Priority.INACTIVE && nextPriority == Priority.INACTIVE)
-	                    		item.getActionItem().setEventualByDate(nextEventualByDate);
+	                    	if (nextPriority.compareTo(itemPriority) < 0) {
+	                    		updateActionItemPriority(itemEntry, nextPriority);
+	                    	}
 	                    	
 	                    } else {
 	                    	if (itemPriority == Priority.INACTIVE) {
-	                    		if (index > 0 &&  actionItemEntries.get(index-1).getActionItem().getPriority() != Priority.INACTIVE)
-	                    			item.getActionItem().setPriority(actionItemEntries.get(index-1).getActionItem().getPriority());
-	                    		else if (index == 0)
-	                    			item.getActionItem().setPriority(Priority.EVENTUAL);
+	                    		if (dropIndex > 0 && prev.getActionItem().getPriority() != Priority.INACTIVE)
+	                    			updateActionItemPriority(itemEntry, prev.getActionItem().getPriority());
+	                    		else if (dropIndex == 0)
+	                    			updateActionItemPriority(itemEntry, Priority.EVENTUAL);
 	                    	}
 	                    }
-	                    updateActionItem(item.getActionItem());
+	                    if (item.getPriority() == Priority.INACTIVE) {
+	                    	if (dropIndex > 0) {
+	                    		item.setEventualByDate(prev.getActionItem().getEventualByDate());
+	                    	} else if (dropIndex < actionItemEntries.size()-1) {
+	                    		item.setEventualByDate(next.getActionItem().getEventualByDate());
+	                    	}
+	                    	itemEntry.getActionItem().setEventualByDate(item.getEventualByDate());
+	                    }
 	                    return true;
 	                } catch (UnsupportedFlavorException | IOException e) {
 	                    e.printStackTrace();
@@ -299,10 +313,27 @@ class MainScreen extends JPanel implements ActionListener{
 			p.add(list);
 			itemPanel.add(p);
 		}
-	private void updateActionItem(ActionItem item) {
-		item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+	private void updateAllIndexes() {
+		for (int i=0;i<items.size();i++) {
+			items.get(i).setIndex(i);
+			if (i > 0)
+				items.get(i).setPrev(items.get(i-1));
+			else
+				items.get(i).setPrev(null);
+			if (i < items.size()-1)
+				items.get(i).setNext(items.get(i+1));
+			else
+				items.get(i).setNext(null);
+		}
 	}
-	private JPanel makeDateLabel(LocalDate d) {
+	private void updateActionItemPriority(ActionItemEntry itemEntry, Priority p) {
+		ActionItem item = itemEntry.getActionItem();
+		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+		item = items.get(itemEntry.getIndex()).getActionItem();
+		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+	}
+
+	private JPanel makeDateLabel(LocalDateTime d) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(Color.white);
@@ -323,41 +354,58 @@ class MainScreen extends JPanel implements ActionListener{
 		itemPanel = new JPanel();
 		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 		itemPanel.setBackground(Color.WHITE);
-		for (int i=0;i<items.length;i++) {
-			Priority currPriority = items[i].getActionItem().getPriority();
-			LocalDate currDate = items[i].getActionItem().getEventualByDate();
+		updateAllIndexes();
+		for (int i=0;i<items.size();i++) {
+			Priority currPriority = items.get(i).getActionItem().getPriority();
+			LocalDateTime currDate = items.get(i).getActionItem().getEventualByDate();
 			if (i > 0) {
-				Priority prevPriority = items[i-1].getActionItem().getPriority();
-				LocalDate prevDate = items[i-1].getActionItem().getEventualByDate();
+				Priority prevPriority = items.get(i-1).getActionItem().getPriority();
+				LocalDateTime prevDate = items.get(i-1).getActionItem().getEventualByDate();
 				if (currPriority == Priority.INACTIVE) {
 					if (prevPriority != Priority.INACTIVE) {
-						renderItemList(Arrays.copyOfRange(items, start, i));
+						renderItemList(items.subList(start, i));
 						start = i;
 					} else if (!prevDate.toString().equals(currDate.toString())) {
 						itemPanel.add(makeDateLabel(prevDate));
-						renderItemList(Arrays.copyOfRange(items, start, i));
+						renderItemList(items.subList(start, i));
 						start = i;
 					}
 				}
 			}
 		}
-		if (items[start].getActionItem().getPriority() == Priority.INACTIVE)
-			itemPanel.add(makeDateLabel(items[start].getActionItem().getEventualByDate()));
-		renderItemList(Arrays.copyOfRange(items, start, items.length));
+		if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE)
+			itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
+		renderItemList(items.subList(start, items.size()));
 	}
 
 	private ActionItemEntry makeEntry(ActionItem item) {
 		ActionItemEntry entry = new ActionItemEntry(item);
 		return entry;
 	}
-	public void moveItem(ActionItem item) {
-		
-	}
-	public void priorityChange() {
-		
-	}
 	
 	public void actionPerformed(ActionEvent event) {
+		ActionItem test = new ActionItem();
+		test.setTitle(NewActionItem.getText());
+		test.setPriority(Priority.URGENT);
+		//test.setUrgentByDate(LocalDateTime.now());
+		//test.setEventualByDate(LocalDateTime.now());
+		//test.setCurrentByDate(LocalDateTime.now());
+		//test.setCompletedByDate(LocalDateTime.now());
+		test.setComment("comment");
+		userList.addActionItem(test);
+		scrollPane.getViewport().remove(itemPanel);
+		boolean added = false;
+		for (int i=0;i<items.size();i++) {
+			if (!added && items.get(i).getActionItem().getPriority().compareTo(test.getPriority()) >= 0) {
+				items.add(i, makeEntry(test));
+				added = true;
+			}
+		}
+		if (!added)
+			items.add(makeEntry(test));
+		renderAllItemLists();
+		scrollPane.getViewport().add(itemPanel);
+		frame.revalidate();
 	}
 	/*
 	public List<ActionItem> orderByDate {
