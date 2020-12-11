@@ -1,12 +1,12 @@
 package backend;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PriorityChangeEvent extends HistoryEvent {
 	private Priority oldPriority;
 	private Priority newPriority;
 
-	PriorityChangeEvent(LocalDate dateTime, Priority oldPriority,
+	PriorityChangeEvent(LocalDateTime dateTime, Priority oldPriority,
 			Priority newPriority) {
 		super(dateTime, HistoryEvent.PRIORITY_CHANGE);
 		this.oldPriority = oldPriority;

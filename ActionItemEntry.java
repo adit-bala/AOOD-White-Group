@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -12,51 +13,83 @@ import javax.swing.border.CompoundBorder;
 import backend.ActionItem;
 import backend.Priority;
 
-class ActionItemEntry extends JLabel
+class ActionItemEntry extends JPanel
 		implements ListCellRenderer<Object>, Transferable {
 	// private ActionItem item;
-	private JPanel panel;
+	private JLabel label;
 	private ActionItem item;
+	private int index;
+	private ActionItemEntry prevItemEntry;
+	private ActionItemEntry nextItemEntry;
 	protected static DataFlavor actionFlavor = new DataFlavor(
 			ActionItemEntry.class, "Action Item Entry");
 	protected static DataFlavor[] supportedFlavors = { actionFlavor };
 
 	ActionItemEntry(ActionItem item) {
-		setOpaque(true);
 		this.item = item;
-		this.panel = new JPanel();
+		this.initItem(item.getTitle(), item.getPriority());
+	}
+	
+	public void setIndex(int i) {
+		this.index = i;
+	}
+	
+	public int getIndex() {
+		return this.index;
 	}
 
 	public ActionItem getActionItem() {
 		return this.item;
 	}
+	
+	public void setPrev(ActionItemEntry item) {
+		this.prevItemEntry = item;
+	}
 
+	public void setNext(ActionItemEntry item) {
+		this.nextItemEntry = item;
+	}
+	
+	public ActionItemEntry getPrev() {
+		return this.prevItemEntry;
+	}
+	
+	public ActionItemEntry getNext() {
+		return this.nextItemEntry;
+	}
+	
 	public String toString() {
 		return item.getTitle();
 	}
 
 	public Component getListCellRendererComponent(JList<?> list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		panel.removeAll();
-		panel.setLayout(new BorderLayout());
-		panel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5), BorderFactory.createLineBorder(new Color(230, 230, 230), 15, true)));
-		panel.setBackground(Color.white);
-		this.setText(value.toString());	
-		Priority p = ((ActionItemEntry) value).getActionItem().getPriority();
+		initItem(value.toString(), ((ActionItemEntry) value).getActionItem().getPriority());
+		return this;
+	}
+	
+	private void initItem(String s, Priority p) {
+		this.removeAll();
+		this.setLayout(new BorderLayout());
+		this.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5), BorderFactory.createLineBorder(new Color(230, 230, 230), 15, true)));
+		this.setBackground(Color.white);
+		this.setMaximumSize(new Dimension(9999, 70));
+		label = new JLabel();
+		label.setText(s);	
 		if (p == Priority.URGENT)
-			this.setFont(MainScreen.BOLD_FONT);
+			label.setFont(MainScreen.BOLD_FONT);
 		else if (p == Priority.INACTIVE)
-			this.setFont(MainScreen.ITALIC_FONT);
+			label.setFont(MainScreen.ITALIC_FONT);
 		else if (p == Priority.EVENTUAL)
-			this.setFont(MainScreen.LIGHT_ITALIC_FONT);
+			label.setFont(MainScreen.LIGHT_ITALIC_FONT);
 		else
-			this.setFont(MainScreen.NORMAL_FONT);
-		this.setForeground(Color.decode("#134D37"));
-		this.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 300));
-		this.setBackground(new Color(230, 230, 230));
-		this.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(this);
-		return panel;
+			label.setFont(MainScreen.NORMAL_FONT);
+		label.setForeground(Color.decode("#134D37"));
+		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 300));
+		label.setOpaque(true);
+		label.setBackground(new Color(230, 230, 230));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		this.add(label);
 	}
 
 	@Override

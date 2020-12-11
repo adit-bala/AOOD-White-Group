@@ -1,11 +1,15 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
@@ -13,10 +17,12 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+
 //import ClosedActionItemsScreen.CustomBorder;
 import backend.ActionItem;
 import backend.Priority;
 import backend.ToDoList;
+import backend.samples.SampleToDoList;
 import backend.FontLoader;
 
 import java.awt.BasicStroke;
@@ -33,22 +39,22 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Dimension;
 
-class MainScreen extends JPanel {
+class MainScreen extends JPanel implements ActionListener{
 	private JFrame frame;
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
 	private JPanel itemPanel;
 	private List<DefaultListModel<ActionItemEntry>> itemLists;
-	private ActionItemEntry[] items;
+	private ArrayList<ActionItemEntry> items;
 	private ToDoList userList;
 	private JTextField NewActionItem;
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 100);
-	public static final Font HEADING_FONT = FontLoader.loadFont("src/fonts/EBGaramond-ExtraBold.ttf", 30);
-	public static final Font BOLD_FONT = FontLoader.loadFont("src/fonts/Chivo-Bold.ttf", 15);
-	public static final Font NORMAL_FONT = FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 15);
-	public static final Font ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-Italic.ttf", 15);
-	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/fonts/Chivo-LightItalic.ttf", 15);
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font HEADING_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
+	public static final Font BOLD_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 15);
+	public static final Font NORMAL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 15);
+	public static final Font ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 15);
+	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 15);
 	private MouseListener mouseListener = new MouseAdapter() {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -74,7 +80,7 @@ class MainScreen extends JPanel {
 	};
 	MainScreen(JFrame frame) {
 		this.frame = frame;
-		userList = new ToDoList(); // where does this come from ?
+		userList = new SampleToDoList(); // where does this come from ?
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -90,22 +96,24 @@ class MainScreen extends JPanel {
 		titlePanel.add(pageTitle);
 		titlePanel.add(underline);
 		this.add(titlePanel);
-		makeItemList();
+		initItemList();
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
-		this.setPreferredSize(new Dimension(1024, 1366));
+		// this.setPreferredSize(new Dimension(1024, 1366)); height too big for most laptop screens so won't be proportional
 		this.add(scrollPane);
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
 		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
-		NewActionItem.setFont(new Font("Chivo Regular", Font.PLAIN, 14));
+		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 14));
 		NewActionItem.setBackground(Color.white);
 		NewActionItem.setForeground(Color.gray.brighter());
 		NewActionItem.setColumns(30);
 		NewActionItem.setBorder(BorderFactory.createCompoundBorder(
                 new CustomBorder(), 
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
+		NewActionItem.setMaximumSize(new Dimension(9999, 100));
+		NewActionItem.addActionListener(this);
 		this.add(NewActionItem);
 	}
 	private void setActionItemScreen(ActionItem item) {
@@ -131,11 +139,11 @@ class MainScreen extends JPanel {
 			inactive[i] = new ActionItem();
 			inactive[i].setPriority(Priority.INACTIVE);
 			inactive[i].setTitle("Inactive Action Item");
-			inactive[i].setEventualByDate(LocalDate.now().plusDays(2));
+			inactive[i].setEventualByDate(LocalDateTime.now().plusDays(2));
 			inactive2[i] = new ActionItem();
 			inactive2[i].setPriority(Priority.INACTIVE);
 			inactive2[i].setTitle("Other Inactive Action Item");
-			inactive2[i].setEventualByDate(LocalDate.now().plusDays(4));
+			inactive2[i].setEventualByDate(LocalDateTime.now().plusDays(4));
 			userList.addActionItem(urgent[i]);
 			userList.addActionItem(current[i]);
 			userList.addActionItem(inactive[i]);
@@ -157,13 +165,12 @@ class MainScreen extends JPanel {
 	        }   
 	    }
 	 
-	private void makeItemList() {
-		// changed this a little because the methods are different by Ms. Gerb request -Tyler
-		items = new ActionItemEntry[userList.getIncompleteItems().size()];
-		for (int i=0;i<userList.getIncompleteItems().size();i++) {
-			items[i] = makeEntry(userList.getIncompleteItems().get(i));
+	private void initItemList() { // only call first time
+		items = new ArrayList<ActionItemEntry>();
+		for (int i=0;i<userList.getNumIncompleteItems();i++) {
+			items.add(makeEntry(userList.getIncompleteItemAtIndex(i)));
 		}
-		Arrays.sort(items, new Comparator<ActionItemEntry>() {
+		Collections.sort(items, new Comparator<ActionItemEntry>() {
 			@Override
 		    public int compare(ActionItemEntry o1, ActionItemEntry o2) {
 				ActionItem item1 = o1.getActionItem();
@@ -174,9 +181,9 @@ class MainScreen extends JPanel {
 		    }
 		});
 	}
-	private void renderItemList(ActionItemEntry[] items) {
+	private void renderItemList(List<ActionItemEntry> listItems) {
 		DefaultListModel<ActionItemEntry> actionItemEntries = new DefaultListModel<ActionItemEntry>();
-		for (ActionItemEntry entry : items)
+		for (ActionItemEntry entry : listItems)
 			actionItemEntries.addElement(entry);
 		itemLists.add(actionItemEntries);
 		JList<ActionItemEntry> list = new JList<ActionItemEntry>(actionItemEntries) {
@@ -224,7 +231,14 @@ class MainScreen extends JPanel {
 	            @Override
 	            public void exportDone(JComponent comp, Transferable trans, int action) {
 	            	if (action == MOVE) {
+	            		//System.out.println("Successful");
 	            		actionItemEntries.remove(actionItemEntries.indexOf(transferItem));
+	            		if (actionItemEntries.size() == 0) {
+	            			if (Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent()) != 0) {
+		            			itemPanel.remove(Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent())-1);
+		            			itemPanel.remove(list.getParent());
+	            			}
+	            		}
 	            	}
 	            }
 
@@ -236,50 +250,61 @@ class MainScreen extends JPanel {
 	            @Override
 	            public boolean importData(TransferHandler.TransferSupport support) {
 	                try {
-	                    ActionItemEntry item = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
+	                    ActionItemEntry itemEntry = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
 	                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-	                    int index = dl.getIndex();
-	                    actionItemEntries.add(index, item);
-	                    Priority itemPriority = item.getActionItem().getPriority();
-	                    if (index > 0) {
-	                    	ActionItemEntry prev = actionItemEntries.get(index-1);
+	                    items.remove(itemEntry.getIndex());
+	                    updateAllIndexes();
+	                    int dropIndex = dl.getIndex();
+	                    actionItemEntries.add(dropIndex, itemEntry);
+	                    if (dropIndex < actionItemEntries.size()-1) {
+	                    	items.add(actionItemEntries.get(dropIndex+1).getIndex(), itemEntry);
+	                    }
+	                    else if (dropIndex > 0) {
+	                    	items.add(actionItemEntries.get(dropIndex-1).getIndex()+1, itemEntry);
+	                    }
+	                    updateAllIndexes();
+	                    ActionItem item = items.get(itemEntry.getIndex()).getActionItem();
+	                    Priority itemPriority = item.getPriority();
+	                    ActionItemEntry prev = itemEntry.getPrev();
+	                    ActionItemEntry next = itemEntry.getNext();
+	                    if (dropIndex > 0) {
 	                    	Priority prevPriority = prev.getActionItem().getPriority();
-	                    	LocalDate prevEventualByDate = prev.getActionItem().getEventualByDate();
 	                    	if (prevPriority.compareTo(itemPriority) > 0) {
-	                    		item.getActionItem().setPriority(prevPriority);
-	                    		if (prevPriority == Priority.INACTIVE)
-	                    			item.getActionItem().setEventualByDate(prevEventualByDate);
+	                    		updateActionItemPriority(itemEntry, prevPriority);
 	                    	}
 	                    } else {
 	                    	if (itemPriority != Priority.INACTIVE) {
-	                    		if (index < actionItemEntries.size()-1 &&  actionItemEntries.get(index+1).getActionItem().getPriority() == Priority.INACTIVE) {
-	                    			item.getActionItem().setPriority(actionItemEntries.get(index+1).getActionItem().getPriority());
-	                    			item.getActionItem().setEventualByDate(actionItemEntries.get(index+1).getActionItem().getEventualByDate());
+	                    		if (dropIndex < actionItemEntries.size()-1 && next.getActionItem().getPriority() == Priority.INACTIVE) {
+	                    			updateActionItemPriority(itemEntry, next.getActionItem().getPriority());
 	                    		}
 	                    	}
 	                    }
-	                    if (index < actionItemEntries.size() - 1) {
-	                    	ActionItemEntry next = actionItemEntries.get(index+1);
+	                    if (dropIndex < actionItemEntries.size() - 1) {
 	                    	Priority nextPriority = next.getActionItem().getPriority();
-	                    	LocalDate nextEventualByDate = next.getActionItem().getEventualByDate();
-	                    	if (nextPriority.compareTo(itemPriority) < 0)
-	                    		item.getActionItem().setPriority(nextPriority);
-	                    	if (item.getActionItem().getPriority() == Priority.INACTIVE && nextPriority == Priority.INACTIVE)
-	                    		item.getActionItem().setEventualByDate(nextEventualByDate);
+	                    	if (nextPriority.compareTo(itemPriority) < 0) {
+	                    		updateActionItemPriority(itemEntry, nextPriority);
+	                    	}
 	                    	
 	                    } else {
 	                    	if (itemPriority == Priority.INACTIVE) {
-	                    		if (index > 0 &&  actionItemEntries.get(index-1).getActionItem().getPriority() != Priority.INACTIVE)
-	                    			item.getActionItem().setPriority(actionItemEntries.get(index-1).getActionItem().getPriority());
-	                    		else if (index == 0)
-	                    			item.getActionItem().setPriority(Priority.EVENTUAL);
+	                    		if (dropIndex > 0 && prev.getActionItem().getPriority() != Priority.INACTIVE)
+	                    			updateActionItemPriority(itemEntry, prev.getActionItem().getPriority());
+	                    		else if (dropIndex == 0)
+	                    			updateActionItemPriority(itemEntry, Priority.EVENTUAL);
 	                    	}
+	                    }
+	                    if (item.getPriority() == Priority.INACTIVE) {
+	                    	if (dropIndex > 0) {
+	                    		item.setEventualByDate(prev.getActionItem().getEventualByDate());
+	                    	} else if (dropIndex < actionItemEntries.size()-1) {
+	                    		item.setEventualByDate(next.getActionItem().getEventualByDate());
+	                    	}
+	                    	itemEntry.getActionItem().setEventualByDate(item.getEventualByDate());
 	                    }
 	                    return true;
 	                } catch (UnsupportedFlavorException | IOException e) {
 	                    e.printStackTrace();
 	                }
-
 	                return false;
 	            }
 	        });
@@ -288,7 +313,27 @@ class MainScreen extends JPanel {
 			p.add(list);
 			itemPanel.add(p);
 		}
-	private JPanel makeDateLabel(LocalDate d) {
+	private void updateAllIndexes() {
+		for (int i=0;i<items.size();i++) {
+			items.get(i).setIndex(i);
+			if (i > 0)
+				items.get(i).setPrev(items.get(i-1));
+			else
+				items.get(i).setPrev(null);
+			if (i < items.size()-1)
+				items.get(i).setNext(items.get(i+1));
+			else
+				items.get(i).setNext(null);
+		}
+	}
+	private void updateActionItemPriority(ActionItemEntry itemEntry, Priority p) {
+		ActionItem item = itemEntry.getActionItem();
+		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+		item = items.get(itemEntry.getIndex()).getActionItem();
+		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+	}
+
+	private JPanel makeDateLabel(LocalDateTime d) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(Color.white);
@@ -309,38 +354,58 @@ class MainScreen extends JPanel {
 		itemPanel = new JPanel();
 		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 		itemPanel.setBackground(Color.WHITE);
-		for (int i=0;i<items.length;i++) {
-			Priority currPriority = items[i].getActionItem().getPriority();
-			LocalDate currDate = items[i].getActionItem().getEventualByDate();
+		updateAllIndexes();
+		for (int i=0;i<items.size();i++) {
+			Priority currPriority = items.get(i).getActionItem().getPriority();
+			LocalDateTime currDate = items.get(i).getActionItem().getEventualByDate();
 			if (i > 0) {
-				Priority prevPriority = items[i-1].getActionItem().getPriority();
-				LocalDate prevDate = items[i-1].getActionItem().getEventualByDate();
+				Priority prevPriority = items.get(i-1).getActionItem().getPriority();
+				LocalDateTime prevDate = items.get(i-1).getActionItem().getEventualByDate();
 				if (currPriority == Priority.INACTIVE) {
 					if (prevPriority != Priority.INACTIVE) {
-						renderItemList(Arrays.copyOfRange(items, start, i));
+						renderItemList(items.subList(start, i));
 						start = i;
 					} else if (!prevDate.toString().equals(currDate.toString())) {
 						itemPanel.add(makeDateLabel(prevDate));
-						renderItemList(Arrays.copyOfRange(items, start, i));
+						renderItemList(items.subList(start, i));
 						start = i;
 					}
 				}
 			}
 		}
-		if (items[start].getActionItem().getPriority() == Priority.INACTIVE)
-			itemPanel.add(makeDateLabel(items[start].getActionItem().getEventualByDate()));
-		renderItemList(Arrays.copyOfRange(items, start, items.length));
+		if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE)
+			itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
+		renderItemList(items.subList(start, items.size()));
 	}
 
 	private ActionItemEntry makeEntry(ActionItem item) {
 		ActionItemEntry entry = new ActionItemEntry(item);
 		return entry;
 	}
-	public void moveItem(ActionItem item) {
-		
-	}
-	public void priorityChange() {
-		
+	
+	public void actionPerformed(ActionEvent event) {
+		ActionItem test = new ActionItem();
+		test.setTitle(NewActionItem.getText());
+		test.setPriority(Priority.URGENT);
+		//test.setUrgentByDate(LocalDateTime.now());
+		//test.setEventualByDate(LocalDateTime.now());
+		//test.setCurrentByDate(LocalDateTime.now());
+		//test.setCompletedByDate(LocalDateTime.now());
+		test.setComment("comment");
+		userList.addActionItem(test);
+		scrollPane.getViewport().remove(itemPanel);
+		boolean added = false;
+		for (int i=0;i<items.size();i++) {
+			if (!added && items.get(i).getActionItem().getPriority().compareTo(test.getPriority()) >= 0) {
+				items.add(i, makeEntry(test));
+				added = true;
+			}
+		}
+		if (!added)
+			items.add(makeEntry(test));
+		renderAllItemLists();
+		scrollPane.getViewport().add(itemPanel);
+		frame.revalidate();
 	}
 	/*
 	public List<ActionItem> orderByDate {
