@@ -133,7 +133,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setSize(964,50);
 
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy hh:mm:ss");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd yyyy hh:mm:ss");
 			eventTime.setText(events.get(events.size()-1-i).getDateTime().format(formatter));
 			eventTime.setBounds(0,0,964,20);
 			
