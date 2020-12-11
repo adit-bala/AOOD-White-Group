@@ -72,6 +72,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	int numberOfPriorityChanges = 0;
 	int numberOfComments = 0;
 	private JPanel eventPanel;
+	private JPanel eventDescriptionPanel;
 	private JLabel eventDescription;
 	private JLabel eventTime;
 	private ActionItem actionItem;
@@ -119,7 +120,11 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		historyPanel.setLayout(new GridLayout(0,1,0,0));
 		
 		historyScroll = new JScrollPane(historyPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		historyScroll.setBounds(30,145,954,1100);
+		if (events.size() < 10) {
+			historyScroll.setBounds(30,145,954,110*events.size());
+		} else {
+			historyScroll.setBounds(30,145,954,1100);
+		}
 
 		addEvents();
 		add(historyScroll);	
@@ -138,18 +143,23 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime = new JLabel();
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setSize(964,50);
-			eventTime.setText(events.get(i).getDateTime().toString());
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy hh:mm:ss");
+			eventTime.setText(events.get(i).getDateTime().format(formatter));
 			eventTime.setBounds(0,0,964,20);
 			
+			eventDescriptionPanel = new JPanel();
 			eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
 			eventDescription.setSize(964,50);
 			eventDescription.setText(events.get(i).label());
 			
-			eventDescription.setBounds(0,20,964,80);
+			eventDescriptionPanel.setForeground(Color.decode("#e8e8e8"));
+			eventDescriptionPanel.setBounds(0,20,964,80);
+			eventDescriptionPanel.add(eventDescription);
 			
 			eventPanel.add(eventTime);
-			eventPanel.add(eventDescription);
+			eventPanel.add(eventDescriptionPanel);
 			eventPanel.setPreferredSize(new Dimension(964,100));
 			eventPanel.setSize(new Dimension(964,100));
 			eventPanel.setBackground(Color.WHITE);
@@ -162,12 +172,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}
 			num = i;
 		}
-		if (num < 11) {
-			JPanel spacer = new JPanel();
-			spacer.setSize(new Dimension(964, 1100-num*100));
-			spacer.setBackground(Color.WHITE);
-			historyPanel.add(spacer);
-		}
+		
 	}
 	
 	public class GreenLinePanel extends JPanel {
