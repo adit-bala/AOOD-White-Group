@@ -43,31 +43,17 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	/*
 	 * Instance variables
 	 */
-	JPanel titlePanel;
-	JLabel titleLabel;
+	private JFrame frame;
 	
-	JPanel historyPanel;
-	JScrollPane historyScroll;
+	private JLabel titleLabel;
 	
-	JPanel nameHistoryPanel;
-	JLabel nameHistoryLabel;
-	JPanel nameHistory;
-	JScrollPane nameHistoryScroll;
+	private JPanel historyPanel;
+	private JScrollPane historyScroll;
 	
-	JPanel priorityHistoryPanel;
-	JLabel priorityHistoryLabel;
-	JPanel priorityHistory;
-	JScrollPane priorityHistoryScroll;
-	
-	JPanel commentHistoryPanel;
-	JLabel commentHistoryLabel;
-	JPanel commentHistory;
-	JScrollPane commentHistoryScroll;
-	
-	List<HistoryEvent> events;
-	List<HistoryEvent> titleChangeEvents = new ArrayList<HistoryEvent>();
-	List<HistoryEvent> priorityChangeEvents = new ArrayList<HistoryEvent>();
-	List<HistoryEvent> commentChangeEvents = new ArrayList<HistoryEvent>();
+	private List<HistoryEvent> events;
+	private List<HistoryEvent> titleChangeEvents = new ArrayList<HistoryEvent>();
+	private List<HistoryEvent> priorityChangeEvents = new ArrayList<HistoryEvent>();
+	private List<HistoryEvent> commentChangeEvents = new ArrayList<HistoryEvent>();
 	int numberOfTitleChanges = 0;
 	int numberOfPriorityChanges = 0;
 	int numberOfComments = 0;
@@ -82,7 +68,8 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
 	
 	boolean isAlreadyOneClick;
-	HistoryScreen (ActionItem item) {
+	HistoryScreen (ActionItem item, JFrame frame) {
+		this.frame = frame;
 		actionItem = item;
 		events = actionItem.getHistory();
 		this.setBackground(Color.WHITE);
@@ -192,7 +179,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (isAlreadyOneClick) {
-			System.out.println("double clicked");
+			setCommentScreen(actionItem);
 	        isAlreadyOneClick = false;
 	    } else {
 	        isAlreadyOneClick = true;
@@ -206,6 +193,11 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	    }
 	}
 
+	private void setCommentScreen(ActionItem item) {
+		frame.setContentPane(new CommentScreen(item));
+		frame.revalidate();
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -232,8 +224,8 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	
 	public static void main (String[] args) {
 		SampleActionItem1 item = new SampleActionItem1();
-		HistoryScreen screen = new HistoryScreen(item);
 		JFrame frame = new JFrame();
+		HistoryScreen screen = new HistoryScreen(item,frame);
 		screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();
