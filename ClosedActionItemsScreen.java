@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,7 +36,8 @@ public class ClosedActionItemsScreen extends JPanel {
 	 */
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
-	private HashMap<String, ArrayList<ActionItemEntry>> dates = new HashMap<String,  ArrayList<ActionItemEntry>>();
+	private JPanel closedItemList;
+	private HashSet<LocalDateTime> dates = new HashSet<LocalDateTime>();
 	// private JLabel dates;
 
 	ClosedActionItemsScreen() {
@@ -44,19 +46,29 @@ public class ClosedActionItemsScreen extends JPanel {
 		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
 		pageTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(pageTitle);
+		closedItemList = new JPanel();
 //		scrollPane = new JScrollPane(this);
 //		scrollPane.setPreferredSize(new Dimension(250, 80));
 //		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
 
-		this.add(Box.createRigidArea(new Dimension(0, 50)));
+		this.add(Box.createRigidArea(new Dimension(20, 50)));
 		SampleToDoList test = new SampleToDoList();
 		for (int i = test.getNumCompleteItems() - 1; i >= 0; i--) {
-			LocalDate currDate = test.getCompleteItemAtIndex(i).getCompletedByDate();
-			dates.add("" + Capitalize(currDate.getDayOfWeek().toString().toLowerCase()) + ", "
-					+ currDate.getDayOfMonth() + " " + Capitalize(currDate.getMonth().toString().toLowerCase()) + " "
-					+ currDate.getYear(), new ActionItemEntry(test.getCompleteItemAtIndex(i)));
+			dates.add(test.getCompleteItemAtIndex(i).getCompletedByDate());
 		}
-		// this.add(scrollPane);
+		for (LocalDateTime date : dates) {
+			JLabel newDate = new JLabel(
+					"" + Capitalize(date.getDayOfWeek().toString().toLowerCase()) + ", " + date.getDayOfMonth() + " "
+							+ Capitalize(date.getMonth().toString().toLowerCase()) + " " + date.getYear());
+			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
+			this.add(newDate);
+			for (int i = test.getNumCompleteItems() - 1; i >= 0; i--) {
+				if (test.getCompleteItemAtIndex(i).getCompletedByDate().toLocalDate().equals(date.toLocalDate())) {
+					this.add(new ActionItemEntry(test.getCompleteItemAtIndex(i)));
+				}
+
+			}
+		}
 
 	}
 
