@@ -1,7 +1,10 @@
 import javax.swing.*;
+
 import backend.FontLoader;
 
+import java.awt.GridBagLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
 import java.awt.event.*;
 
 public class MenuBar extends JMenuBar implements ActionListener{
@@ -9,6 +12,8 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private JMenuItem createBackup, restoreBackup, printList;
 	private JButton completedActionItems, quit;
 	private JFileChooser fileChooser; 
+	private JFrame mainScreenFrame;
+	
 	final static Color BAR_COLOR = Color.decode("#56997F");
 	
 	MenuBar(JPanel mainScreen){
@@ -17,16 +22,12 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		file.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 15));
 		file.setBackground(BAR_COLOR);
 		file.setForeground(Color.white);
-		
 		createBackup = new JMenuItem("Create Backup");
 		createBackup.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
-		createBackup.setActionCommand("Create");
 		restoreBackup = new JMenuItem("Restore Backup...");
 		restoreBackup.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
-		restoreBackup.setActionCommand("Restore");
 		printList = new JMenuItem("Print List");
 		printList.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
-		printList.setActionCommand("Print");
 		file.add(createBackup);
 		file.add(restoreBackup);
 		file.add(printList);
@@ -34,30 +35,17 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		completedActionItems = new JButton("Completed Action Items");
 		completedActionItems.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 15));
 		completedActionItems.setBackground(BAR_COLOR);
-		completedActionItems.setActionCommand("Completed Action Items");
-		completedActionItems.addActionListener(this);
 		quit = new JButton("Quit");
 		quit.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 10));
 		quit.setBackground(BAR_COLOR);
-		quit.setActionCommand("Quit");
-		quit.addActionListener(this); 
-		
-		this.add(file);
-		this.add(completedActionItems);
-		this.add(quit);
+
+		mainScreen.add(file);
+		mainScreen.add(completedActionItems);
+		mainScreen.add(quit);
 	
+		
 	}
 	public void actionPerformed(ActionEvent event) {
-		String eventName = event.getActionCommand();
-		if (eventName.equals("Completed Action Items")) {
-			/* quit button becomes back, visbility for other buttons false
-			 * screens change from main to cai screen
-			 */
-		} else if (eventName.equals("Quit")) {
-			System.exit(0);
-		}
-	}
-	public void changeBar() {
 		
 	}
 	public static void main (String[] args) {
