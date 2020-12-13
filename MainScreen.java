@@ -16,7 +16,8 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 
 //import ClosedActionItemsScreen.CustomBorder;
 import backend.ActionItem;
@@ -60,14 +61,15 @@ class MainScreen extends JPanel implements ActionListener{
 	    public void mouseClicked(MouseEvent e) {
 	    	JList<ActionItemEntry> list = (JList<ActionItemEntry>) e.getSource();
 	    	int index = list.locationToIndex(e.getPoint());
+	    	list.setSelectedIndex(index);
 	    	if (index >= 0) {
 	    		ActionItemEntry o = (ActionItemEntry) list.getModel().getElementAt(index);
 		    	if (SwingUtilities.isRightMouseButton(e)) {
-					System.out.println("Right clicked on item " + o.getActionItem() + "!");
-					setHistoryScreen(o.getActionItem());
+					//System.out.println("Right clicked on item " + o.getActionItem() + "!");
+					setPopup(list, e.getX(), e.getY(), o);
 				} else if (e.getClickCount() == 2) {
-					System.out.println("Double clicked on item " + o.getActionItem() + "!");
-		    		setActionItemScreen(o.getActionItem());
+					//System.out.println("Double clicked on item " + o.getActionItem() + "!");
+		    		setActionItemScreen(items.get(o.getIndex()).getActionItem());
 		    	}
 		    }
 	    }
@@ -100,7 +102,7 @@ class MainScreen extends JPanel implements ActionListener{
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
-		// this.setPreferredSize(new Dimension(1024, 1366)); height too big for most laptop screens so won't be proportional
+		this.setPreferredSize(new Dimension(1024, 1366)); //height too big for most laptop screens so won't be proportional
 		this.add(scrollPane);
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
@@ -117,12 +119,61 @@ class MainScreen extends JPanel implements ActionListener{
 		this.add(NewActionItem);
 	}
 	private void setActionItemScreen(ActionItem item) {
+		((MenuBar)frame.getJMenuBar()).changeBar();
 		frame.setContentPane(new EditActionItemScreen(item));
 		frame.revalidate();
+		frame.repaint();
+	}
+	private void setPopup(JList<ActionItemEntry> list, int x, int y, ActionItemEntry itemEntry) {
+		JPopupMenu menu = new JPopupMenu("Menu");
+		JMenuItem Complete = new JMenuItem("Mark as complete");
+		JMenuItem Edit = new JMenuItem("Edit item");
+		JMenuItem Delete = new JMenuItem("Delete item");
+		ActionListener listener = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getActionCommand() == "Complete") {
+					updateActionItemPriority(items.get(itemEntry.getIndex()), Priority.COMPLETED);
+					//userList.completeActionItem(items.get(itemEntry.getIndex()).getTodoIndex());
+					items.remove(items.get(itemEntry.getIndex()));
+					scrollPane.getViewport().remove(itemPanel);
+					renderAllItemLists();
+					scrollPane.getViewport().add(itemPanel);
+					frame.revalidate();
+					frame.repaint();
+				} else if (e.getActionCommand() == "Edit") {
+					setActionItemScreen(items.get(itemEntry.getIndex()).getActionItem());
+				} else if (e.getActionCommand() == "Delete") {
+					int choice = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the item '" + itemEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+					if (choice == JOptionPane.YES_OPTION) {
+						items.remove(items.get(itemEntry.getIndex()));
+						//userList.deleteActionItem(items.get(itemEntry.getIndex()).getTodoIndex());
+						scrollPane.getViewport().remove(itemPanel);
+						renderAllItemLists();
+						scrollPane.getViewport().add(itemPanel);
+						frame.revalidate();
+						frame.repaint();
+					}
+				}
+			}
+		};
+		Complete.addActionListener(listener);
+		Complete.setActionCommand("Complete");
+		Edit.addActionListener(listener);
+		Edit.setActionCommand("Edit");
+		Delete.addActionListener(listener);
+		Delete.setActionCommand("Delete");
+		menu.add(Complete);
+		menu.add(Edit);
+		menu.add(Delete);
+        menu.show(list, x, y);
 	}
 	private void setHistoryScreen(ActionItem item) {
-		frame.setContentPane(new HistoryScreen(item));
+		((MenuBar)frame.getJMenuBar()).changeBar();
+		frame.setContentPane(new HistoryScreen(item, frame));
 		frame.revalidate();
+		frame.repaint();
 	}
 	private void TEST() {
 		ActionItem[] urgent = new ActionItem[5];
@@ -301,6 +352,7 @@ class MainScreen extends JPanel implements ActionListener{
 	                    	}
 	                    	itemEntry.getActionItem().setEventualByDate(item.getEventualByDate());
 	                    }
+	                    itemEntry.setItem(items.get(itemEntry.getIndex()).getActionItem());
 	                    return true;
 	                } catch (UnsupportedFlavorException | IOException e) {
 	                    e.printStackTrace();
@@ -327,9 +379,7 @@ class MainScreen extends JPanel implements ActionListener{
 		}
 	}
 	private void updateActionItemPriority(ActionItemEntry itemEntry, Priority p) {
-		ActionItem item = itemEntry.getActionItem();
-		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
-		item = items.get(itemEntry.getIndex()).getActionItem();
+		ActionItem item = items.get(itemEntry.getIndex()).getActionItem();
 		item.updateActionItem(item.getTitle(), p, item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
 	}
 

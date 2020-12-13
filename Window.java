@@ -1,26 +1,16 @@
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-
 import javax.swing.*;
 
 class Window {
 	private JFrame frame;
-	//private MenuBar menuBar;
-	private JPanel currentScreenPanel;
-	boolean isMainScreen;
-	boolean isEditActionItemScreen;
-	boolean isCommentScreen;
-	boolean isHistoryScreen;
-	boolean isPrintScreen;
-	boolean isClosedActionItemScreen;
+	private MenuBar menuBar;
+	private MainScreen main;
 	Window() {
 		frame = new JFrame("To Do List");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		currentScreenPanel = new MainScreen(frame);
-		//menuBar = new MenuBar(currentScreenPanel);
-		//frame.setJMenuBar(menuBar);
-		frame.setContentPane(currentScreenPanel);
+		main = new MainScreen(frame);
+		menuBar = new MenuBar(frame, main);
+		frame.setJMenuBar(menuBar);
+		frame.setContentPane(main);
 		frame.pack();
 		frame.setVisible(true);
 	}

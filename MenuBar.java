@@ -10,8 +10,11 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private JFileChooser fileChooser; 
 	private JFrame frame;
 	final static Color BAR_COLOR = Color.decode("#56997F");
+	private MainScreen main;
 	
-	MenuBar(){
+	MenuBar(JFrame frame, MainScreen main){
+		this.frame = frame;
+		this.main = main;
 		setBackground(BAR_COLOR);
 		file = new JMenu("File");
 		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
@@ -35,11 +38,15 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		completedActionItems.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
 		completedActionItems.setBackground(BAR_COLOR);
 		completedActionItems.setForeground(Color.white);
+		completedActionItems.setOpaque(true);
+		completedActionItems.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		completedActionItems.setActionCommand("Completed Action Items");
 		completedActionItems.addActionListener(this);
 		quit = new JButton("Quit");
 		quit.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
 		quit.setBackground(BAR_COLOR);
+		quit.setOpaque(true);
+		quit.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		quit.setForeground(Color.white);
 		quit.setActionCommand("Quit");
 		quit.addActionListener(this); 
@@ -48,12 +55,12 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(completedActionItems);
 		add(quit);
 		
-		frame = new JFrame();
-		MainScreen main = new MainScreen(frame);
-		frame.setJMenuBar(this);
-		frame.setContentPane(main);
-		frame.pack();
-		frame.setVisible(true);
+		//frame = new JFrame();
+		//MainScreen main = new MainScreen(frame);
+		//frame.setJMenuBar(this);
+		//frame.setContentPane(main);
+		//frame.pack();
+		//frame.setVisible(true);
 	
 	}
 	public void changeBar() {
@@ -62,9 +69,19 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		remove(quit); 
 		back = new JButton("Back");
 		add(back);
-		back.setFont(FontLoader.loadFont("src/fonts/Chivo-Regular.ttf", 12));
+		back.setActionCommand("Back");
+		back.addActionListener(this);
+		back.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 12));
 		back.setBackground(BAR_COLOR);
 		back.setForeground(Color.white);
+		back.setOpaque(true);
+		back.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+	}
+	public void resetBar() {
+		remove(back);
+		add(file);
+		add(completedActionItems);
+		add(quit);
 	}
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
@@ -75,16 +92,22 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			//Restore?
 		} else if (eventName.equals("Print")) {
 			//TBD
+		} else if (eventName.equals("Back")) {
+			resetBar();
+			frame.setContentPane(main);
+			frame.revalidate();
+			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {
+			changeBar();
 			ClosedActionItemsScreen completed = new ClosedActionItemsScreen();
-			frame.getContentPane().removeAll();
-			frame.getContentPane().add(completed);
-			frame.revalidate(); frame.repaint();
+			frame.setContentPane(completed);
+			frame.revalidate();
+			frame.repaint();
 		} else if (eventName.equals("Quit")) {
 			System.exit(0);
 		}
 	}
 	public static void main (String[] args) {
-		MenuBar bar = new MenuBar();
+		//MenuBar bar = new MenuBar();
 	}
 }

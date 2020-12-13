@@ -15,7 +15,6 @@ import backend.Priority;
 
 class ActionItemEntry extends JPanel
 		implements ListCellRenderer<Object>, Transferable {
-	// private ActionItem item;
 	private JLabel label;
 	private ActionItem item;
 	private int index;
@@ -26,8 +25,12 @@ class ActionItemEntry extends JPanel
 	protected static DataFlavor[] supportedFlavors = { actionFlavor };
 
 	ActionItemEntry(ActionItem item) {
-		this.item = item;
+		this.setItem(item);
 		this.initItem(item.getTitle(), item.getPriority());
+	}
+	
+	public void setItem(ActionItem item) {
+		this.item = item;
 	}
 	
 	public void setIndex(int i) {
@@ -85,10 +88,10 @@ class ActionItemEntry extends JPanel
 		else
 			label.setFont(MainScreen.NORMAL_FONT);
 		label.setForeground(Color.decode("#134D37"));
-		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 300));
+		label.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 0));
 		label.setOpaque(true);
 		label.setBackground(new Color(230, 230, 230));
-		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setHorizontalAlignment(SwingConstants.LEFT);
 		this.add(label);
 	}
 
