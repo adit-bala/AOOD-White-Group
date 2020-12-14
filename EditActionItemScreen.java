@@ -9,7 +9,9 @@ import javax.swing.*;
 /* Displays ways for users to manipulate action item data.
 
  */
-public class EditActionItemScreen extends JPanel {
+public class EditActionItemScreen extends JPanel implements ActionListener {
+	private JFrame frame;
+	
 	private JLabel pageTitle;
 	private JTextField name, uYear, cYear, eYear;
 	private JComboBox<String> uMonth, cMonth, eMonth, uDay, cDay, eDay;
@@ -45,7 +47,8 @@ public class EditActionItemScreen extends JPanel {
 
 	GridBagConstraints gbc = new GridBagConstraints();
 
-	EditActionItemScreen(ActionItem item) {
+	EditActionItemScreen(ActionItem item, JFrame frame) {
+		this.frame = frame;
 		actionItem = item;
 
 		/* main panel setup */
@@ -262,8 +265,14 @@ public class EditActionItemScreen extends JPanel {
 		/* bottom buttons and pane */
 		buttonsPane = new JPanel();
 		comment = new JButton("COMMENT");
+		comment.addActionListener(this);
+		comment.setActionCommand("COMMENT");
 		history = new JButton("HISTORY");
+		history.addActionListener(this);
+		history.setActionCommand("HISTORY");
 		print = new JButton("PRINT");
+		print.addActionListener(this);
+		print.setActionCommand("PRINT");
 		comment.setAlignmentX(LEFT_ALIGNMENT);
 		history.setAlignmentX(CENTER_ALIGNMENT);
 		print.setAlignmentX(RIGHT_ALIGNMENT);
@@ -305,24 +314,36 @@ public class EditActionItemScreen extends JPanel {
 			System.out.println("Cancel");
 			// close window and don't save
 		} else if (eventName.contentEquals("COMMENT")) {
-			System.out.println("comment");
-			// open comment screen
-
+			setCommentScreen();
 		} else if (eventName.contentEquals("HISTORY")) {
-			System.out.println("History");
-			// open history screen
+			setHistoryScreen();
 		} else if (eventName.contentEquals("PRINT")) {
 			System.out.println("print");
 			// open print screen
 		}
 	}
+	
+	private void setCommentScreen() {
+		frame.setContentPane(new CommentScreen(actionItem, frame));
+		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
+		frame.revalidate();
+		frame.repaint();
+	}
+	
+	private void setHistoryScreen() {
+		frame.setContentPane(new HistoryScreen(actionItem, frame));
+		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
+		frame.revalidate();
+		frame.repaint();
+	}
 
 	public static void main(String[] args) {
-		EditActionItemScreen screen = new 
-				EditActionItemScreen(new ActionItem());
 		JFrame frame = new JFrame();
+		EditActionItemScreen screen = new 
+				EditActionItemScreen(new ActionItem(), frame);
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
