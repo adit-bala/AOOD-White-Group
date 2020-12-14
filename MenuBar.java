@@ -1,7 +1,11 @@
 import javax.swing.*;
+
+import backend.ActionItem;
 import backend.FontLoader;
 import java.awt.Color;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class MenuBar extends JMenuBar implements ActionListener{
@@ -12,6 +16,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
 	private MainScreen main;
+	private List<ActionItem> passCompletedActionItems;
 	final static Color BAR_COLOR = Color.decode("#56997F");
 	
 	MenuBar(JFrame frame, MainScreen main){
@@ -56,6 +61,8 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(file);
 		add(completedActionItems);
 		add(quit);
+		
+		passCompletedActionItems = new ArrayList<ActionItem>();
 		
 		//frame = new JFrame();
 		//MainScreen main = new MainScreen(frame);
@@ -109,7 +116,10 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {
 			changeBar();
-			ClosedActionItemsScreen completed = new ClosedActionItemsScreen();
+			for(int i=0; i<main.getToDoList().getNumCompleteItems(); i++) {
+				passCompletedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
+			}
+			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(passCompletedActionItems);
 			frame.setContentPane(completed);
 			frame.revalidate();
 			frame.repaint();
