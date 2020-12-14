@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONPropertyIgnore;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ActionItem implements Serializable {
@@ -123,13 +124,19 @@ public class ActionItem implements Serializable {
 	}
 
 	public void updatePriority() {
-		LocalDateTime current = LocalDateTime.now();
-		if (current.compareTo(urgentByDate) < 0) {
+		LocalDate current = LocalDate.now();
+		if (urgentByDate != null && current.compareTo(urgentByDate.toLocalDate()) >= 0) {
 			priority = Priority.URGENT;
-		} else if (current.compareTo(currentByDate) < 0) {
+			urgentByDate = null;
+			currentByDate = null;
+			eventualByDate = null;
+		} else if (currentByDate != null && current.compareTo(currentByDate.toLocalDate()) >= 0) {
 			priority = Priority.CURRENT;
-		} else if (current.compareTo(eventualByDate) < 0) {
+			currentByDate = null;
+			eventualByDate = null;
+		} else if (eventualByDate != null && current.compareTo(eventualByDate.toLocalDate()) >= 0) {
 			priority = Priority.EVENTUAL;
+			eventualByDate = null;
 		}
 	}
 
@@ -148,11 +155,15 @@ public class ActionItem implements Serializable {
 		setEventualByDate(eventualDate);
 		if (!comment.equals(this.comment)) {
 			int type = CommentChangeEvent.EDIT;
-			if (comment.equals(""))
-				type = CommentChangeEvent.DELETE;
-			else if (this.comment.equals(""))
+			if (this.comment.equals("")) {
 				type = CommentChangeEvent.ADD;
-			addEventToHistory(new CommentChangeEvent(LocalDateTime.now(), type, comment));
+				addEventToHistory(new CommentChangeEvent(LocalDateTime.now(), type, comment));
+			} else if (comment.equals("")) {
+				type = CommentChangeEvent.DELETE;
+				addEventToHistory(new CommentChangeEvent(LocalDateTime.now(), type, this.comment));
+			} else {
+				addEventToHistory(new CommentChangeEvent(LocalDateTime.now(), type, comment));
+			}
 			setComment(comment);
 		}
 	}
