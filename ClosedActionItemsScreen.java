@@ -3,6 +3,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ public class ClosedActionItemsScreen extends JPanel {
 	private JLabel pageTitle;
 	private JScrollPane scrollPane;
 	private JPanel closedItemList;
-	private HashSet<LocalDateTime> dates = new HashSet<LocalDateTime>();
+	private HashSet<LocalDate> dates = new HashSet<LocalDate>();
 	// private JLabel dates;
 
 	ClosedActionItemsScreen(List<ActionItem> test) {
@@ -43,16 +44,16 @@ public class ClosedActionItemsScreen extends JPanel {
 
 		this.add(Box.createRigidArea(new Dimension(20, 50)));
 		for (ActionItem item : test) {
-			dates.add(item.getCompletedByDate());
+			dates.add(item.getCompletedByDate().toLocalDate());
 		}
-		for (LocalDateTime date : dates) {
+		for (LocalDate date : dates) {
 			JLabel newDate = new JLabel(
 					"" + Capitalize(date.getDayOfWeek().toString().toLowerCase()) + ", " + date.getDayOfMonth() + " "
 							+ Capitalize(date.getMonth().toString().toLowerCase()) + " " + date.getYear());
 			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
 			this.add(newDate);
 			for (ActionItem item : test) {
-				if (item.getCompletedByDate().toLocalDate().equals(date.toLocalDate())) {
+				if (item.getCompletedByDate().toLocalDate().equals(date)) {
 					this.add(new ActionItemEntry(item));
 				}
 			}
