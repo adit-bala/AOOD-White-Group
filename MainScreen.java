@@ -99,6 +99,7 @@ class MainScreen extends JPanel implements ActionListener{
 		titlePanel.add(pageTitle);
 		titlePanel.add(underline);
 		this.add(titlePanel);
+		userList.updateListOrder();
 		initItemList();
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
@@ -135,26 +136,17 @@ class MainScreen extends JPanel implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand() == "Complete") {
-					updateActionItemPriority(items.get(itemEntry.getIndex()), Priority.COMPLETED);
-					//userList.completeActionItem(items.get(itemEntry.getIndex()).getTodoIndex());
+					userList.completeActionItem(items.get(itemEntry.getIndex()).getActionItem());
 					items.remove(items.get(itemEntry.getIndex()));
-					scrollPane.getViewport().remove(itemPanel);
-					renderAllItemLists();
-					scrollPane.getViewport().add(itemPanel);
-					frame.revalidate();
-					frame.repaint();
+					rerenderItemLists();
 				} else if (e.getActionCommand() == "Edit") {
 					setActionItemScreen(items.get(itemEntry.getIndex()).getActionItem());
 				} else if (e.getActionCommand() == "Delete") {
 					int choice = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the item '" + itemEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 					if (choice == JOptionPane.YES_OPTION) {
+						userList.deleteActionItem(items.get(itemEntry.getIndex()).getActionItem());
 						items.remove(items.get(itemEntry.getIndex()));
-						//userList.deleteActionItem(items.get(itemEntry.getIndex()).getTodoIndex());
-						scrollPane.getViewport().remove(itemPanel);
-						renderAllItemLists();
-						scrollPane.getViewport().add(itemPanel);
-						frame.revalidate();
-						frame.repaint();
+						rerenderItemLists();
 					}
 				}
 			}
@@ -222,6 +214,7 @@ class MainScreen extends JPanel implements ActionListener{
 		for (int i=0;i<userList.getNumIncompleteItems();i++) {
 			items.add(makeEntry(userList.getIncompleteItemAtIndex(i)));
 		}
+		/*
 		Collections.sort(items, new Comparator<ActionItemEntry>() {
 			@Override
 		    public int compare(ActionItemEntry o1, ActionItemEntry o2) {
@@ -232,6 +225,16 @@ class MainScreen extends JPanel implements ActionListener{
 		        return item1.getPriority().compareTo(item2.getPriority());
 		    }
 		});
+		*/
+	}
+	private void rerenderItemLists() {
+		scrollPane.getViewport().remove(itemPanel);
+		userList.updateListOrder();
+		initItemList();
+		renderAllItemLists();
+		scrollPane.getViewport().add(itemPanel);
+		frame.revalidate();
+		frame.repaint();
 	}
 	private void renderItemList(List<ActionItemEntry> listItems) {
 		final DefaultListModel<ActionItemEntry> actionItemEntries = new DefaultListModel<ActionItemEntry>();
@@ -284,6 +287,8 @@ class MainScreen extends JPanel implements ActionListener{
 	            public void exportDone(JComponent comp, Transferable trans, int action) {
 	            	if (action == MOVE) {
 	            		//System.out.println("Successful");
+	            		rerenderItemLists();
+	            		/*
 	            		actionItemEntries.remove(actionItemEntries.indexOf(transferItem));
 	            		if (actionItemEntries.size() == 0) {
 	            			if (Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent()) != 0) {
@@ -291,6 +296,7 @@ class MainScreen extends JPanel implements ActionListener{
 		            			itemPanel.remove(list.getParent());
 	            			}
 	            		}
+	            		*/
 	            	}
 	            }
 
@@ -304,64 +310,58 @@ class MainScreen extends JPanel implements ActionListener{
 	                try {
 	                    ActionItemEntry itemEntry = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
 	                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-	                    items.remove(itemEntry.getIndex());
+	                    //items.remove(itemEntry.getIndex());
 	                    int prevIndex = itemEntry.getIndex();
-	                    updateAllIndexes();
+	                    int newIndex = 0;
+	                    //updateAllIndexes();
 	                    int dropIndex = dl.getIndex();
 	                    //System.out.println(dropIndex);
 	                    boolean newList = !actionItemEntries.contains(transferItem);
-	                    actionItemEntries.add(dropIndex, itemEntry);
-	                    if (dropIndex < actionItemEntries.size() - 1) {
-	                    	items.add(actionItemEntries.get(dropIndex+1).getIndex(), itemEntry);
+	                    //actionItemEntries.add(dropIndex, itemEntry);
+	                    if (dropIndex < actionItemEntries.size()) {
+	                    	//items.add(actionItemEntries.get(dropIndex+1).getIndex(), itemEntry);
+	                    	newIndex = actionItemEntries.get(dropIndex).getIndex();
+	                    	if (newIndex > prevIndex) newIndex--;
 	                    }
 	                    else if (dropIndex > 0) {
-	                    	items.add(Math.min(items.size(), actionItemEntries.get(dropIndex-1).getIndex()+1), itemEntry);
+	                    	//items.add(Math.min(items.size(), actionItemEntries.get(dropIndex-1).getIndex()+1), itemEntry);
+	                    	newIndex = Math.min(items.size()-1, actionItemEntries.get(dropIndex - 1).getIndex());
+	                    	if (newIndex < prevIndex) newIndex++;
+	                    }	
+	                    //updateAllIndexes();
+	                    //System.out.print("Old index " + prevIndex);
+	                    //System.out.println(" to new index " + newIndex);
+	                    //System.out.println(actionItemEntries.get(dropIndex - 1).getActionItem().getPriority());
+	                    if (dropIndex == actionItemEntries.size() && dropIndex > 0 && actionItemEntries.get(dropIndex - 1).getActionItem().getPriority() != Priority.INACTIVE) {
+	                    	updateActionItemPriority(itemEntry, actionItemEntries.get(dropIndex - 1).getActionItem().getPriority());
+	                    	//userList.moveActionItem(prevIndex, newIndex);
 	                    }
-	                    updateAllIndexes();
-	                    int newIndex = itemEntry.getIndex();
-	                    //System.out.println(prevIndex);
-	                    //System.out.println(newIndex);
+	                    if (prevIndex != newIndex)
+	                    	userList.moveActionItem(prevIndex, newIndex);
 	                    if (newList) {
 	                    	//System.out.println("new list");
-	                    	if (dropIndex < actionItemEntries.size() - 1) {
-                    			updateActionItemPriority(itemEntry, actionItemEntries.get(dropIndex + 1).getActionItem().getPriority());
+	                    	if (dropIndex < actionItemEntries.size()) {
+                    			updateActionItemPriority(itemEntry, actionItemEntries.get(dropIndex).getActionItem().getPriority());
                     		} else if (dropIndex > 0) {
                     			Priority prevPriority = actionItemEntries.get(dropIndex - 1).getActionItem().getPriority();
                     			if (prevPriority == Priority.INACTIVE)
-                    				updateActionItemPriority(itemEntry, prevPriority);
+                    				updateActionItemPriority(itemEntry, Priority.INACTIVE);
                     			else
                     				updateActionItemPriority(itemEntry, Priority.EVENTUAL);
+                    		} else {
+                    			updateActionItemPriority(itemEntry, Priority.EVENTUAL);
                     		}
 	                    }
-	                    if (newIndex != prevIndex) {
-	                    	//System.out.println("new index");
-		                    ActionItem item = items.get(newIndex).getActionItem();
-		                    Priority itemPriority = item.getPriority();
-		                    ActionItemEntry prev = itemEntry.getPrev();
-		                    ActionItemEntry next = itemEntry.getNext();
-		                    if (dropIndex < actionItemEntries.size() - 1) {
-		                    	Priority nextPriority = actionItemEntries.get(dropIndex+1).getActionItem().getPriority();
-		                    	if (nextPriority.compareTo(itemPriority) < 0) {
-		                    		updateActionItemPriority(itemEntry, nextPriority);
-		                    	}
-		                    }
-		                    if (dropIndex > 0) {
-		                    	Priority prevPriority = actionItemEntries.get(dropIndex-1).getActionItem().getPriority();
-		                    	//System.out.println(prevPriority);
-		                    	if (prevPriority.compareTo(itemPriority) > 0) {
-		                    		updateActionItemPriority(itemEntry, prevPriority);
-		                    	}
-		                    }
-		                    if (item.getPriority() == Priority.INACTIVE) {
-		                    	if (dropIndex > 0) {
-		                    		item.setEventualByDate(prev.getActionItem().getEventualByDate());
-		                    	} else if (dropIndex < actionItemEntries.size()-1) {
-		                    		item.setEventualByDate(next.getActionItem().getEventualByDate());
-		                    	}
-		                    	itemEntry.getActionItem().setEventualByDate(item.getEventualByDate());
-		                    }
-		                    itemEntry.setItem(items.get(itemEntry.getIndex()).getActionItem());
+	                    ActionItem item = items.get(itemEntry.getIndex()).getActionItem();
+	                    if (item.getPriority() == Priority.INACTIVE) {
+	                    	if (dropIndex > 0) {
+	                    		item.setEventualByDate(actionItemEntries.get(dropIndex - 1).getActionItem().getEventualByDate());
+	                    	} else if (dropIndex < actionItemEntries.size()) {
+	                    		item.setEventualByDate(actionItemEntries.get(dropIndex).getActionItem().getEventualByDate());
+	                    	}
+	                    	itemEntry.getActionItem().setEventualByDate(item.getEventualByDate());
 	                    }
+	                    //printData(item);
 	                    return true;
 	                } catch (Exception e) {
 	                    e.printStackTrace();
@@ -374,6 +374,10 @@ class MainScreen extends JPanel implements ActionListener{
 			p.add(list);
 			itemPanel.add(p);
 		}
+	public void setToDoList(ToDoList list) {
+		this.userList = list;
+		this.rerenderItemLists();
+	}
 	public ToDoList getToDoList() {
 		return this.userList;
 	}
@@ -417,6 +421,9 @@ class MainScreen extends JPanel implements ActionListener{
 		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 		itemPanel.setBackground(Color.WHITE);
 		updateAllIndexes();
+		if (items.size() > 0 && items.get(0).getActionItem().getPriority() == Priority.INACTIVE) {
+			renderItemList(items.subList(0, 0));
+		}
 		for (int i=0;i<items.size();i++) {
 			Priority currPriority = items.get(i).getActionItem().getPriority();
 			LocalDateTime currDate = items.get(i).getActionItem().getEventualByDate();
@@ -435,9 +442,24 @@ class MainScreen extends JPanel implements ActionListener{
 				}
 			}
 		}
-		if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE)
-			itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
-		renderItemList(items.subList(start, items.size()));
+		if (items.size() > 0) {
+			if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE)
+				itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
+			renderItemList(items.subList(start, items.size()));
+		}
+	}
+	
+	private void printData(ActionItem item) {
+		System.out.println("ACTION ITEM");
+		System.out.println("      Title: " + item.getTitle());
+		System.out.println("      Priority: " + item.getPriority());
+		System.out.println("      Urgent By: " + item.getUrgentByDate());
+		System.out.println("      Current By: " + item.getCurrentByDate());
+		System.out.println("      Eventual By: " + item.getEventualByDate());
+		System.out.println("      Completed By: " + item.getCompletedByDate());
+		System.out.println("      Active By: " + item.getActiveByDate());
+		System.out.println("      Comment: " + item.getComment());
+		System.out.println("      History: " + item.getHistory());
 	}
 
 	private ActionItemEntry makeEntry(ActionItem item) {
