@@ -75,6 +75,8 @@ public class FileUtilities {
 			item.setCurrentByDate(LocalDateTime.parse(itemSource.getString("currentByDate")));
 		if (itemSource.has("eventualByDate"))
 			item.setEventualByDate(LocalDateTime.parse(itemSource.getString("eventualByDate")));
+		if (itemSource.has("completedByDate"))
+			item.setCompletedByDate(LocalDateTime.parse(itemSource.getString("completedByDate")));
 		JSONArray history = itemSource.getJSONArray("history");
 		for (int j = 0; j < history.length(); j++) {
 			JSONObject eventSource = history.getJSONObject(j);

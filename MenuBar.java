@@ -21,7 +21,6 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
 	private MainScreen main;
-	private ArrayList<ActionItem> passCompletedActionItems;
 	final static Color BAR_COLOR = Color.decode("#56997F");
 	
 	MenuBar(JFrame frame, MainScreen main){
@@ -70,8 +69,6 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(completedActionItems);
 		add(quit);
 		
-		passCompletedActionItems = new ArrayList<ActionItem>();
-		
 		//frame = new JFrame();
 		//MainScreen main = new MainScreen(frame);
 		//frame.setJMenuBar(this);
@@ -108,7 +105,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		if (eventName.equals("Create")) {
 			JFileChooser fc = new JFileChooser();
 			fc.setSelectedFile(new File("backup.json"));
-			fc.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
+			fc.setFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
             int returnVal = fc.showSaveDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -120,12 +117,14 @@ public class MenuBar extends JMenuBar implements ActionListener{
             }
 		} else if (eventName.equals("Restore")) {
 			JFileChooser fc = new JFileChooser();
-			fc.setFileFilter(new FileNameExtensionFilter("To Do List Backups", "tdl"));
+			fc.setFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
+    			ToDoList restoredList = FileUtilities.restoreFrom(file.getPath());
+    			// TODO: account for if file is not valid backup
+    			main.setToDoList(restoredList);
             } 
-			// SET TO DO LIST
 		} else if (eventName.equals("Print")) {
 			try {
 				FileUtilities.printToDoList(main);
@@ -136,7 +135,6 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			if (prevPanels.empty()) {
 				frame.setContentPane(main);
 				resetBar();
-				// REFRESH LIST
 			} else {
 				frame.setContentPane(prevPanels.pop());
 			}
@@ -144,10 +142,11 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {
 			changeBar();
+			ArrayList<ActionItem> completedActionItems = new ArrayList<ActionItem>();
 			for(int i=0; i<main.getToDoList().getNumCompleteItems(); i++) {
-				passCompletedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
+				completedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
 			}
-			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(passCompletedActionItems);
+			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(completedActionItems);
 			frame.setContentPane(completed);
 			frame.revalidate();
 			frame.repaint();
