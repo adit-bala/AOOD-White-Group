@@ -1,11 +1,16 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import backend.ActionItem;
+import backend.FileUtilities;
 import backend.FontLoader;
+import backend.ToDoList;
+
 import java.awt.Color;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class MenuBar extends JMenuBar implements ActionListener{
@@ -16,7 +21,6 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
 	private MainScreen main;
-	private List<ActionItem> passCompletedActionItems;
 	final static Color BAR_COLOR = Color.decode("#56997F");
 	
 	MenuBar(JFrame frame, MainScreen main){
@@ -31,12 +35,15 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		createBackup = new JMenuItem("Create Backup");
 		createBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
 		createBackup.setActionCommand("Create");
+		createBackup.addActionListener(this);
 		restoreBackup = new JMenuItem("Restore Backup...");
 		restoreBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
 		restoreBackup.setActionCommand("Restore");
+		restoreBackup.addActionListener(this);
 		printList = new JMenuItem("Print List");
 		printList.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
 		printList.setActionCommand("Print");
+		printList.addActionListener(this);
 		file.add(createBackup);
 		file.add(restoreBackup);
 		file.add(printList);
@@ -61,8 +68,6 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(file);
 		add(completedActionItems);
 		add(quit);
-		
-		passCompletedActionItems = new ArrayList<ActionItem>();
 		
 		//frame = new JFrame();
 		//MainScreen main = new MainScreen(frame);
@@ -98,17 +103,38 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
 		if (eventName.equals("Create")) {
-			fileChooser = new JFileChooser();
-			fileChooser.showOpenDialog(new JPanel());
+			JFileChooser fc = new JFileChooser();
+			fc.setSelectedFile(new File("backup.json"));
+			fc.setFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
+            int returnVal = fc.showSaveDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filepath = file.getPath();
+                if (!filepath.endsWith(".json")) {
+                	filepath += ".json";
+                }
+                FileUtilities.writeBackup(main.getToDoList(), filepath);
+            }
 		} else if (eventName.equals("Restore")) {
-			//Restore?
+			JFileChooser fc = new JFileChooser();
+			fc.setFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
+			int returnVal = fc.showOpenDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+    			ToDoList restoredList = FileUtilities.restoreFrom(file.getPath());
+    			// TODO: account for if file is not valid backup
+    			main.setToDoList(restoredList);
+            } 
 		} else if (eventName.equals("Print")) {
-			//TBD
+			try {
+				FileUtilities.printToDoList(main);
+			} catch (PrinterException e) {
+				e.printStackTrace();
+			}
 		} else if (eventName.equals("Back")) {
 			if (prevPanels.empty()) {
 				frame.setContentPane(main);
 				resetBar();
-				// refresh list
 			} else {
 				frame.setContentPane(prevPanels.pop());
 			}
@@ -116,10 +142,11 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {
 			changeBar();
+			ArrayList<ActionItem> completedActionItems = new ArrayList<ActionItem>();
 			for(int i=0; i<main.getToDoList().getNumCompleteItems(); i++) {
-				passCompletedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
+				completedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
 			}
-			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(passCompletedActionItems);
+			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(completedActionItems);
 			frame.setContentPane(completed);
 			frame.revalidate();
 			frame.repaint();

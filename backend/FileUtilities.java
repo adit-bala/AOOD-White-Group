@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JPanel;
 
 import org.json.*;
@@ -19,7 +20,18 @@ import backend.samples.SampleToDoList;
 public class FileUtilities {
 
 	public static void writeBackup(ToDoList toDoList, String filePath) {
-		JSONObject json = new JSONObject(toDoList);
+		JSONObject json = new JSONObject();
+		JSONArray incompletes = new JSONArray();
+		for (int i = 0; i < toDoList.getNumIncompleteItems(); i++) {
+			incompletes.put(new JSONObject(toDoList.getIncompleteItemAtIndex(i)));
+		}
+		json.put("incompleteItems", incompletes);
+		JSONArray completes = new JSONArray();
+		for (int i = 0; i < toDoList.getNumCompleteItems(); i++) {
+			completes.put(new JSONObject(toDoList.getCompleteItemAtIndex(i)));
+		}
+		json.put("completeItems", completes);
+		
 		try {
 			FileWriter file = new FileWriter(filePath);
 			file.write(json.toString(4));
@@ -43,7 +55,7 @@ public class FileUtilities {
 			JSONArray incompleteItems = source.getJSONArray("incompleteItems");
 			for (int i = incompleteItems.length() - 1; i >= 0; i--) {
 				JSONObject itemSource = incompleteItems.getJSONObject(i);
-				list.addCompleteActionItem(JSONToActionItem(itemSource));
+				list.addActionItem(JSONToActionItem(itemSource));
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -63,6 +75,8 @@ public class FileUtilities {
 			item.setCurrentByDate(LocalDateTime.parse(itemSource.getString("currentByDate")));
 		if (itemSource.has("eventualByDate"))
 			item.setEventualByDate(LocalDateTime.parse(itemSource.getString("eventualByDate")));
+		if (itemSource.has("completedByDate"))
+			item.setCompletedByDate(LocalDateTime.parse(itemSource.getString("completedByDate")));
 		JSONArray history = itemSource.getJSONArray("history");
 		for (int j = 0; j < history.length(); j++) {
 			JSONObject eventSource = history.getJSONObject(j);
@@ -85,7 +99,8 @@ public class FileUtilities {
 
 	public static void printToDoList(JPanel toDoListPanel) throws PrinterException {
 		PrinterJob job = PrinterJob.getPrinterJob();
-		job.setPrintable(new ToDoListPrinter(toDoListPanel));
+		PageFormat pf = job.pageDialog(job.defaultPage());
+		job.setPrintable(new ToDoListPrinter(toDoListPanel), pf);
 		boolean ok = job.printDialog();
 		if (ok) {
 			job.print();

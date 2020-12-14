@@ -1,6 +1,9 @@
 package backend;
 
 import java.util.ArrayList;
+
+import org.json.JSONPropertyIgnore;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -49,6 +52,7 @@ public class ActionItem implements Serializable {
 		return eventualByDate;
 	}
 
+	@JSONPropertyIgnore
 	public LocalDateTime getActiveByDate() {
 		if (urgentByDate == null) {
 			if (currentByDate == null)
