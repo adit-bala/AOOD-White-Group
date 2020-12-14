@@ -50,17 +50,28 @@ public class ActionItem implements Serializable {
 	}
 
 	public LocalDateTime getActiveByDate() {
-		// does not account for same date
-		LocalDateTime returned;
-		if (urgentByDate.compareTo(currentByDate) < 0) {
-			returned = urgentByDate;
+		if (urgentByDate == null) {
+			if (currentByDate == null)
+				return eventualByDate;
+			else if (eventualByDate == null)
+				return currentByDate;
+			else
+				return eventualByDate.compareTo(currentByDate) < 0 ? eventualByDate : currentByDate;
 		} else {
-			returned = currentByDate;
+			if (currentByDate == null) {
+				if (eventualByDate == null)
+					return urgentByDate;
+				else
+					return eventualByDate.compareTo(urgentByDate) < 0 ? eventualByDate : urgentByDate;
+			} else {
+				if (eventualByDate == null)
+					return currentByDate.compareTo(urgentByDate) < 0 ? currentByDate : urgentByDate;
+				else {
+					LocalDateTime returned = eventualByDate.compareTo(currentByDate) < 0 ? eventualByDate : currentByDate;
+					return returned.compareTo(urgentByDate) < 0 ? returned : urgentByDate;
+				}
+			}
 		}
-		if (returned.compareTo(eventualByDate) > 0) {
-			returned = eventualByDate;
-		}
-		return returned;
 	}
 
 	public LocalDateTime getCompletedByDate() {
