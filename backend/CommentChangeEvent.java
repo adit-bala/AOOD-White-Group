@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 public class CommentChangeEvent extends HistoryEvent {
 
-	public static int ADD;
-	public static int EDIT;
-	public static int DELETE;
+	public static int ADD = 0;
+	public static int EDIT = 1;
+	public static int DELETE = 2;
 	private int eventType;
 	private String comment;
 
@@ -25,7 +25,12 @@ public class CommentChangeEvent extends HistoryEvent {
 	}
 
 	public String label() {
-		return ("Comment added: " + comment);
+		if (eventType == ADD)
+			return ("Comment added: " + comment);
+		else if (eventType == EDIT)
+			return ("Comment changed: " + comment);
+		else
+			return ("Comment removed: " + comment);
 	}
 
 }

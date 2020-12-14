@@ -10,12 +10,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JPanel;
 
 import org.json.*;
-
-import backend.samples.SampleToDoList;
 
 public class FileUtilities {
 
