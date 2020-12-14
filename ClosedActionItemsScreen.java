@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -40,7 +41,7 @@ public class ClosedActionItemsScreen extends JPanel {
 	private HashSet<LocalDateTime> dates = new HashSet<LocalDateTime>();
 	// private JLabel dates;
 
-	ClosedActionItemsScreen() {
+	ClosedActionItemsScreen(List<ActionItem> test) {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		pageTitle = new JLabel("Closed Action Items");
 		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
@@ -52,9 +53,8 @@ public class ClosedActionItemsScreen extends JPanel {
 //		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
 
 		this.add(Box.createRigidArea(new Dimension(20, 50)));
-		SampleToDoList test = new SampleToDoList();
-		for (int i = test.getNumCompleteItems() - 1; i >= 0; i--) {
-			dates.add(test.getCompleteItemAtIndex(i).getCompletedByDate());
+		for(ActionItem item: test) {
+			dates.add(item.getCompletedByDate());
 		}
 		for (LocalDateTime date : dates) {
 			JLabel newDate = new JLabel(
@@ -62,11 +62,10 @@ public class ClosedActionItemsScreen extends JPanel {
 							+ Capitalize(date.getMonth().toString().toLowerCase()) + " " + date.getYear());
 			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
 			this.add(newDate);
-			for (int i = test.getNumCompleteItems() - 1; i >= 0; i--) {
-				if (test.getCompleteItemAtIndex(i).getCompletedByDate().toLocalDate().equals(date.toLocalDate())) {
-					this.add(new ActionItemEntry(test.getCompleteItemAtIndex(i)));
+			for(ActionItem item: test) {
+				if (item.getCompletedByDate().toLocalDate().equals(date.toLocalDate())) {
+					this.add(new ActionItemEntry(item));
 				}
-
 			}
 		}
 
@@ -89,7 +88,12 @@ public class ClosedActionItemsScreen extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		ClosedActionItemsScreen screen = new ClosedActionItemsScreen();
+		SampleToDoList test = new SampleToDoList();
+		List<ActionItem> sample = new ArrayList<ActionItem>();
+		for(int i = 0; i < test.getNumCompleteItems(); i++) {
+			sample.add(test.getCompleteItemAtIndex(i));
+		}
+		ClosedActionItemsScreen screen = new ClosedActionItemsScreen(sample);
 		screen.setPreferredSize(new Dimension(1024, 1366));
 		JFrame frame = new JFrame();
 		frame.setContentPane(screen);
