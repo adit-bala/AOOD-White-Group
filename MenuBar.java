@@ -2,19 +2,20 @@ import javax.swing.*;
 import backend.FontLoader;
 import java.awt.Color;
 import java.awt.event.*;
+import java.util.Stack;
 
 public class MenuBar extends JMenuBar implements ActionListener{
 	private JMenu file; 
 	private JMenuItem createBackup, restoreBackup, printList;
 	private JButton completedActionItems, quit, back;
 	private JFileChooser fileChooser; 
+	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
 	final static Color BAR_COLOR = Color.decode("#56997F");
-	private MainScreen main;
 	
-	MenuBar(JFrame frame, MainScreen main){
+	MenuBar(JFrame frame){
 		this.frame = frame;
-		this.main = main;
+		
 		setBackground(BAR_COLOR);
 		file = new JMenu("File");
 		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
@@ -83,6 +84,9 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(completedActionItems);
 		add(quit);
 	}
+	public void addPrevPanel(JPanel panel) {
+		prevPanels.push(panel);
+	}
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
 		if (eventName.equals("Create")) {
@@ -93,8 +97,12 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		} else if (eventName.equals("Print")) {
 			//TBD
 		} else if (eventName.equals("Back")) {
-			resetBar();
-			frame.setContentPane(main);
+			if (prevPanels.empty()) {
+				frame.setContentPane(new MainScreen(frame));
+				resetBar();
+			} else {
+				frame.setContentPane(prevPanels.pop());
+			}
 			frame.revalidate();
 			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {

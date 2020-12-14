@@ -29,6 +29,8 @@ public class CommentScreen extends JPanel implements ActionListener {
 	/*
 	 * Instance variables
 	 */
+	JFrame frame;
+	
 	JPanel titlePanel;
 	JLabel titleLabel;
 	
@@ -44,7 +46,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
 	private ActionItem actionItem;
 
-	CommentScreen(ActionItem item) {
+	CommentScreen(ActionItem item, JFrame frame) {
 		actionItem = item;	
 		/*
 		 * title of screen
@@ -160,8 +162,8 @@ public class CommentScreen extends JPanel implements ActionListener {
 
 	public static void main(String[] args) {
 		SampleActionItem1 item = new SampleActionItem1();
-		CommentScreen screen = new CommentScreen(item);
 		JFrame frame = new JFrame();
+		CommentScreen screen = new CommentScreen(item, frame);
 		screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();

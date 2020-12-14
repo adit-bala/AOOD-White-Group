@@ -118,7 +118,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 
 		historyScroll = new JScrollPane(container,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		addEvents();
 		c = new GridBagConstraints();
@@ -214,7 +214,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	}
 
 	private void setCommentScreen(ActionItem item) {
-		frame.setContentPane(new CommentScreen(item));
+		frame.setContentPane(new CommentScreen(item, frame));
 		frame.revalidate();
 	}
 
