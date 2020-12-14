@@ -47,6 +47,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 	private ActionItem actionItem;
 
 	CommentScreen(ActionItem item, JFrame frame) {
+		this.frame = frame;
 		actionItem = item;	
 		/*
 		 * title of screen
@@ -147,9 +148,11 @@ public class CommentScreen extends JPanel implements ActionListener {
 			actionItem.updateActionItem(actionItem.getTitle(), actionItem.getPriority(), actionItem.getUrgentByDate(),
 					actionItem.getCurrentByDate(), actionItem.getEventualByDate(), this.getComment());
 		} else if (eventName.contentEquals("delete")) {
-			actionItem.setComment("");
+			actionItem.updateActionItem(actionItem.getTitle(), actionItem.getPriority(), actionItem.getUrgentByDate(),
+					actionItem.getCurrentByDate(), actionItem.getEventualByDate(), "");
 			commentInput.setText("");
 		}
+		((MenuBar)frame.getJMenuBar()).actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Back"));
 	}
 
 	public String getComment() {

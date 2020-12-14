@@ -11,11 +11,12 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private JFileChooser fileChooser; 
 	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
+	private MainScreen main;
 	final static Color BAR_COLOR = Color.decode("#56997F");
 	
-	MenuBar(JFrame frame){
+	MenuBar(JFrame frame, MainScreen main){
 		this.frame = frame;
-		
+		this.main = main;
 		setBackground(BAR_COLOR);
 		file = new JMenu("File");
 		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
@@ -98,8 +99,9 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			//TBD
 		} else if (eventName.equals("Back")) {
 			if (prevPanels.empty()) {
-				frame.setContentPane(new MainScreen(frame));
+				frame.setContentPane(main);
 				resetBar();
+				// refresh list
 			} else {
 				frame.setContentPane(prevPanels.pop());
 			}

@@ -83,7 +83,6 @@ class MainScreen extends JPanel implements ActionListener{
 	MainScreen(JFrame frame) {
 		this.frame = frame;
 		userList = new SampleToDoList(); // where does this come from ?
-		userList.updateListOrder();
 		
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
