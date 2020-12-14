@@ -1,29 +1,18 @@
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.border.AbstractBorder;
-
 import backend.ActionItem;
 import backend.FontLoader;
 import backend.samples.*;
@@ -53,7 +42,7 @@ public class ClosedActionItemsScreen extends JPanel {
 //		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
 
 		this.add(Box.createRigidArea(new Dimension(20, 50)));
-		for(ActionItem item: test) {
+		for (ActionItem item : test) {
 			dates.add(item.getCompletedByDate());
 		}
 		for (LocalDateTime date : dates) {
@@ -62,7 +51,7 @@ public class ClosedActionItemsScreen extends JPanel {
 							+ Capitalize(date.getMonth().toString().toLowerCase()) + " " + date.getYear());
 			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
 			this.add(newDate);
-			for(ActionItem item: test) {
+			for (ActionItem item : test) {
 				if (item.getCompletedByDate().toLocalDate().equals(date.toLocalDate())) {
 					this.add(new ActionItemEntry(item));
 				}
@@ -90,7 +79,7 @@ public class ClosedActionItemsScreen extends JPanel {
 	public static void main(String[] args) {
 		SampleToDoList test = new SampleToDoList();
 		List<ActionItem> sample = new ArrayList<ActionItem>();
-		for(int i = 0; i < test.getNumCompleteItems(); i++) {
+		for (int i = 0; i < test.getNumCompleteItems(); i++) {
 			sample.add(test.getCompleteItemAtIndex(i));
 		}
 		ClosedActionItemsScreen screen = new ClosedActionItemsScreen(sample);

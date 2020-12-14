@@ -125,7 +125,7 @@ class MainScreen extends JPanel implements ActionListener{
 		frame.revalidate();
 		frame.repaint();
 	}
-	private void setPopup(JList<ActionItemEntry> list, int x, int y, ActionItemEntry itemEntry) {
+	private void setPopup(JList<ActionItemEntry> list, int x, int y, final ActionItemEntry itemEntry) {
 		JPopupMenu menu = new JPopupMenu("Menu");
 		JMenuItem Complete = new JMenuItem("Mark as complete");
 		JMenuItem Edit = new JMenuItem("Edit item");
@@ -234,11 +234,11 @@ class MainScreen extends JPanel implements ActionListener{
 		});
 	}
 	private void renderItemList(List<ActionItemEntry> listItems) {
-		DefaultListModel<ActionItemEntry> actionItemEntries = new DefaultListModel<ActionItemEntry>();
+		final DefaultListModel<ActionItemEntry> actionItemEntries = new DefaultListModel<ActionItemEntry>();
 		for (ActionItemEntry entry : listItems)
 			actionItemEntries.addElement(entry);
 		itemLists.add(actionItemEntries);
-		JList<ActionItemEntry> list = new JList<ActionItemEntry>(actionItemEntries) {
+		final JList<ActionItemEntry> list = new JList<ActionItemEntry>(actionItemEntries) {
 	        @Override
 	        public int locationToIndex(Point location) {
 	            int index = super.locationToIndex(location);
