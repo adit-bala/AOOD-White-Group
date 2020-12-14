@@ -7,18 +7,6 @@ public class ToDoList {
 	private List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
 	private List<ActionItem> completeItems = new ArrayList<ActionItem>();
 
-	/*
-	 * public List<ActionItem> getIncompleteItems() { List<ActionItem>
-	 * incompleteItems = new ArrayList<ActionItem>(); for (int i = 0; i <
-	 * this.incompleteItems.size(); i++) {
-	 * incompleteItems.add(this.incompleteItems.get(i).copy()); } return
-	 * incompleteItems; }
-	 * 
-	 * (public List<ActionItem> getCompleteItems() { List<ActionItem> completeItems
-	 * = new ArrayList<ActionItem>(); for (int i = 0; i < this.completeItems.size();
-	 * i++) { completeItems.add(this.completeItems.get(i).copy()); } return
-	 * completeItems; }
-	 */
 	public ActionItem getIncompleteItemAtIndex(int index) {
 		return incompleteItems.get(index);
 	}
@@ -36,27 +24,110 @@ public class ToDoList {
 	}
 
 	public void moveActionItem(int oldIndex, int newIndex) {
-		ActionItem temp = incompleteItems.get(oldIndex);
-		incompleteItems.remove(temp);
-		incompleteItems.add(newIndex, temp);
+		ActionItem item = incompleteItems.get(oldIndex);
+		incompleteItems.remove(item);
+		incompleteItems.add(newIndex, item);
 		if (oldIndex < newIndex) {
-			if (temp.getPriority() != incompleteItems.get(newIndex - 1).getPriority())
-				temp.setPriority(incompleteItems.get(newIndex - 1).getPriority());
+			if (item.getPriority() == Priority.INACTIVE
+					&& incompleteItems.get(newIndex - 1).getPriority() == Priority.INACTIVE
+					&& item.getActiveByDate() != incompleteItems.get(newIndex - 1).getActiveByDate()) {
+				item.setEventualByDate(incompleteItems.get(newIndex - 1).getActiveByDate());
+				item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(),
+						item.getCurrentByDate(), incompleteItems.get(newIndex - 1).getActiveByDate(),
+						item.getComment());
+			}
+			if (item.getPriority() != incompleteItems.get(newIndex - 1).getPriority()) {
+				item.setPriority(incompleteItems.get(newIndex - 1).getPriority());
+				if (incompleteItems.get(newIndex - 1).getPriority() == Priority.INACTIVE) {
+
+				}
+				item.updateActionItem(item.getTitle(), incompleteItems.get(newIndex - 1).getPriority(),
+						item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+			}
 		} else {
-			if (temp.getPriority() != incompleteItems.get(newIndex + 1).getPriority())
-				temp.setPriority(incompleteItems.get(newIndex + 1).getPriority());
+			if (item.getPriority() == Priority.INACTIVE
+					&& incompleteItems.get(newIndex + 1).getPriority() == Priority.INACTIVE
+					&& item.getActiveByDate() != incompleteItems.get(newIndex + 1).getActiveByDate()) {
+				item.setEventualByDate(incompleteItems.get(newIndex + 1).getActiveByDate());
+				item.updateActionItem(item.getTitle(), item.getPriority(), item.getUrgentByDate(),
+						item.getCurrentByDate(), incompleteItems.get(newIndex + 1).getActiveByDate(),
+						item.getComment());
+			}
+			if (item.getPriority() != incompleteItems.get(newIndex + 1).getPriority()) {
+				item.setPriority(incompleteItems.get(newIndex + 1).getPriority());
+				if (incompleteItems.get(newIndex + 1).getPriority() == Priority.INACTIVE) {
+					item.setEventualByDate(incompleteItems.get(newIndex + 1).getActiveByDate());
+				}
+				item.updateActionItem(item.getTitle(), incompleteItems.get(newIndex + 1).getPriority(),
+						item.getUrgentByDate(), item.getCurrentByDate(), item.getEventualByDate(), item.getComment());
+			}
 		}
+	}
+
+	public void updateListOrder() {
+		List<ActionItem> incompleteItems = new ArrayList<ActionItem>();
+		List<ActionItem> urgent = new ArrayList<ActionItem>();
+		List<ActionItem> current = new ArrayList<ActionItem>();
+		List<ActionItem> eventual = new ArrayList<ActionItem>();
+		List<ActionItem> unsortedInactive = new ArrayList<ActionItem>();
+		List<ActionItem> inactive = new ArrayList<ActionItem>();
+		for (int i = 0; i < this.incompleteItems.size(); i++) {
+			if (this.incompleteItems.get(i).getPriority() == Priority.URGENT) {
+				urgent.add(this.incompleteItems.get(i));
+			}
+			if (this.incompleteItems.get(i).getPriority() == Priority.CURRENT) {
+				current.add(this.incompleteItems.get(i));
+			}
+			if (this.incompleteItems.get(i).getPriority() == Priority.EVENTUAL) {
+				eventual.add(this.incompleteItems.get(i));
+			}
+			if (this.incompleteItems.get(i).getPriority() == Priority.INACTIVE) {
+				unsortedInactive.add(this.incompleteItems.get(i));
+			}
+		}
+		for (int j = 0; j < unsortedInactive.size(); j++) {
+			ActionItem earliest = unsortedInactive.get(0);
+			for (int i = 0; i < unsortedInactive.size() - 1; i++) {
+				if (unsortedInactive.get(i).getActiveByDate().isBefore(unsortedInactive.get(i + 1).getActiveByDate())) {
+					earliest = unsortedInactive.get(i);
+					unsortedInactive.remove(i);
+				}
+			}
+			inactive.add(earliest);
+		}
+		for (ActionItem item : urgent) {
+			incompleteItems.add(item);
+		}
+		for (ActionItem item : current) {
+			incompleteItems.add(item);
+		}
+		for (ActionItem item : eventual) {
+			incompleteItems.add(item);
+		}
+		for (ActionItem item : inactive) {
+			incompleteItems.add(item);
+		}
+		this.incompleteItems = incompleteItems;
 	}
 
 	public void completeActionItem(int index) {
 		incompleteItems.get(index).setCompletedByDate(LocalDateTime.now());
 		completeItems.add(incompleteItems.get(index));
 		incompleteItems.remove(index);
+	}
 
+	public void completeActionItem(ActionItem item) {
+		item.setCompletedByDate(LocalDateTime.now());
+		completeItems.add(item);
+		incompleteItems.remove(item);
 	}
 
 	public void deleteActionItem(int index) {
 		incompleteItems.remove(index);
+	}
+
+	public void deleteActionItem(ActionItem item) {
+		incompleteItems.remove(item);
 	}
 
 	public void addActionItem(ActionItem item) {
