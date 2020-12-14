@@ -8,7 +8,7 @@ class Window {
 		frame = new JFrame("To Do List");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		main = new MainScreen(frame);
-		menuBar = new MenuBar(frame);
+		menuBar = new MenuBar(frame, main);
 		frame.setJMenuBar(menuBar);
 		frame.setContentPane(main);
 		frame.pack();
