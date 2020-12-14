@@ -374,6 +374,9 @@ class MainScreen extends JPanel implements ActionListener{
 			p.add(list);
 			itemPanel.add(p);
 		}
+	public ToDoList getToDoList() {
+		return this.userList;
+	}
 	private void updateAllIndexes() {
 		for (int i=0;i<items.size();i++) {
 			items.get(i).setIndex(i);
