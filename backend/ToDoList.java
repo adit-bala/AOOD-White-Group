@@ -85,6 +85,16 @@ public class ToDoList {
 				unsortedInactive.add(this.incompleteItems.get(i));
 			}
 		}
+		while (unsortedInactive.size() > 0) {
+			ActionItem earliest = unsortedInactive.get(0);
+			for (int i = 1;i < unsortedInactive.size();i++) {
+				if (unsortedInactive.get(i).getActiveByDate().isBefore(earliest.getActiveByDate()))
+					earliest = unsortedInactive.get(i);
+			}
+			unsortedInactive.remove(earliest);
+			inactive.add(earliest);
+		}
+		/*
 		for (int j = 0; j < unsortedInactive.size(); j++) {
 			ActionItem earliest = unsortedInactive.get(0);
 			for (int i = 0; i < unsortedInactive.size() - 1; i++) {
@@ -95,6 +105,7 @@ public class ToDoList {
 			}
 			inactive.add(earliest);
 		}
+		*/
 		for (ActionItem item : urgent) {
 			incompleteItems.add(item);
 		}
@@ -131,7 +142,7 @@ public class ToDoList {
 	}
 
 	public void addActionItem(ActionItem item) {
-		item.setPriority(Priority.URGENT);
+		//item.setPriority(Priority.URGENT);
 		incompleteItems.add(0, item);
 	}
 
