@@ -17,7 +17,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	private JMenu file; 
 	private JMenuItem createBackup, restoreBackup, printList;
 	private JButton completedActionItems, quit, back;
-	private JFileChooser fileChooser; 
+	private JLabel[] separators = new JLabel[2];
 	private Stack<JPanel> prevPanels = new Stack<JPanel>();
 	private JFrame frame;
 	private MainScreen main;
@@ -28,20 +28,20 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		this.main = main;
 		setBackground(BAR_COLOR);
 		file = new JMenu("File");
-		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
+		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
 		file.setBackground(BAR_COLOR);
 		file.setForeground(Color.white);
 		
 		createBackup = new JMenuItem("Create Backup");
-		createBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
+		createBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
 		createBackup.setActionCommand("Create");
 		createBackup.addActionListener(this);
-		restoreBackup = new JMenuItem("Restore Backup...");
-		restoreBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
+		restoreBackup = new JMenuItem("Restore Backup");
+		restoreBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
 		restoreBackup.setActionCommand("Restore");
 		restoreBackup.addActionListener(this);
 		printList = new JMenuItem("Print List");
-		printList.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 10));
+		printList.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
 		printList.setActionCommand("Print");
 		printList.addActionListener(this);
 		file.add(createBackup);
@@ -49,7 +49,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		file.add(printList);
 		
 		completedActionItems = new JButton("Completed Action Items");
-		completedActionItems.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
+		completedActionItems.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
 		completedActionItems.setBackground(BAR_COLOR);
 		completedActionItems.setForeground(Color.white);
 		completedActionItems.setOpaque(true);
@@ -57,7 +57,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		completedActionItems.setActionCommand("Completed Action Items");
 		completedActionItems.addActionListener(this);
 		quit = new JButton("Quit");
-		quit.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 12));
+		quit.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
 		quit.setBackground(BAR_COLOR);
 		quit.setOpaque(true);
 		quit.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -65,8 +65,17 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		quit.setActionCommand("Quit");
 		quit.addActionListener(this); 
 		
+		for (int i = 0; i < 2; i++) {
+			JLabel separator = new JLabel(" | ");
+			separator.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
+			separator.setForeground(Color.WHITE);
+			separators[i] = separator;
+		}
+		add(Box.createHorizontalStrut(5));
 		add(file);
+		add(separators[0]);
 		add(completedActionItems);
+		add(separators[1]);
 		add(quit);
 		
 		//frame = new JFrame();
@@ -79,13 +88,15 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	}
 	public void changeBar() {
 		remove(file);
+		remove(separators[0]);
 		remove(completedActionItems);
+		remove(separators[1]);
 		remove(quit); 
 		back = new JButton("Back");
 		add(back);
 		back.setActionCommand("Back");
 		back.addActionListener(this);
-		back.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 12));
+		back.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 18));
 		back.setBackground(BAR_COLOR);
 		back.setForeground(Color.white);
 		back.setOpaque(true);
@@ -94,7 +105,9 @@ public class MenuBar extends JMenuBar implements ActionListener{
 	public void resetBar() {
 		remove(back);
 		add(file);
+		add(separators[0]);
 		add(completedActionItems);
+		add(separators[1]);
 		add(quit);
 	}
 	public void addPrevPanel(JPanel panel) {
