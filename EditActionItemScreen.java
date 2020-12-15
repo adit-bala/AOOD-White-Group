@@ -53,7 +53,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 
 		/* main panel setup */
 		setLayout(new GridBagLayout());
-		gbc.insets = new Insets(5,10,5,10);
+		gbc.insets = new Insets(5,5,5,5);
 		setBackground(Color.white);
 		gbc.anchor=GridBagConstraints.FIRST_LINE_START;
 
@@ -341,6 +341,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		JFrame frame = new JFrame();
 		EditActionItemScreen screen = new 
 				EditActionItemScreen(new ActionItem(), frame);
+		//screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
