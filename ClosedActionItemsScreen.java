@@ -30,23 +30,20 @@ public class ClosedActionItemsScreen extends JPanel {
 	// private JLabel dates;
 
 	ClosedActionItemsScreen(List<ActionItem> test) {
-		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setBackground(Color.WHITE);
 		JLabel titleLabel = new JLabel("Closed Action Items");
 		titleLabel.setFont(FontLoader
 				.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80));
-		titleLabel.setAlignmentX(LEFT_ALIGNMENT);
-		JPanel underline = new JPanel();
-		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
-		underline.setAlignmentX(LEFT_ALIGNMENT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
-		titlePanel.add(Box.createVerticalStrut(20));
 		titlePanel.setBackground(Color.WHITE);
 		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 0, 40));
+		titlePanel.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(titlePanel);
 	
 		JPanel itemPanel = new JPanel();
@@ -56,11 +53,11 @@ public class ClosedActionItemsScreen extends JPanel {
 			dates.add(item.getCompletedByDate().toLocalDate());
 		}
 		for (LocalDate date : dates) {
-			itemPanel.add(Box.createVerticalStrut(10));
+			itemPanel.add(Box.createVerticalStrut(15));
 			DateTimeFormatter formatter = DateTimeFormatter
 					.ofPattern("EEEE, d MMMM uuuu");
 			JLabel newDate = new JLabel(date.format(formatter));
-			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
+			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 30));
 			newDate.setAlignmentX(LEFT_ALIGNMENT);
 			itemPanel.add(newDate);
 			itemPanel.add(Box.createVerticalStrut(5));
@@ -72,9 +69,11 @@ public class ClosedActionItemsScreen extends JPanel {
 				}
 			}
 		}
+		itemPanel.add(Box.createVerticalStrut(15));
 		itemPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 		JScrollPane scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
+		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(scrollPane);
 	}
 	
