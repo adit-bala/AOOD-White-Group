@@ -80,7 +80,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		commentInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		scrollPane = new JScrollPane(commentInput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		commentInput.setText(item.getComment());
-		commentInput.setBackground(Color.decode("#e8e8e8"));
+		commentInput.setBackground(Color.WHITE);
 		commentInput.setForeground(Color.decode("#56997F"));
 		
 		commentInput.setLineWrap(true);

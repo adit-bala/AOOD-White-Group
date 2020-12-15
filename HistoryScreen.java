@@ -166,6 +166,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventDescriptionPanel.setBackground(Color.WHITE);
 			JLabel eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
+			eventDescription.setForeground(Color.decode("#56997F"));
 			eventDescription.setText("<html><p style=\"width:640px\">"
 					+ events.get(events.size() - 1 - i).label()
 					+ "</p></html>");

@@ -1,27 +1,53 @@
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.time.LocalDate;
 
-public class printActionItemScreen {
-	JFrame frame;
-    JPanel contentPane;
-    JLabel label;
-	public void displayActionItem(ActionItem item) {
-		frame = new JFrame("Action Item Display Screen");
-		String title = item.getTitle();
-		String comment = item.getComment();
-		LocalDate urgent = item.getUrgentByDate();
-		LocalDate current = item.getCurrentByDate();
-		LocalDate eventual = item.getEventualByDate();
-		
-		contentPane = new JPanel();
-		label = new JLabel("<html>Title: " + title + "<br/>urgentByDate: " + urgent + "<br/>currentByDate: " + current + "<br/>eventualByDate: " + eventual + "<br/>Comment: " + comment + "<br/>History: " + "</html>");
-		contentPane.add(label);
-		frame.setContentPane(contentPane);
-    	frame.pack();
-    	frame.setVisible(true);
+import backend.ActionItem;
+import backend.FontLoader;
+import backend.samples.SampleActionItem1;
+import backend.samples.SampleToDoList;
 
-		
+
+public class printActionItemScreen extends JPanel {
+	
+	private JLabel title;
+	private JLabel urgency;
+	private JLabel comment;
+	
+	public printActionItemScreen(ActionItem item) {
+	this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+	title = new JLabel("Task Name: " +  item.getTitle());
+	title.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
+	title.setAlignmentX(Component.CENTER_ALIGNMENT);
+	this.add(title);
+	urgency = new JLabel("Urgency: " + Capitalize(item.getPriority().toString().toLowerCase()));
+	urgency.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Medium.ttf", 72));
+	urgency.setAlignmentX(Component.CENTER_ALIGNMENT);
+	this.add(urgency);
+	comment = new JLabel(item.getComment());
+	comment.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 36));
+	comment.setAlignmentX(Component.CENTER_ALIGNMENT);	
+	this.add(comment);
+	}
+	
+	private String Capitalize(String old) {
+		return old.substring(0, 1).toUpperCase() + old.substring(1);
+	}
+	
+	public static void main(String args[]) {
+		SampleActionItem1 test = new SampleActionItem1();
+		printActionItemScreen screen = new printActionItemScreen(test);
+		screen.setPreferredSize(new Dimension(1000, 1000));
+		JFrame frame = new JFrame();
+		frame.setContentPane(screen);
+		frame.pack();
+		frame.setVisible(true);
+		screen.repaint();
 	}
 }
