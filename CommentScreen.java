@@ -42,7 +42,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 	JButton deleteButton;
 	
 	CommentChangeEvent commentEvent;
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
 	private ActionItem actionItem;
 
@@ -60,8 +60,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 		titlePanel.setBackground(Color.WHITE);
-		JPanel underline = new JPanel();
-		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
