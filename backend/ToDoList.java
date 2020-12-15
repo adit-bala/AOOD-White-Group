@@ -42,8 +42,6 @@ public class ToDoList {
 			}
 			if (item.getPriority() != incompleteItems.get(newIndex - 1)
 					.getPriority()) {
-				item.setPriority(
-						incompleteItems.get(newIndex - 1).getPriority());
 				if (incompleteItems.get(newIndex - 1)
 						.getPriority() == Priority.INACTIVE) {
 
@@ -68,8 +66,6 @@ public class ToDoList {
 			}
 			if (item.getPriority() != incompleteItems.get(newIndex + 1)
 					.getPriority()) {
-				item.setPriority(
-						incompleteItems.get(newIndex + 1).getPriority());
 				if (incompleteItems.get(newIndex + 1)
 						.getPriority() == Priority.INACTIVE) {
 					item.setEventualByDate(incompleteItems.get(newIndex + 1)
