@@ -48,6 +48,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 
 	CommentScreen(ActionItem item, JFrame frame) {
 		this.frame = frame;
+		setBackground(Color.WHITE);
 		actionItem = item;	
 		/*
 		 * title of screen
@@ -58,6 +59,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		titleLabel.setFont(TITLE_FONT);
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+		titlePanel.setBackground(Color.WHITE);
 		JPanel underline = new JPanel();
 		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
 		underline.setMaximumSize(new Dimension(610, 10));
@@ -80,7 +82,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		commentInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		scrollPane = new JScrollPane(commentInput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		commentInput.setText(item.getComment());
-		commentInput.setBackground(Color.WHITE);
+		commentInput.setBackground(new Color(230, 230, 230));
 		commentInput.setForeground(Color.decode("#56997F"));
 		
 		commentInput.setLineWrap(true);
@@ -122,6 +124,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		add(commitButton, c);
 		
 		JPanel empty = new JPanel();
+		empty.setBackground(Color.WHITE);
 		empty.setPreferredSize(new Dimension(0, 0));
 		empty.setMinimumSize(new Dimension(0, 0));
 		c.gridx = 1;

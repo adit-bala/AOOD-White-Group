@@ -53,12 +53,14 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
 	public static final Font LABEL_FONT = FontLoader
 			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
+	private final Color bgColor = new Color(230, 230, 230);
 
 	boolean isAlreadyOneClick;
 
 	HistoryScreen(ActionItem item, JFrame frame) {
 		this.frame = frame;
 		actionItem = item;
+		setBackground(Color.WHITE);
 		setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
 		events = actionItem.getHistory();
 //		for (int i = 0; i < item.getHistory().size(); i++) {
@@ -95,6 +97,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
+		titlePanel.setBackground(Color.WHITE);
 		add(titlePanel, c);
 
 		/*
@@ -106,10 +109,10 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		gbl.rowWeights = new double[100];
 		gbl.rowWeights[99] = Double.MIN_VALUE;
 		historyPanel.setLayout(gbl);
-		historyPanel.setBackground(Color.WHITE);
+		historyPanel.setBackground(bgColor);
 
 		JPanel container = new JPanel();
-		container.setBackground(Color.WHITE);
+		container.setBackground(bgColor);
 		container.setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
@@ -162,8 +165,8 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setAlignmentX(LEFT_ALIGNMENT);
 			JPanel eventDescriptionPanel = new RoundedPanel(20,
-					Color.decode("#e8e8e8"));
-			eventDescriptionPanel.setBackground(Color.WHITE);
+					Color.WHITE);
+			eventDescriptionPanel.setBackground(bgColor);
 			JLabel eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
 			eventDescription.setForeground(Color.decode("#56997F"));
@@ -184,7 +187,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			historyPanel.add(eventPanel, c);
 			eventPanel
 					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
-			eventPanel.setBackground(Color.WHITE);
+			eventPanel.setBackground(bgColor);
 
 			if (events.get(i).getType() == 2) {
 				eventPanel.addMouseListener(this);
@@ -287,6 +290,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}
 			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width,
 					arcs.height); // paint background
+			graphics.setColor(bgColor);
 			graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width,
 					arcs.height); // paint border
 		}

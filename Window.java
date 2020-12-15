@@ -33,7 +33,6 @@ class Window {
 	}
 
 	private static void runGUI() {
-		JFrame.setDefaultLookAndFeelDecorated(true);
 		new Window();
 	}
 
