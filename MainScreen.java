@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,7 @@ class MainScreen extends JPanel implements ActionListener{
 	private ArrayList<ActionItemEntry> items;
 	private ToDoList userList;
 	private JTextField NewActionItem;
+	private String newActionItemName = "";
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
 	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
 	public static final Font HEADING_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
@@ -110,16 +113,31 @@ class MainScreen extends JPanel implements ActionListener{
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
 		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
-		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 14));
+		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 18));
 		NewActionItem.setBackground(Color.white);
 		NewActionItem.setForeground(Color.gray.brighter());
 		NewActionItem.setColumns(30);
 		NewActionItem.setBorder(BorderFactory.createCompoundBorder(
                 new CustomBorder(), 
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
-		NewActionItem.setMaximumSize(new Dimension(9999, 100));
+		NewActionItem.setMinimumSize(new Dimension(frame.getWidth(), 70));
+		NewActionItem.setPreferredSize(NewActionItem.getMinimumSize());
+		NewActionItem.setMaximumSize(new Dimension(9999, 70));
 		NewActionItem.addActionListener(this);
 		NewActionItem.setAlignmentX(LEFT_ALIGNMENT);
+		NewActionItem.addFocusListener(new FocusListener() {  
+		    public void focusGained(FocusEvent e) {  
+		    	NewActionItem.setText(newActionItemName);  
+		    	NewActionItem.setForeground(THEME_MEDIUM);  
+		    }  
+		    public void focusLost(FocusEvent e) { 
+	        	newActionItemName = NewActionItem.getText();
+		        if (newActionItemName.length() == 0) {  
+		        	NewActionItem.setText("New Action Item...");  
+		        	NewActionItem.setForeground(Color.gray.brighter());
+		        }
+		    }  
+		});
 		this.add(NewActionItem);
 	}
 	private void setActionItemScreen(ActionItem item) {
@@ -205,9 +223,9 @@ class MainScreen extends JPanel implements ActionListener{
 	            // TODO Auto-generated method stubs
 	            super.paintBorder(c, g, x, y, width, height);
 	            Graphics2D g2d = (Graphics2D)g;
-	            g2d.setStroke(new BasicStroke(12));
+	            g2d.setStroke(new BasicStroke(20));
 	            g2d.setColor(THEME_MEDIUM);
-	            g2d.drawRoundRect(x, y, width - 1, height - 1, 25, 25);
+	            g2d.drawRoundRect(x, y, width - 1, height - 1, 40, 40);
 	        }   
 	    }
 	 
@@ -484,7 +502,7 @@ class MainScreen extends JPanel implements ActionListener{
 		//test.setEventualByDate(LocalDateTime.now());
 		//test.setCurrentByDate(LocalDateTime.now());
 		//test.setCompletedByDate(LocalDateTime.now());
-		test.setComment("comment");
+		test.setComment("");
 		userList.addActionItem(test);
 		scrollPane.getViewport().remove(itemPanel);
 		boolean added = false;
@@ -498,6 +516,8 @@ class MainScreen extends JPanel implements ActionListener{
 			items.add(makeEntry(test));
 		renderAllItemLists();
 		scrollPane.getViewport().add(itemPanel);
+		NewActionItem.setText("");
+		scrollPane.requestFocusInWindow();
 		frame.revalidate();
 	}
 	/*
