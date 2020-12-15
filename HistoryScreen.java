@@ -88,8 +88,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		titleLabel.setFont(TITLE_FONT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
-		JPanel underline = new JPanel();
-		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
@@ -165,7 +164,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setAlignmentX(LEFT_ALIGNMENT);
 			JPanel eventDescriptionPanel = new RoundedPanel(20,
-					Color.WHITE);
+					Color.WHITE, bgColor);
 			eventDescriptionPanel.setBackground(bgColor);
 			JLabel eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
@@ -255,44 +254,5 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	class RoundedPanel extends JPanel {
-		private Color backgroundColor;
-		private int cornerRadius = 15;
-
-		public RoundedPanel(int radius) {
-			super();
-			cornerRadius = radius;
-		}
-
-		public RoundedPanel(int radius, Color bgColor) {
-			super();
-			cornerRadius = radius;
-			backgroundColor = bgColor;
-		}
-
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Dimension arcs = new Dimension(cornerRadius, cornerRadius);
-			int width = getWidth();
-			int height = getHeight();
-			Graphics2D graphics = (Graphics2D) g;
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-
-			// Draws the rounded panel with borders.
-			if (backgroundColor != null) {
-				graphics.setColor(backgroundColor);
-			} else {
-				graphics.setColor(getBackground());
-			}
-			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width,
-					arcs.height); // paint background
-			graphics.setColor(bgColor);
-			graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width,
-					arcs.height); // paint border
-		}
 	}
 }
