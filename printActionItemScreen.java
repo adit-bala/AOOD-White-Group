@@ -102,12 +102,9 @@ public class printActionItemScreen extends JPanel {
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(titlePanel, c);
-		/*
-		 * priority
-		 */
 		
 		/*
-		 * history
+		 * scroll pane
 		 */
 		historyPanel = new JPanel();
 		GridBagLayout gbl = new GridBagLayout();
@@ -129,7 +126,7 @@ public class printActionItemScreen extends JPanel {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-		addHistoryEvents();
+		addEvents();
 		c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 2;
@@ -151,23 +148,10 @@ public class printActionItemScreen extends JPanel {
 		});
 	}
 	/*
-	 * adds current priority and date to the screen
-	 */
-	private void addCurrentData() {
-		JLabel currentDescriptions = new JLabel();
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		//priority
-		//comment
-	}
-	/*
 	 * adds events (JPanels) to the screen if comment event, also adds mouse
 	 * listener
 	 */
-	private void addHistoryEvents() {
+	private void addEvents() {
 		eventDescriptions = new JLabel[events.size()];
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -188,7 +172,53 @@ public class printActionItemScreen extends JPanel {
 		c.anchor = GridBagConstraints.LINE_START;
 		historyPanel.add(itemPanel, c);
 		
+		/*
+		 * current stuff
+		 */
+		JPanel priorityPanel = new RoundedPanel(20,
+				Color.decode("#e8e8e8"));
+		priorityPanel.setBackground(Color.WHITE);
+		JLabel priorityLabel = new JLabel("Priority: "+actionItem.getPriority());
+		priorityLabel.setFont(LABEL_FONT);
+		priorityLabel.setForeground(Color.decode("#56997F"));
+		priorityLabel.setAlignmentX(LEFT_ALIGNMENT);
+		priorityLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		JPanel datePanel = new RoundedPanel(20,
+				Color.decode("#e8e8e8"));
+		datePanel.setBackground(Color.WHITE);
+		JLabel dateLabel = new JLabel(actionItem.getActiveByDate()+"; "+actionItem.getCompletedByDate()+"; "+actionItem.getCurrentByDate()+"; "+actionItem.getEventualByDate()+"; "+actionItem.getUrgentByDate());
+		dateLabel.setFont(LABEL_FONT);
+		dateLabel.setForeground(Color.decode("#56997F"));
+		dateLabel.setAlignmentX(LEFT_ALIGNMENT);
+		dateLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		JPanel commentPanel = new RoundedPanel(20,
+				Color.decode("#e8e8e8"));
+		commentPanel.setBackground(Color.WHITE);
+		JLabel commentLabel = new JLabel("Comment: "+actionItem.getComment());
+		commentLabel.setFont(LABEL_FONT);
+		commentLabel.setForeground(Color.decode("#56997F"));
+		commentLabel.setAlignmentX(LEFT_ALIGNMENT);
+		commentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		c.insets = new Insets(5,5,5,5);
 		c.gridy = 2;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		priorityPanel.add(priorityLabel);
+		historyPanel.add(priorityPanel, c);
+		
+		c.gridy = 3;
+		datePanel.add(dateLabel);
+		historyPanel.add(datePanel, c);
+		
+		c.gridy = 4;
+		commentPanel.add(commentLabel);
+		historyPanel.add(commentPanel, c);
+		/*
+		 * history
+		 */
+		c.gridy = 5;
 		JPanel dividerPanel = new JPanel();
 		JLabel dividerLabel = new JLabel("<html><p style=\"width:640px\">"+"History"+"</p></html>");
 		dividerLabel.setFont(HEADER_FONT);
@@ -197,7 +227,7 @@ public class printActionItemScreen extends JPanel {
 		dividerPanel.setBackground(Color.WHITE);
 		historyPanel.add(dividerPanel, c);
 		
-		c.gridy = 3;
+		c.gridy = 6;
 		for (int i = 0; i < events.size(); i++) {
 			DateTimeFormatter formatter = DateTimeFormatter
 					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
@@ -205,6 +235,7 @@ public class printActionItemScreen extends JPanel {
 					.getDateTime().format(formatter));
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setAlignmentX(LEFT_ALIGNMENT);
+			
 			JPanel eventDescriptionPanel = new RoundedPanel(20,
 					Color.decode("#e8e8e8"));
 			eventDescriptionPanel.setBackground(Color.WHITE);
