@@ -255,4 +255,5 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	
 }
