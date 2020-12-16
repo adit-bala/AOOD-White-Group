@@ -98,16 +98,17 @@ public class ClosedActionItemsScreen extends JPanel implements MouseListener, Ac
 	}
 	
     public void mouseClicked(MouseEvent e) {
+    	this.selectedEntry = (ActionItemEntry) e.getSource();
     	if (SwingUtilities.isRightMouseButton(e)) {
 			//System.out.println("Right clicked on item " + o.getActionItem() + "!");
-			setPopup(e.getX(), e.getY(), (ActionItemEntry) e.getSource());
+			setPopup(e.getX(), e.getY());
 		} else if (e.getClickCount() == 2) {
 			//System.out.println("Double clicked on item " + o.getActionItem() + "!");
+			setEditActionItemScreen(this.selectedEntry.getActionItem());
     	}
     }
 	
-	private void setPopup(int x, int y, ActionItemEntry selectedEntry) {
-		this.selectedEntry = selectedEntry;
+	private void setPopup(int x, int y) {
 		JPopupMenu menu = new JPopupMenu("Menu");
 		JMenuItem Complete = new JMenuItem("Mark as complete");
 		JMenuItem Edit = new JMenuItem("Edit item");
@@ -123,12 +124,16 @@ public class ClosedActionItemsScreen extends JPanel implements MouseListener, Ac
         menu.show(selectedEntry, x, y);
 	}
 	
+	private void setEditActionItemScreen(ActionItem item) {
+		frame.setContentPane(new EditActionItemScreen(item, frame));
+		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
+		frame.revalidate();
+		frame.repaint();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Edit") {
-			frame.setContentPane(new EditActionItemScreen(selectedEntry.getActionItem(), frame));
-			((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
-			frame.revalidate();
-			frame.repaint();
+			setEditActionItemScreen(selectedEntry.getActionItem());
 		} else if (e.getActionCommand() == "Delete") {
 			int choice = JOptionPane.showConfirmDialog(selectedEntry, "Are you sure you want to delete the item '" + selectedEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			if (choice == JOptionPane.YES_OPTION) {
