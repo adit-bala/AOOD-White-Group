@@ -88,7 +88,7 @@ class ActionItemEntry extends JPanel
 		else
 			label.setFont(MainScreen.NORMAL_FONT);
 		label.setForeground(Color.decode("#134D37"));
-		label.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 0));
+		label.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 		label.setOpaque(true);
 		label.setBackground(new Color(230, 230, 230));
 		label.setHorizontalAlignment(SwingConstants.LEFT);

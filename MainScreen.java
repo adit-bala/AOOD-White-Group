@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,7 @@ class MainScreen extends JPanel implements ActionListener{
 	private ArrayList<ActionItemEntry> items;
 	private ToDoList userList;
 	private JTextField NewActionItem;
+	private String newActionItemName = "";
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
 	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
 	public static final Font HEADING_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
@@ -86,38 +89,55 @@ class MainScreen extends JPanel implements ActionListener{
 		
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		this.setBackground(Color.white);
 		pageTitle = new JLabel("TO-DO");
 		pageTitle.setFont(TITLE_FONT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 		titlePanel.setBackground(Color.white);
-		JPanel underline = new JPanel();
-		underline.setBorder(new LineBorder(THEME_MEDIUM, 5, true));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(pageTitle);
 		titlePanel.add(underline);
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 0, 40));
+		titlePanel.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(titlePanel);
 		userList.updateListOrder();
 		initItemList();
 		renderAllItemLists();
 		scrollPane = new JScrollPane(itemPanel);
 		scrollPane.setBorder(null);
+		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
 		this.setPreferredSize(new Dimension(1024, 1366)); //height too big for most laptop screens so won't be proportional
 		this.add(scrollPane);
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
 		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
-		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 14));
+		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 18));
 		NewActionItem.setBackground(Color.white);
 		NewActionItem.setForeground(Color.gray.brighter());
 		NewActionItem.setColumns(30);
 		NewActionItem.setBorder(BorderFactory.createCompoundBorder(
                 new CustomBorder(), 
                 new EmptyBorder(new Insets(15, 25, 15, 25))));
-		NewActionItem.setMaximumSize(new Dimension(9999, 100));
+		NewActionItem.setMinimumSize(new Dimension(frame.getWidth(), 70));
+		NewActionItem.setPreferredSize(NewActionItem.getMinimumSize());
+		NewActionItem.setMaximumSize(new Dimension(9999, 70));
 		NewActionItem.addActionListener(this);
+		NewActionItem.setAlignmentX(LEFT_ALIGNMENT);
+		NewActionItem.addFocusListener(new FocusListener() {  
+		    public void focusGained(FocusEvent e) {  
+		    	NewActionItem.setText(newActionItemName);  
+		    	NewActionItem.setForeground(THEME_MEDIUM);  
+		    }  
+		    public void focusLost(FocusEvent e) { 
+	        	newActionItemName = NewActionItem.getText();
+		        if (newActionItemName.length() == 0) {  
+		        	NewActionItem.setText("New Action Item...");  
+		        	NewActionItem.setForeground(Color.gray.brighter());
+		        }
+		    }  
+		});
 		this.add(NewActionItem);
 	}
 	private void setActionItemScreen(ActionItem item) {
@@ -203,9 +223,9 @@ class MainScreen extends JPanel implements ActionListener{
 	            // TODO Auto-generated method stubs
 	            super.paintBorder(c, g, x, y, width, height);
 	            Graphics2D g2d = (Graphics2D)g;
-	            g2d.setStroke(new BasicStroke(12));
+	            g2d.setStroke(new BasicStroke(20));
 	            g2d.setColor(THEME_MEDIUM);
-	            g2d.drawRoundRect(x, y, width - 1, height - 1, 25, 25);
+	            g2d.drawRoundRect(x, y, width - 1, height - 1, 40, 40);
 	        }   
 	    }
 	 
@@ -372,7 +392,10 @@ class MainScreen extends JPanel implements ActionListener{
 			JPanel p = new JPanel();
 			p.setLayout(new BorderLayout());
 			p.add(list);
+			p.setAlignmentX(LEFT_ALIGNMENT);
+			p.setMaximumSize(new Dimension(p.getMaximumSize().width, p.getPreferredSize().height));
 			itemPanel.add(p);
+			itemPanel.add(Box.createVerticalStrut(20));
 		}
 	public void setToDoList(ToDoList list) {
 		this.userList = list;
@@ -403,15 +426,13 @@ class MainScreen extends JPanel implements ActionListener{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(Color.white);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-		String day = d.getDayOfWeek().toString();
-		day = day.substring(0, 1) + day.substring(1).toLowerCase();
-		String formattedString = day + ", " + d.format(formatter);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu");
+		String formattedString = d.format(formatter);
 		JLabel label = new JLabel(formattedString);
-		label.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 		label.setFont(HEADING_FONT);
 		panel.add(label);
-		panel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+		panel.setAlignmentX(LEFT_ALIGNMENT);
+		panel.setMaximumSize(panel.getPreferredSize());
 		return panel;
 	}
 	private void renderAllItemLists() { // assumes list already sorted properly
@@ -420,6 +441,8 @@ class MainScreen extends JPanel implements ActionListener{
 		itemPanel = new JPanel();
 		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 		itemPanel.setBackground(Color.WHITE);
+		itemPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
+		itemPanel.add(Box.createVerticalStrut(15));
 		updateAllIndexes();
 		if (items.size() > 0 && items.get(0).getActionItem().getPriority() == Priority.INACTIVE) {
 			renderItemList(items.subList(0, 0));
@@ -436,6 +459,7 @@ class MainScreen extends JPanel implements ActionListener{
 						start = i;
 					} else if (!prevDate.toString().equals(currDate.toString())) {
 						itemPanel.add(makeDateLabel(prevDate));
+						itemPanel.add(Box.createVerticalStrut(5));
 						renderItemList(items.subList(start, i));
 						start = i;
 					}
@@ -443,10 +467,13 @@ class MainScreen extends JPanel implements ActionListener{
 			}
 		}
 		if (items.size() > 0) {
-			if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE)
+			if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE) {
 				itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
+				itemPanel.add(Box.createVerticalStrut(5));
+			}
 			renderItemList(items.subList(start, items.size()));
 		}
+		itemPanel.add(Box.createGlue());
 	}
 	
 	private void printData(ActionItem item) {
@@ -475,7 +502,7 @@ class MainScreen extends JPanel implements ActionListener{
 		//test.setEventualByDate(LocalDateTime.now());
 		//test.setCurrentByDate(LocalDateTime.now());
 		//test.setCompletedByDate(LocalDateTime.now());
-		test.setComment("comment");
+		test.setComment("");
 		userList.addActionItem(test);
 		scrollPane.getViewport().remove(itemPanel);
 		boolean added = false;
@@ -489,6 +516,8 @@ class MainScreen extends JPanel implements ActionListener{
 			items.add(makeEntry(test));
 		renderAllItemLists();
 		scrollPane.getViewport().add(itemPanel);
+		NewActionItem.setText("");
+		scrollPane.requestFocusInWindow();
 		frame.revalidate();
 	}
 	/*

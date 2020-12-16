@@ -1,19 +1,20 @@
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
+
 import backend.ActionItem;
 import backend.FontLoader;
 import backend.samples.*;
@@ -25,58 +26,57 @@ public class ClosedActionItemsScreen extends JPanel {
 	/*
 	 * Instance variables
 	 */
-	private JLabel pageTitle;
-	private JScrollPane scrollPane;
-	private JPanel closedItemList;
 	private HashSet<LocalDate> dates = new HashSet<LocalDate>();
 	// private JLabel dates;
 
 	ClosedActionItemsScreen(List<ActionItem> test) {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		pageTitle = new JLabel("Closed Action Items");
-		pageTitle.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 72));
-		pageTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-		this.add(pageTitle);
-		closedItemList = new JPanel();
-//		scrollPane = new JScrollPane(this);
-//		scrollPane.setPreferredSize(new Dimension(250, 80));
-//		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
-
-		this.add(Box.createRigidArea(new Dimension(20, 50)));
+		this.setBackground(Color.WHITE);
+		JLabel titleLabel = new JLabel("Closed Action Items");
+		titleLabel.setFont(FontLoader
+				.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
+		underline.setMaximumSize(new Dimension(610, 10));
+		JPanel titlePanel = new JPanel();
+		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+		titlePanel.add(titleLabel);
+		titlePanel.add(underline);
+		titlePanel.setBackground(Color.WHITE);
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 0, 40));
+		titlePanel.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(titlePanel);
+	
+		JPanel itemPanel = new JPanel();
+		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
+		itemPanel.setBackground(Color.WHITE);
 		for (ActionItem item : test) {
 			dates.add(item.getCompletedByDate().toLocalDate());
 		}
 		for (LocalDate date : dates) {
-			JLabel newDate = new JLabel(
-					"" + Capitalize(date.getDayOfWeek().toString().toLowerCase()) + ", " + date.getDayOfMonth() + " "
-							+ Capitalize(date.getMonth().toString().toLowerCase()) + " " + date.getYear());
-			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 36));
-			this.add(newDate);
+			itemPanel.add(Box.createVerticalStrut(15));
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu");
+			JLabel newDate = new JLabel(date.format(formatter));
+			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 30));
+			newDate.setAlignmentX(LEFT_ALIGNMENT);
+			itemPanel.add(newDate);
+			itemPanel.add(Box.createVerticalStrut(5));
 			for (ActionItem item : test) {
 				if (item.getCompletedByDate().toLocalDate().equals(date)) {
-					this.add(new ActionItemEntry(item));
+					ActionItemEntry entry = new ActionItemEntry(item);
+					entry.setAlignmentX(LEFT_ALIGNMENT);
+					itemPanel.add(entry);
 				}
 			}
 		}
-
+		itemPanel.add(Box.createVerticalStrut(15));
+		itemPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
+		JScrollPane scrollPane = new JScrollPane(itemPanel);
+		scrollPane.setBorder(null);
+		scrollPane.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(scrollPane);
 	}
-
-	private String Capitalize(String old) {
-		return old.substring(0, 1).toUpperCase() + old.substring(1);
-	}
-
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.decode("#56997F"));
-		g2d.fillRect(50, 100, 250, 10);
-
-	}
-
-	public void actionPeformed() {
-
-	}
-
+	
 	public static void main(String[] args) {
 		SampleToDoList test = new SampleToDoList();
 		List<ActionItem> sample = new ArrayList<ActionItem>();
@@ -89,7 +89,7 @@ public class ClosedActionItemsScreen extends JPanel {
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
-		screen.repaint();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 }

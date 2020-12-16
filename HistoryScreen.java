@@ -53,12 +53,14 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
 	public static final Font LABEL_FONT = FontLoader
 			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
+	private final Color bgColor = new Color(230, 230, 230);
 
 	boolean isAlreadyOneClick;
 
 	HistoryScreen(ActionItem item, JFrame frame) {
 		this.frame = frame;
 		actionItem = item;
+		setBackground(Color.WHITE);
 		setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
 		events = actionItem.getHistory();
 //		for (int i = 0; i < item.getHistory().size(); i++) {
@@ -86,8 +88,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		titleLabel.setFont(TITLE_FONT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
-		JPanel underline = new JPanel();
-		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
@@ -95,6 +96,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
+		titlePanel.setBackground(Color.WHITE);
 		add(titlePanel, c);
 
 		/*
@@ -106,10 +108,10 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		gbl.rowWeights = new double[100];
 		gbl.rowWeights[99] = Double.MIN_VALUE;
 		historyPanel.setLayout(gbl);
-		historyPanel.setBackground(Color.WHITE);
+		historyPanel.setBackground(bgColor);
 
 		JPanel container = new JPanel();
-		container.setBackground(Color.WHITE);
+		container.setBackground(bgColor);
 		container.setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
@@ -162,8 +164,8 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setAlignmentX(LEFT_ALIGNMENT);
 			JPanel eventDescriptionPanel = new RoundedPanel(20,
-					Color.decode("#e8e8e8"));
-			eventDescriptionPanel.setBackground(Color.WHITE);
+					Color.WHITE, bgColor);
+			eventDescriptionPanel.setBackground(bgColor);
 			JLabel eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
 			eventDescription.setForeground(Color.decode("#56997F"));
@@ -184,7 +186,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			historyPanel.add(eventPanel, c);
 			eventPanel
 					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
-			eventPanel.setBackground(Color.WHITE);
+			eventPanel.setBackground(bgColor);
 
 			if (events.get(i).getType() == 2) {
 				eventPanel.addMouseListener(this);
@@ -252,43 +254,5 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	class RoundedPanel extends JPanel {
-		private Color backgroundColor;
-		private int cornerRadius = 15;
-
-		public RoundedPanel(int radius) {
-			super();
-			cornerRadius = radius;
-		}
-
-		public RoundedPanel(int radius, Color bgColor) {
-			super();
-			cornerRadius = radius;
-			backgroundColor = bgColor;
-		}
-
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Dimension arcs = new Dimension(cornerRadius, cornerRadius);
-			int width = getWidth();
-			int height = getHeight();
-			Graphics2D graphics = (Graphics2D) g;
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-
-			// Draws the rounded panel with borders.
-			if (backgroundColor != null) {
-				graphics.setColor(backgroundColor);
-			} else {
-				graphics.setColor(getBackground());
-			}
-			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width,
-					arcs.height); // paint background
-			graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width,
-					arcs.height); // paint border
-		}
 	}
 }
