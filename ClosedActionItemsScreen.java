@@ -1,5 +1,9 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,25 +15,40 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import backend.ActionItem;
 import backend.FontLoader;
+import backend.ToDoList;
 import backend.samples.*;
 
 /*
  * This class shows all events in an Action Item's history
  */
-public class ClosedActionItemsScreen extends JPanel {
+public class ClosedActionItemsScreen extends JPanel implements MouseListener, ActionListener {
 	/*
 	 * Instance variables
 	 */
 	private HashSet<LocalDate> dates = new HashSet<LocalDate>();
+	private JPanel itemPanel;
+	private ToDoList userList;
+	private JFrame frame;
+	private ActionItemEntry selectedEntry;
 	// private JLabel dates;
 
-	ClosedActionItemsScreen(List<ActionItem> test) {
+	ClosedActionItemsScreen(JFrame frame, ToDoList userList) {
+		this.userList = userList;
+		this.frame = frame;
+		ArrayList<ActionItem> test = new ArrayList<ActionItem>();
+		for(int i=0; i<userList.getNumCompleteItems(); i++) {
+			test.add(userList.getCompleteItemAtIndex(i));
+		}
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.setBackground(Color.WHITE);
 		JLabel titleLabel = new JLabel("Closed Action Items");
@@ -46,7 +65,7 @@ public class ClosedActionItemsScreen extends JPanel {
 		titlePanel.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(titlePanel);
 	
-		JPanel itemPanel = new JPanel();
+		itemPanel = new JPanel();
 		itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
 		itemPanel.setBackground(Color.WHITE);
 		for (ActionItem item : test) {
@@ -64,6 +83,7 @@ public class ClosedActionItemsScreen extends JPanel {
 			for (ActionItem item : test) {
 				if (item.getCompletedByDate().toLocalDate().equals(date)) {
 					ActionItemEntry entry = new ActionItemEntry(item);
+					entry.addMouseListener(this);
 					entry.setAlignmentX(LEFT_ALIGNMENT);
 					itemPanel.add(entry);
 				}
@@ -77,19 +97,82 @@ public class ClosedActionItemsScreen extends JPanel {
 		this.add(scrollPane);
 	}
 	
+    public void mouseClicked(MouseEvent e) {
+    	if (SwingUtilities.isRightMouseButton(e)) {
+			//System.out.println("Right clicked on item " + o.getActionItem() + "!");
+			setPopup(e.getX(), e.getY(), (ActionItemEntry) e.getSource());
+		} else if (e.getClickCount() == 2) {
+			//System.out.println("Double clicked on item " + o.getActionItem() + "!");
+    	}
+    }
+	
+	private void setPopup(int x, int y, ActionItemEntry selectedEntry) {
+		this.selectedEntry = selectedEntry;
+		JPopupMenu menu = new JPopupMenu("Menu");
+		JMenuItem Complete = new JMenuItem("Mark as complete");
+		JMenuItem Edit = new JMenuItem("Edit item");
+		JMenuItem Delete = new JMenuItem("Delete item");
+		Complete.setEnabled(false);
+		Edit.addActionListener(this);
+		Edit.setActionCommand("Edit");
+		Delete.addActionListener(this);
+		Delete.setActionCommand("Delete");
+		menu.add(Complete);
+		menu.add(Edit);
+		menu.add(Delete);
+        menu.show(selectedEntry, x, y);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand() == "Edit") {
+			frame.setContentPane(new EditActionItemScreen(selectedEntry.getActionItem(), frame));
+			((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
+			frame.revalidate();
+			frame.repaint();
+		} else if (e.getActionCommand() == "Delete") {
+			int choice = JOptionPane.showConfirmDialog(selectedEntry, "Are you sure you want to delete the item '" + selectedEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+			if (choice == JOptionPane.YES_OPTION) {
+				userList.deleteActionItem(selectedEntry.getActionItem());
+				itemPanel.remove(selectedEntry);
+				itemPanel.revalidate();
+				itemPanel.repaint();
+			}
+		}
+	}
+	
 	public static void main(String[] args) {
 		SampleToDoList test = new SampleToDoList();
-		List<ActionItem> sample = new ArrayList<ActionItem>();
-		for (int i = 0; i < test.getNumCompleteItems(); i++) {
-			sample.add(test.getCompleteItemAtIndex(i));
-		}
-		ClosedActionItemsScreen screen = new ClosedActionItemsScreen(sample);
-		screen.setPreferredSize(new Dimension(1024, 1366));
 		JFrame frame = new JFrame();
+		ClosedActionItemsScreen screen = new ClosedActionItemsScreen(frame, test);
+		screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
