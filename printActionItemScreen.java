@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
@@ -20,6 +22,7 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,7 +37,7 @@ import backend.samples.SampleActionItem1;
 /*
  * This class shows all events in an Action Item's history
  */
-public class printActionItemScreen extends JPanel {
+public class printActionItemScreen extends JPanel implements ActionListener {
 	/*
 	 * Instance variables
 	 */
@@ -168,57 +171,270 @@ public class printActionItemScreen extends JPanel {
 		itemLabel.setAlignmentX(LEFT_ALIGNMENT);
 		itemPanel.add(itemLabel);
 		itemPanel.setBackground(Color.WHITE);
-		c.gridy = 1;
+		c.gridx = 0;
+		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		historyPanel.add(itemPanel, c);
 		
 		/*
 		 * current stuff
 		 */
-		JPanel priorityPanel = new RoundedPanel(20,
-				Color.decode("#e8e8e8"));
-		priorityPanel.setBackground(Color.WHITE);
-		JLabel priorityLabel = new JLabel("Priority: "+actionItem.getPriority());
+		/*
+		 * priority
+		 */
+		JLabel priorityLabel = new JLabel("Priority: ");
 		priorityLabel.setFont(LABEL_FONT);
-		priorityLabel.setForeground(Color.decode("#56997F"));
 		priorityLabel.setAlignmentX(LEFT_ALIGNMENT);
-		priorityLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
-		JPanel datePanel = new RoundedPanel(20,
+		JPanel priorityDescriptionPanel = new RoundedPanel(20,
 				Color.decode("#e8e8e8"));
-		datePanel.setBackground(Color.WHITE);
-		JLabel dateLabel = new JLabel(actionItem.getActiveByDate()+"; "+actionItem.getCompletedByDate()+"; "+actionItem.getCurrentByDate()+"; "+actionItem.getEventualByDate()+"; "+actionItem.getUrgentByDate());
-		dateLabel.setFont(LABEL_FONT);
-		dateLabel.setForeground(Color.decode("#56997F"));
-		dateLabel.setAlignmentX(LEFT_ALIGNMENT);
-		dateLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		priorityDescriptionPanel.setBackground(Color.WHITE);
+		JLabel priorityDescription = new JLabel();
+		priorityDescription.setFont(LABEL_FONT);
+		priorityDescription.setForeground(Color.decode("#56997F"));
+		priorityDescription.setText("<html><p style=\"width:640px\">"
+					+ actionItem.getPriority()
+					+ "</p></html>");
+		priorityDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		priorityDescriptionPanel.add(priorityDescription);
+		priorityDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
 		
-		JPanel commentPanel = new RoundedPanel(20,
-				Color.decode("#e8e8e8"));
-		commentPanel.setBackground(Color.WHITE);
-		JLabel commentLabel = new JLabel("Comment: "+actionItem.getComment());
-		commentLabel.setFont(LABEL_FONT);
-		commentLabel.setForeground(Color.decode("#56997F"));
-		commentLabel.setAlignmentX(LEFT_ALIGNMENT);
-		commentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		
-		c.insets = new Insets(5,5,5,5);
-		c.gridy = 2;
-		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		JPanel priorityPanel = new JPanel();
+		priorityPanel.setLayout(new BoxLayout(priorityPanel, BoxLayout.Y_AXIS));
 		priorityPanel.add(priorityLabel);
+		priorityPanel.add(priorityDescriptionPanel);
+		priorityPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+		priorityPanel
+				.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+		priorityPanel.setBackground(Color.WHITE);
+		c.gridy = 1;
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.LINE_START;
 		historyPanel.add(priorityPanel, c);
 		
-		c.gridy = 3;
-		datePanel.add(dateLabel);
-		historyPanel.add(datePanel, c);
+		/*
+		 * dates
+		 */
+		int gridyPlaceholder = 2;
+		/*
+		 DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			JLabel eventTime = new JLabel(events.get(events.size() - 1 - i)
+					.getDateTime().format(formatter));
+		 */
+		if (actionItem.getActiveByDate() != null) {
+			JLabel activeByDateLabel = new JLabel("Active By Date: ");
+			activeByDateLabel.setFont(LABEL_FONT);
+			activeByDateLabel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			DateTimeFormatter formatter = DateTimeFormatter
+						.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			
+			JPanel activeByDateDescriptionPanel = new RoundedPanel(20,
+					Color.decode("#e8e8e8"));
+			activeByDateDescriptionPanel.setBackground(Color.WHITE);
+			JLabel activeByDateDescription = new JLabel();
+			activeByDateDescription.setFont(LABEL_FONT);
+			activeByDateDescription.setForeground(Color.decode("#56997F"));
+			activeByDateDescription.setText("<html><p style=\"width:640px\">"
+						+ actionItem.getActiveByDate().format(formatter)
+						+ "</p></html>");
+			activeByDateDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			activeByDateDescriptionPanel.add(activeByDateDescription);
+			activeByDateDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel activeByDatePanel = new JPanel();
+			activeByDatePanel.setLayout(new BoxLayout(activeByDatePanel, BoxLayout.Y_AXIS));
+			activeByDatePanel.add(activeByDateLabel);
+			activeByDatePanel.add(activeByDateDescriptionPanel);
+			activeByDatePanel.add(Box.createRigidArea(new Dimension(0, 8)));
+			activeByDatePanel
+					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			activeByDatePanel.setBackground(Color.WHITE);
+			c.gridy = gridyPlaceholder;
+			c.gridx = 0;
+			c.anchor = GridBagConstraints.LINE_START;
+			historyPanel.add(activeByDatePanel, c);
+			gridyPlaceholder++;
+		}
+		if (actionItem.getCompletedByDate() != null) {
+			JLabel completedByDateLabel = new JLabel("Completed By Date: ");
+			completedByDateLabel.setFont(LABEL_FONT);
+			completedByDateLabel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			
+			JPanel completedByDateDescriptionPanel = new RoundedPanel(20,
+					Color.decode("#e8e8e8"));
+			completedByDateDescriptionPanel.setBackground(Color.WHITE);
+			JLabel completedByDateDescription = new JLabel();
+			completedByDateDescription.setFont(LABEL_FONT);
+			completedByDateDescription.setForeground(Color.decode("#56997F"));
+			completedByDateDescription.setText("<html><p style=\"width:640px\">"
+						+ actionItem.getCompletedByDate().format(formatter)
+						+ "</p></html>");
+			completedByDateDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			completedByDateDescriptionPanel.add(completedByDateDescription);
+			completedByDateDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel completedByDatePanel = new JPanel();
+			completedByDatePanel.setLayout(new BoxLayout(completedByDatePanel, BoxLayout.Y_AXIS));
+			completedByDatePanel.add(completedByDateLabel);
+			completedByDatePanel.add(completedByDateDescriptionPanel);
+			completedByDatePanel.add(Box.createRigidArea(new Dimension(0, 8)));
+			completedByDatePanel
+					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			completedByDatePanel.setBackground(Color.WHITE);
+			c.gridy = gridyPlaceholder;
+			c.gridx = 0;
+			c.anchor = GridBagConstraints.LINE_START;
+			historyPanel.add(completedByDatePanel, c);
+			gridyPlaceholder++;
+		}
+		if (actionItem.getCurrentByDate() != null) {
+			JLabel currentByDateLabel = new JLabel("Current By Date: ");
+			currentByDateLabel.setFont(LABEL_FONT);
+			currentByDateLabel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			
+			JPanel currentByDateDescriptionPanel = new RoundedPanel(20,
+					Color.decode("#e8e8e8"));
+			currentByDateDescriptionPanel.setBackground(Color.WHITE);
+			JLabel currentByDateDescription = new JLabel();
+			currentByDateDescription.setFont(LABEL_FONT);
+			currentByDateDescription.setForeground(Color.decode("#56997F"));
+			currentByDateDescription.setText("<html><p style=\"width:640px\">"
+						+ actionItem.getCurrentByDate().format(formatter)
+						+ "</p></html>");
+			currentByDateDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			currentByDateDescriptionPanel.add(currentByDateDescription);
+			currentByDateDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel currentByDatePanel = new JPanel();
+			currentByDatePanel.setLayout(new BoxLayout(currentByDatePanel, BoxLayout.Y_AXIS));
+			currentByDatePanel.add(currentByDateLabel);
+			currentByDatePanel.add(currentByDateDescriptionPanel);
+			currentByDatePanel.add(Box.createRigidArea(new Dimension(0, 8)));
+			currentByDatePanel
+					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			currentByDatePanel.setBackground(Color.WHITE);
+			c.gridy = gridyPlaceholder;
+			c.gridx = 0;
+			c.anchor = GridBagConstraints.LINE_START;
+			historyPanel.add(currentByDatePanel, c);
+			gridyPlaceholder++;
+		}
+		if (actionItem.getEventualByDate() != null) {
+			JLabel eventualByDateLabel = new JLabel("Eventual By Date: ");
+			eventualByDateLabel.setFont(LABEL_FONT);
+			eventualByDateLabel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			
+			JPanel eventualByDateDescriptionPanel = new RoundedPanel(20,
+					Color.decode("#e8e8e8"));
+			eventualByDateDescriptionPanel.setBackground(Color.WHITE);
+			JLabel eventualByDateDescription = new JLabel();
+			eventualByDateDescription.setFont(LABEL_FONT);
+			eventualByDateDescription.setForeground(Color.decode("#56997F"));
+			eventualByDateDescription.setText("<html><p style=\"width:640px\">"
+						+ actionItem.getEventualByDate().format(formatter)
+						+ "</p></html>");
+			eventualByDateDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			eventualByDateDescriptionPanel.add(eventualByDateDescription);
+			eventualByDateDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel eventualByDatePanel = new JPanel();
+			eventualByDatePanel.setLayout(new BoxLayout(eventualByDatePanel, BoxLayout.Y_AXIS));
+			eventualByDatePanel.add(eventualByDateLabel);
+			eventualByDatePanel.add(eventualByDateDescriptionPanel);
+			eventualByDatePanel.add(Box.createRigidArea(new Dimension(0, 8)));
+			eventualByDatePanel
+					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			eventualByDatePanel.setBackground(Color.WHITE);
+			c.gridy = gridyPlaceholder;
+			c.gridx = 0;
+			c.anchor = GridBagConstraints.LINE_START;
+			historyPanel.add(eventualByDatePanel, c);
+			gridyPlaceholder++;
+		}
+		if (actionItem.getUrgentByDate() != null) {
+			JLabel urgentByDateLabel = new JLabel("Urgent By Date: ");
+			urgentByDateLabel.setFont(LABEL_FONT);
+			urgentByDateLabel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+			
+			JPanel urgentByDateDescriptionPanel = new RoundedPanel(20,
+					Color.decode("#e8e8e8"));
+			urgentByDateDescriptionPanel.setBackground(Color.WHITE);
+			JLabel urgentByDateDescription = new JLabel();
+			urgentByDateDescription.setFont(LABEL_FONT);
+			urgentByDateDescription.setForeground(Color.decode("#56997F"));
+			urgentByDateDescription.setText("<html><p style=\"width:640px\">"
+						+ actionItem.getUrgentByDate().format(formatter)
+						+ "</p></html>");
+			urgentByDateDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			urgentByDateDescriptionPanel.add(urgentByDateDescription);
+			urgentByDateDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+			
+			JPanel urgentByDatePanel = new JPanel();
+			urgentByDatePanel.setLayout(new BoxLayout(urgentByDatePanel, BoxLayout.Y_AXIS));
+			urgentByDatePanel.add(urgentByDateLabel);
+			urgentByDatePanel.add(urgentByDateDescriptionPanel);
+			urgentByDatePanel.add(Box.createRigidArea(new Dimension(0, 8)));
+			urgentByDatePanel
+					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			urgentByDatePanel.setBackground(Color.WHITE);
+			c.gridy = gridyPlaceholder;
+			c.gridx = 0;
+			c.anchor = GridBagConstraints.LINE_START;
+			historyPanel.add(urgentByDatePanel, c);
+			gridyPlaceholder++;
+		}
 		
-		c.gridy = 4;
+		/*
+		 * comment
+		 */
+		JLabel commentLabel = new JLabel("Comment: ");
+		commentLabel.setFont(LABEL_FONT);
+		commentLabel.setAlignmentX(LEFT_ALIGNMENT);
+		
+		JPanel commentDescriptionPanel = new RoundedPanel(20,
+				Color.decode("#e8e8e8"));
+		commentDescriptionPanel.setBackground(Color.WHITE);
+		JLabel commentDescription = new JLabel();
+		commentDescription.setFont(LABEL_FONT);
+		commentDescription.setForeground(Color.decode("#56997F"));
+		commentDescription.setText("<html><p style=\"width:640px\">"
+					+ actionItem.getComment()
+					+ "</p></html>");
+		commentDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		commentDescriptionPanel.add(commentDescription);
+		commentDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
+		
+		JPanel commentPanel = new JPanel();
+		commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.Y_AXIS));
 		commentPanel.add(commentLabel);
+		commentPanel.add(commentDescriptionPanel);
+		commentPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+		commentPanel
+				.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+		commentPanel.setBackground(Color.WHITE);
+		c.gridy = gridyPlaceholder;
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.LINE_START;
 		historyPanel.add(commentPanel, c);
+		gridyPlaceholder++;
 		/*
 		 * history
 		 */
-		c.gridy = 5;
+		c.gridy = gridyPlaceholder;
 		JPanel dividerPanel = new JPanel();
 		JLabel dividerLabel = new JLabel("<html><p style=\"width:640px\">"+"History"+"</p></html>");
 		dividerLabel.setFont(HEADER_FONT);
@@ -226,8 +442,9 @@ public class printActionItemScreen extends JPanel {
 		dividerPanel.add(dividerLabel);
 		dividerPanel.setBackground(Color.WHITE);
 		historyPanel.add(dividerPanel, c);
+		gridyPlaceholder++;
 		
-		c.gridy = 6;
+		c.gridy = gridyPlaceholder;
 		for (int i = 0; i < events.size(); i++) {
 			DateTimeFormatter formatter = DateTimeFormatter
 					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
@@ -263,6 +480,29 @@ public class printActionItemScreen extends JPanel {
 			c.gridy++;
 		}
 		historyPanel.add(Box.createRigidArea(new Dimension(0, 30)), c);
+		/*
+		 * print button
+		 */
+		c.gridy++;
+		JButton commitButton = new JButton("PRINT");
+		commitButton.addActionListener(this);
+		commitButton.setActionCommand("print");
+		commitButton.setFont(LABEL_FONT);
+		commitButton.setBackground(Color.decode("#56997F"));
+		commitButton.setForeground(Color.WHITE);
+		commitButton.setFocusable(false);
+		commitButton.setBorder(BorderFactory.createEtchedBorder());
+		commitButton.setPreferredSize(new Dimension(0, 60));
+		commitButton.setMinimumSize(new Dimension(0, 60));
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0 / 3;
+		c.weighty = 0.1;
+		c.anchor = GridBagConstraints.LINE_END;
+		add(commitButton, c);
 	}
 
 	public static void main(String[] args) {
@@ -312,5 +552,14 @@ public class printActionItemScreen extends JPanel {
 			graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width,
 					arcs.height); // paint border
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String eventName = e.getActionCommand();
+		if (eventName.contentEquals("print")) {
+			System.out.println("print");
+		}
+		
 	}
 }
