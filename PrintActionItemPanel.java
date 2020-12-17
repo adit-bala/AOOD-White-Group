@@ -121,7 +121,7 @@ public class PrintActionItemPanel extends JPanel {
 		addLabel("Priority", p.toString(), f);
 
 		DateTimeFormatter formatter = DateTimeFormatter
-				.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+				.ofPattern("EEEE, d MMMM uuuu");
 		if (actionItem.getPriority() == Priority.COMPLETED) {
 			if (actionItem.getCompletedByDate() != null) {
 				addLabel("Completed On",
@@ -156,7 +156,8 @@ public class PrintActionItemPanel extends JPanel {
 			add(commentLabel);
 			add(Box.createRigidArea(new Dimension(0, 5)));
 
-			JLabel comment = new JLabel("<html>" + actionItem.getComment() + "</html>");
+			JLabel comment = new JLabel(
+					"<html>" + actionItem.getComment() + "</html>");
 			comment.setFont(TEXT_FONT);
 			comment.setAlignmentX(LEFT_ALIGNMENT);
 			add(comment);
@@ -165,6 +166,7 @@ public class PrintActionItemPanel extends JPanel {
 		/*
 		 * history
 		 */
+		formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu 'at' hh:mm a");
 		if (events.size() > 0) {
 			JLabel dividerLabel = new JLabel("History");
 			dividerLabel.setFont(HEADER_FONT);

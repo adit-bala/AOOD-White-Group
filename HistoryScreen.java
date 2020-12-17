@@ -158,7 +158,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		for (int i = 0; i < events.size(); i++) {
 			DateTimeFormatter formatter = DateTimeFormatter
-					.ofPattern("EEEE, d MMMM uuuu: hh:mm a");
+					.ofPattern("EEEE, d MMMM uuuu 'at' hh:mm a");
 			JLabel eventTime = new JLabel(events.get(events.size() - 1 - i)
 					.getDateTime().format(formatter));
 			eventTime.setFont(LABEL_FONT);
