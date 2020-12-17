@@ -98,7 +98,16 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.anchor = GridBagConstraints.LINE_START;
 		titlePanel.setBackground(Color.WHITE);
 		add(titlePanel, c);
+		
+		addEvents();
+	}
 
+	/*
+	 * adds events (JPanels) to the screen if comment event, also adds mouse
+	 * listener
+	 */
+
+	private void addEvents() {
 		/*
 		 * history
 		 */
@@ -110,46 +119,6 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		historyPanel.setLayout(gbl);
 		historyPanel.setBackground(bgColor);
 
-		JPanel container = new JPanel();
-		container.setBackground(bgColor);
-		container.setLayout(new GridBagLayout());
-		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTH;
-		c.weighty = 1;
-		container.add(historyPanel, c);
-
-		historyScroll = new JScrollPane(container,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-		addEvents();
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(20, 0, 0, 0);
-		add(historyScroll, c);
-
-		this.addComponentListener(new ComponentAdapter() {
-			public void componentResized(ComponentEvent e) {
-				int newWidth = Math.min(640, Math.max(280,
-						(int) (e.getComponent().getWidth() / 1.3) - 130));
-				for (JLabel eventDescription : eventDescriptions) {
-					eventDescription.setText(eventDescription.getText()
-							.replaceFirst("[0-9]+px", newWidth + "px"));
-				}
-			}
-		});
-	}
-
-	/*
-	 * adds events (JPanels) to the screen if comment event, also adds mouse
-	 * listener
-	 */
-
-	private void addEvents() {
 		eventDescriptions = new JLabel[events.size()];
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -193,6 +162,39 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}
 			c.gridy++;
 		}
+		
+		JPanel container = new JPanel();
+		container.setBackground(bgColor);
+		container.setLayout(new GridBagLayout());
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTH;
+		c.weighty = 1;
+		container.add(historyPanel, c);
+
+		historyScroll = new JScrollPane(container,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(20, 0, 0, 0);
+		add(historyScroll, c);
+
+		this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				int newWidth = Math.min(640, Math.max(280,
+						(int) (e.getComponent().getWidth() / 1.3) - 130));
+				for (JLabel eventDescription : eventDescriptions) {
+					eventDescription.setText(eventDescription.getText()
+							.replaceFirst("[0-9]+px", newWidth + "px"));
+				}
+			}
+		});
+		
 		historyPanel.add(Box.createRigidArea(new Dimension(0, 30)), c);
 	}
 
@@ -215,10 +217,17 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}, 500);
 		}
 	}
+	
+	public void refreshEvents() {
+		remove(historyScroll);
+		addEvents();
+	}
 
 	private void setCommentScreen(ActionItem item) {
 		frame.setContentPane(new CommentScreen(item, frame));
 		frame.revalidate();
+		frame.repaint();
+		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
 	}
 
 	@Override
