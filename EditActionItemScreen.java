@@ -1,17 +1,21 @@
 import backend.ActionItem;
+import backend.FileUtilities;
 import backend.FontLoader;
+import backend.Priority;
+import backend.samples.SampleActionItem1;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 
 import javax.swing.*;
 
 /* Displays ways for users to manipulate action item data.
 
  */
-public class EditActionItemScreen extends JPanel implements ActionListener {
+public class EditActionItemScreen extends JPanel implements ActionListener, FocusListener {
 	private JFrame frame;
-	
+
 	private JLabel pageTitle;
 	private JTextField name, uYear, cYear, eYear;
 	private JComboBox<String> uMonth, cMonth, eMonth, uDay, cDay, eDay;
@@ -53,9 +57,12 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 
 		/* main panel setup */
 		setLayout(new GridBagLayout());
-		gbc.insets = new Insets(5,10,5,10);
+		gbc.insets = new Insets(5,5,5,5);
 		setBackground(Color.white);
 		gbc.anchor=GridBagConstraints.FIRST_LINE_START;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.weighty = 0.5;
 
 		/* title */
 		titlePane = new JPanel();
@@ -76,14 +83,15 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		gbc.gridwidth=1;
 
 		/* action item name */
-		//name = new JTextField(actionItem.getTitle());
-		name = new JTextField("sample name"); //remove once have actionItem
+		name = new JTextField(actionItem.getTitle());
 		name.setFont(BODY_FONT);
 		name.setBackground(DUST);
 		name.setForeground(EMERALD);
 		name.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
 		name.setSelectionColor(TEAL_SELECT);
 		name.setSelectedTextColor(Color.white);
+		name.addActionListener(this);
+		name.addFocusListener(this);
 		gbc.gridx=0;
 		gbc.gridy=1;
 		gbc.gridwidth=3;
@@ -130,6 +138,11 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		pPane.add(eventual);
 		pPane.add(inactive);
 		pPane.add(complete);
+		urgent.addActionListener(this);
+		current.addActionListener(this);
+		eventual.addActionListener(this);
+		inactive.addActionListener(this);
+		complete.addActionListener(this);
 
 		/* add priority panel to main */
 		gbc.gridx=0;
@@ -252,13 +265,24 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		sPane.add(cYear,sgbc);
 		sgbc.gridy=3;
 		sPane.add(eYear,sgbc);
+		
+		uMonth.setEnabled(false);
+		cMonth.setEnabled(false);
+		eMonth.setEnabled(false);
+		uDay.setEnabled(false);
+		cDay.setEnabled(false);
+		eDay.setEnabled(false);
+		uYear.setEnabled(false);
+		cYear.setEnabled(false);
+		eYear.setEnabled(false);
+		
 
 		/* add scheduling panel to main */
 		gbc.gridx=1;
 		gbc.gridy=2;
 		add(sPane, gbc);
 
-		// top buttons
+		// top buttons -- need or not?
 		save = new JButton("Save");
 		cancel = new JButton("Cancel");
 
@@ -291,6 +315,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		gbc.gridx=0;
 		gbc.gridy=3;
 		gbc.gridwidth=3;
+		buttonsPane.setAlignmentX(CENTER_ALIGNMENT);
 		buttonsPane.setBackground(Color.WHITE);
 		add(buttonsPane,gbc);
 		gbc.gridwidth=1;
@@ -307,29 +332,66 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
-		if (eventName.contentEquals("Save")) {
-			System.out.println("Save");
-			// update everything
-		} else if (eventName.contentEquals("Cancel")) {
-			System.out.println("Cancel");
-			// close window and don't save
-		} else if (eventName.contentEquals("COMMENT")) {
+		if (eventName.contentEquals("Urgent")) {
+			actionItem.updateActionItem(actionItem.getTitle(),
+					Priority.URGENT, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+		} else if (eventName.contentEquals("Current")) {
+			actionItem.updateActionItem(actionItem.getTitle(),
+					Priority.CURRENT, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+		} else if (eventName.contentEquals("Eventual")) {
+			actionItem.updateActionItem(actionItem.getTitle(),
+					Priority.EVENTUAL, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+		} else if (eventName.contentEquals("Inactive")) {
+			actionItem.updateActionItem(actionItem.getTitle(),
+					Priority.INACTIVE, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+		} else if (eventName.contentEquals("Completed")) {
+			actionItem.updateActionItem(actionItem.getTitle(),
+					Priority.COMPLETED, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+		}
+		
+		else if (event.getSource()==urgentBy) {
+			System.out.println("urgent by");
+			uMonth.setEnabled(true);
+			uDay.setEnabled(urgentBy.isSelected());
+			uYear.setEnabled(urgentBy.isSelected());
+		} else if (event.getSource()==currentBy) {
+			cMonth.setEnabled(currentBy.isSelected());
+			cDay.setEnabled(currentBy.isSelected());
+			cYear.setEnabled(currentBy.isSelected());
+		} else if (event.getSource()==eventualBy) {
+			eMonth.setEnabled(eventualBy.isSelected());
+			eDay.setEnabled(eventualBy.isSelected());
+			eYear.setEnabled(eventualBy.isSelected());
+		}
+		
+		
+		
+		if (eventName.contentEquals("COMMENT")) {
 			setCommentScreen();
 		} else if (eventName.contentEquals("HISTORY")) {
 			setHistoryScreen();
 		} else if (eventName.contentEquals("PRINT")) {
-			System.out.println("print");
-			// open print screen
-		}
+			setPrintScreen();
+		} else {
+			actionItem.updateActionItem(name.getText(),
+					actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());
+			System.out.println("pressed enter, current name: "+actionItem.getTitle());
+}
 	}
-	
+
 	private void setCommentScreen() {
 		frame.setContentPane(new CommentScreen(actionItem, frame));
 		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
 		frame.revalidate();
 		frame.repaint();
 	}
-	
+
 	private void setHistoryScreen() {
 		frame.setContentPane(new HistoryScreen(actionItem, frame));
 		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
@@ -337,13 +399,35 @@ public class EditActionItemScreen extends JPanel implements ActionListener {
 		frame.repaint();
 	}
 
+	private void setPrintScreen() {
+		frame.setContentPane(new printActionItemScreen(actionItem, frame));
+		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
+		frame.revalidate();
+		frame.repaint();
+	}
+
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
+		SampleActionItem1 item = new SampleActionItem1();
 		EditActionItemScreen screen = new 
-				EditActionItemScreen(new ActionItem(), frame);
+				EditActionItemScreen(item, frame);
+		screen.setPreferredSize(new Dimension(1024, 1366));
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		System.out.println("focus gained, current name: "+
+				actionItem.getTitle());}
+		
+	@Override
+	public void focusLost(FocusEvent e) {
+		actionItem.updateActionItem(name.getText(),
+				actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+				actionItem.getEventualByDate(), actionItem.getComment());	
+		System.out.println("focus lost, current name: "+actionItem.getTitle());
 	}
 }
