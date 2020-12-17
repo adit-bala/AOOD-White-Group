@@ -140,7 +140,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
             } 
 		} else if (eventName.equals("Print")) {
 			try {
-				FileUtilities.printToDoList(main);
+				FileUtilities.printPanel(main);
 			} catch (PrinterException e) {
 				e.printStackTrace();
 			}

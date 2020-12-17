@@ -94,20 +94,10 @@ public class FileUtilities {
 		return item;
 	}
 
-	public static void printToDoList(JPanel toDoListPanel) throws PrinterException {
+	public static void printPanel(JPanel panel) throws PrinterException {
 		PrinterJob job = PrinterJob.getPrinterJob();
 		PageFormat pf = job.pageDialog(job.defaultPage());
-		job.setPrintable(new ToDoListPrinter(toDoListPanel), pf);
-		boolean ok = job.printDialog();
-		if (ok) {
-			job.print();
-		}
-	}
-
-	public static void printActionItem(JPanel editItemPanel, JPanel commentPanel, JPanel historyPanel)
-			throws PrinterException {
-		PrinterJob job = PrinterJob.getPrinterJob();
-		job.setPrintable(new ActionItemPrinter(editItemPanel, commentPanel, historyPanel));
+		job.setPrintable(new Printer(panel), pf);
 		boolean ok = job.printDialog();
 		if (ok) {
 			job.print();
@@ -121,11 +111,11 @@ public class FileUtilities {
 //	}
 }
 
-class ToDoListPrinter implements Printable {
+class Printer implements Printable {
 
 	private Component compToPrint;
 
-	ToDoListPrinter(Component comp) {
+	Printer(Component comp) {
 		this.compToPrint = comp;
 	}
 
@@ -140,37 +130,4 @@ class ToDoListPrinter implements Printable {
 
 		return PAGE_EXISTS;
 	}
-
-}
-
-class ActionItemPrinter implements Printable {
-
-	private Component editComp, commentComp, historyComp;
-
-	ActionItemPrinter(Component editComp, Component commentComp, Component historyComp) {
-		this.editComp = editComp;
-		this.commentComp = commentComp;
-		this.historyComp = historyComp;
-	}
-
-	@Override
-	public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
-		Component compToPrint;
-		if (page == 0) {
-			compToPrint = editComp;
-		} else if (page == 1) {
-			compToPrint = commentComp;
-		} else if (page == 2) {
-			compToPrint = historyComp;
-		} else {
-			return NO_SUCH_PAGE;
-		}
-
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.translate(pf.getImageableX(), pf.getImageableY());
-		compToPrint.printAll(g);
-
-		return PAGE_EXISTS;
-	}
-
 }

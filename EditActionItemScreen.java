@@ -400,7 +400,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	}
 
 	private void setPrintScreen() {
-		frame.setContentPane(new printActionItemScreen(actionItem, frame));
+		frame.setContentPane(new PrintActionItemScreen(actionItem, frame));
 		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
 		frame.revalidate();
 		frame.repaint();
