@@ -155,11 +155,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			frame.repaint();
 		} else if (eventName.equals("Completed Action Items")) {
 			changeBar();
-			ArrayList<ActionItem> completedActionItems = new ArrayList<ActionItem>();
-			for(int i=0; i<main.getToDoList().getNumCompleteItems(); i++) {
-				completedActionItems.add(main.getToDoList().getCompleteItemAtIndex(i));
-			}
-			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(completedActionItems);
+			ClosedActionItemsScreen completed = new ClosedActionItemsScreen(frame, main.getToDoList());
 			frame.setContentPane(completed);
 			frame.revalidate();
 			frame.repaint();

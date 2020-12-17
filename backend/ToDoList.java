@@ -161,6 +161,7 @@ public class ToDoList {
 
 	public void deleteActionItem(ActionItem item) {
 		incompleteItems.remove(item);
+		completeItems.remove(item);
 	}
 
 	public void addActionItem(ActionItem item) {
