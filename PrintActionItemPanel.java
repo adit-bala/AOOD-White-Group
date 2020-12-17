@@ -187,8 +187,7 @@ public class PrintActionItemPanel extends JPanel {
 				eventDescription.setFont(LABEL_FONT);
 				eventDescription.setForeground(Color.decode("#56997F"));
 				eventDescription.setText(
-						"<html>" + events.get(events.size() - 1 - i).label()
-								+ "OMG</html>");
+						"<html>" + events.get(events.size() - 1 - i).label() + "</html>");
 				eventDescription
 						.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 				eventDescriptionPanel.add(eventDescription);
