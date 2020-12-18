@@ -13,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -30,6 +31,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 	 */
 	private JFrame frame;
 	private PrintActionItemPanel preview;
+	private ActionItem item;
 	
 	public static final Font TITLE_FONT = FontLoader
 			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
@@ -38,6 +40,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
 
 	PrintActionItemScreen(ActionItem item, JFrame frame) {
+		this.item = item;
 		this.frame = frame;
 		this.preview = new PrintActionItemPanel(item);
 		setBackground(Color.WHITE);
@@ -136,9 +139,9 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		if (eventName.contentEquals("print")) {
 			try {
 				FileUtilities.printPanel(preview);
+				JOptionPane.showMessageDialog(frame, "Now printing " + item.getTitle() + ".", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
 			} catch (PrinterException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(frame, "Failed to print " + item.getTitle() + ".", "Print Unsuccessful", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

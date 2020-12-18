@@ -1,6 +1,10 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.*;
+
+import org.json.JSONException;
 
 import backend.FileUtilities;
 import backend.ToDoList;
@@ -16,8 +20,11 @@ class Window {
 		main = new MainScreen(frame);
 		File saveFile = new File("save.tdl");
 		if (saveFile.exists() && saveFile.canRead()) {
-			ToDoList savedList = FileUtilities.restoreFrom("save.tdl");
-			main.setToDoList(savedList);
+			ToDoList savedList;
+			try {
+				savedList = FileUtilities.restoreFrom("save.tdl");
+				main.setToDoList(savedList);
+			} catch (JSONException | FileNotFoundException e) {}
 		}
 		menuBar = new MenuBar(frame, main);
 		frame.setJMenuBar(menuBar);
@@ -27,7 +34,9 @@ class Window {
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				FileUtilities.writeBackup(main.getToDoList(), "save.tdl");
+				try {
+					FileUtilities.writeBackup(main.getToDoList(), "save.tdl");
+				} catch (IOException e) {}
 			}
 		});
 	}

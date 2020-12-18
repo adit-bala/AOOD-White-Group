@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.json.JSONException;
+
 import backend.ActionItem;
 import backend.FileUtilities;
 import backend.FontLoader;
@@ -10,6 +12,8 @@ import java.awt.Color;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -126,7 +130,12 @@ public class MenuBar extends JMenuBar implements ActionListener{
                 if (!filepath.endsWith(".json")) {
                 	filepath += ".json";
                 }
-                FileUtilities.writeBackup(main.getToDoList(), filepath);
+                try {
+					FileUtilities.writeBackup(main.getToDoList(), filepath);
+					JOptionPane.showMessageDialog(frame, "Successfully created backup at " + filepath + ".", "Backup Successful", JOptionPane.INFORMATION_MESSAGE);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(frame, "Failed to write file at " + filepath + ". Please check if the application has permission to write to this location.", "Backup Failed", JOptionPane.ERROR_MESSAGE);
+				}
             }
 		} else if (eventName.equals("Restore")) {
 			JFileChooser fc = new JFileChooser();
@@ -134,15 +143,23 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-    			ToDoList restoredList = FileUtilities.restoreFrom(file.getPath());
-    			// TODO: account for if file is not valid backup
-    			main.setToDoList(restoredList);
+    			ToDoList restoredList;
+				try {
+					restoredList = FileUtilities.restoreFrom(file.getPath());
+					main.setToDoList(restoredList);
+	    			JOptionPane.showMessageDialog(frame, "Successfully restored backup from " + file.getPath() + ".", "Restore Successful", JOptionPane.INFORMATION_MESSAGE);
+				} catch (JSONException e) {
+					JOptionPane.showMessageDialog(frame, "The file at " + file.getPath() + " is not a valid backup.", "Restore Failed", JOptionPane.ERROR_MESSAGE);
+				} catch (FileNotFoundException e) {
+					JOptionPane.showMessageDialog(frame, "Failed to read file at " + file.getPath() + ". Please check if the application has permission to read from this location.", "Restore Failed", JOptionPane.ERROR_MESSAGE);
+				}
             } 
 		} else if (eventName.equals("Print")) {
 			try {
 				FileUtilities.printPanel(main);
+				JOptionPane.showMessageDialog(frame, "Now printing your to-do list.", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
 			} catch (PrinterException e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(frame, "Failed to print your to-do list.", "Print Unsuccessful", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (eventName.equals("Back")) {
 			if (prevPanels.empty()) {

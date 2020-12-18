@@ -162,7 +162,7 @@ class MainScreen extends JPanel implements ActionListener{
 				} else if (e.getActionCommand() == "Edit") {
 					setActionItemScreen(items.get(itemEntry.getIndex()).getActionItem());
 				} else if (e.getActionCommand() == "Delete") {
-					int choice = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the item '" + itemEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+					int choice = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the item '" + itemEntry.getActionItem().getTitle() + "' ?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (choice == JOptionPane.YES_OPTION) {
 						userList.deleteActionItem(items.get(itemEntry.getIndex()).getActionItem());
 						items.remove(items.get(itemEntry.getIndex()));
