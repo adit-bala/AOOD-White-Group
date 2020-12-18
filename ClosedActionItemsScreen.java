@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import javax.swing.border.LineBorder;
 
 import backend.ActionItem;
 import backend.FontLoader;
+import backend.Priority;
 import backend.ToDoList;
 import backend.samples.*;
 
@@ -129,6 +131,15 @@ public class ClosedActionItemsScreen extends JPanel implements MouseListener, Ac
 		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
 		frame.revalidate();
 		frame.repaint();
+	}
+	
+	public void refreshEvents() {
+		if (selectedEntry.getActionItem().getPriority() != Priority.COMPLETED) {
+			userList.undoCompleteActionItem(selectedEntry.getActionItem());
+			itemPanel.remove(selectedEntry);
+			itemPanel.revalidate();
+			itemPanel.repaint();
+		}
 	}
 	
 	public void actionPerformed(ActionEvent e) {

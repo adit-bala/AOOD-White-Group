@@ -135,7 +135,14 @@ public class ToDoList {
 		}
 		this.incompleteItems = incompleteItems;
 	}
-
+	public void undoCompleteActionItem(ActionItem item) {
+		if (item.getPriority() == Priority.COMPLETED)
+			item.updateActionItem(item.getTitle(), Priority.URGENT,
+					item.getUrgentByDate(), item.getCurrentByDate(),
+					item.getEventualByDate(), item.getComment());
+		completeItems.remove(item);
+		incompleteItems.add(item);
+	}
 	public void completeActionItem(int index) {
 		ActionItem item = incompleteItems.get(index);
 		item.setCompletedByDate(LocalDateTime.now());

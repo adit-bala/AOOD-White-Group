@@ -4,22 +4,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 
 //import ClosedActionItemsScreen.CustomBorder;
 import backend.ActionItem;
@@ -39,9 +31,9 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Dimension;
 
+@SuppressWarnings("serial")
 class MainScreen extends JPanel implements ActionListener{
 	private JFrame frame;
 	private JLabel pageTitle;
@@ -86,7 +78,6 @@ class MainScreen extends JPanel implements ActionListener{
 	MainScreen(JFrame frame) {
 		this.frame = frame;
 		userList = new SampleToDoList(); // where does this come from ?
-		
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBackground(Color.white);
@@ -182,12 +173,6 @@ class MainScreen extends JPanel implements ActionListener{
 		menu.add(Delete);
         menu.show(list, x, y);
 	}
-	private void setHistoryScreen(ActionItem item) {
-		((MenuBar)frame.getJMenuBar()).changeBar();
-		frame.setContentPane(new HistoryScreen(item, frame));
-		frame.revalidate();
-		frame.repaint();
-	}
 	private void TEST() {
 		ActionItem[] urgent = new ActionItem[5];
 		ActionItem[] current = new ActionItem[5];
@@ -232,23 +217,19 @@ class MainScreen extends JPanel implements ActionListener{
 	private void initItemList() { // only call first time
 		items = new ArrayList<ActionItemEntry>();
 		for (int i=0;i<userList.getNumIncompleteItems();i++) {
-			items.add(makeEntry(userList.getIncompleteItemAtIndex(i)));
+    		items.add(makeEntry(userList.getIncompleteItemAtIndex(i)));
 		}
-		/*
-		Collections.sort(items, new Comparator<ActionItemEntry>() {
-			@Override
-		    public int compare(ActionItemEntry o1, ActionItemEntry o2) {
-				ActionItem item1 = o1.getActionItem();
-				ActionItem item2 = o2.getActionItem();
-				if (item1.getPriority() == Priority.INACTIVE && item2.getPriority() == Priority.INACTIVE)
-					return item1.getEventualByDate().compareTo(item2.getEventualByDate());
-		        return item1.getPriority().compareTo(item2.getPriority());
-		    }
-		});
-		*/
 	}
-	private void rerenderItemLists() {
+	public void rerenderItemLists() {
 		scrollPane.getViewport().remove(itemPanel);
+		ArrayList<ActionItem> completed = new ArrayList<ActionItem>();
+		for (int i=0;i<userList.getNumIncompleteItems();i++) {
+    		if (userList.getIncompleteItemAtIndex(i).getPriority() == Priority.COMPLETED)
+    			completed.add(userList.getIncompleteItemAtIndex(i));
+		}
+		for (int i=0;i<completed.size();i++) {
+			userList.completeActionItem(completed.get(i));
+		}
 		userList.updateListOrder();
 		initItemList();
 		renderAllItemLists();
@@ -308,15 +289,6 @@ class MainScreen extends JPanel implements ActionListener{
 	            	if (action == MOVE) {
 	            		//System.out.println("Successful");
 	            		rerenderItemLists();
-	            		/*
-	            		actionItemEntries.remove(actionItemEntries.indexOf(transferItem));
-	            		if (actionItemEntries.size() == 0) {
-	            			if (Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent()) != 0) {
-		            			itemPanel.remove(Arrays.asList(itemPanel.getComponents()).indexOf(list.getParent())-1);
-		            			itemPanel.remove(list.getParent());
-	            			}
-	            		}
-	            		*/
 	            	}
 	            }
 
@@ -330,36 +302,24 @@ class MainScreen extends JPanel implements ActionListener{
 	                try {
 	                    ActionItemEntry itemEntry = (ActionItemEntry) support.getTransferable().getTransferData(ActionItemEntry.actionFlavor);
 	                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-	                    //items.remove(itemEntry.getIndex());
 	                    int prevIndex = itemEntry.getIndex();
 	                    int newIndex = 0;
-	                    //updateAllIndexes();
 	                    int dropIndex = dl.getIndex();
-	                    //System.out.println(dropIndex);
 	                    boolean newList = !actionItemEntries.contains(transferItem);
-	                    //actionItemEntries.add(dropIndex, itemEntry);
 	                    if (dropIndex < actionItemEntries.size()) {
-	                    	//items.add(actionItemEntries.get(dropIndex+1).getIndex(), itemEntry);
 	                    	newIndex = actionItemEntries.get(dropIndex).getIndex();
 	                    	if (newIndex > prevIndex) newIndex--;
 	                    }
 	                    else if (dropIndex > 0) {
-	                    	//items.add(Math.min(items.size(), actionItemEntries.get(dropIndex-1).getIndex()+1), itemEntry);
 	                    	newIndex = Math.min(items.size()-1, actionItemEntries.get(dropIndex - 1).getIndex());
 	                    	if (newIndex < prevIndex) newIndex++;
 	                    }	
-	                    //updateAllIndexes();
-	                    //System.out.print("Old index " + prevIndex);
-	                    //System.out.println(" to new index " + newIndex);
-	                    //System.out.println(actionItemEntries.get(dropIndex - 1).getActionItem().getPriority());
 	                    if (dropIndex == actionItemEntries.size() && dropIndex > 0 && actionItemEntries.get(dropIndex - 1).getActionItem().getPriority() != Priority.INACTIVE) {
 	                    	updateActionItemPriority(itemEntry, actionItemEntries.get(dropIndex - 1).getActionItem().getPriority());
-	                    	//userList.moveActionItem(prevIndex, newIndex);
 	                    }
 	                    if (prevIndex != newIndex)
 	                    	userList.moveActionItem(prevIndex, newIndex);
 	                    if (newList) {
-	                    	//System.out.println("new list");
 	                    	if (dropIndex < actionItemEntries.size()) {
                     			updateActionItemPriority(itemEntry, actionItemEntries.get(dropIndex).getActionItem().getPriority());
                     		} else if (dropIndex > 0) {
@@ -432,7 +392,7 @@ class MainScreen extends JPanel implements ActionListener{
 		label.setFont(HEADING_FONT);
 		panel.add(label);
 		panel.setAlignmentX(LEFT_ALIGNMENT);
-		panel.setMaximumSize(panel.getPreferredSize());
+		panel.setMaximumSize(new Dimension(9999, (int)panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 	private void renderAllItemLists() { // assumes list already sorted properly
@@ -449,10 +409,10 @@ class MainScreen extends JPanel implements ActionListener{
 		}
 		for (int i=0;i<items.size();i++) {
 			Priority currPriority = items.get(i).getActionItem().getPriority();
-			LocalDateTime currDate = items.get(i).getActionItem().getEventualByDate();
+			LocalDateTime currDate = items.get(i).getActionItem().getActiveByDate();
 			if (i > 0) {
 				Priority prevPriority = items.get(i-1).getActionItem().getPriority();
-				LocalDateTime prevDate = items.get(i-1).getActionItem().getEventualByDate();
+				LocalDateTime prevDate = items.get(i-1).getActionItem().getActiveByDate();
 				if (currPriority == Priority.INACTIVE) {
 					if (prevPriority != Priority.INACTIVE) {
 						renderItemList(items.subList(start, i));
@@ -468,7 +428,7 @@ class MainScreen extends JPanel implements ActionListener{
 		}
 		if (items.size() > 0) {
 			if (items.get(start).getActionItem().getPriority() == Priority.INACTIVE) {
-				itemPanel.add(makeDateLabel(items.get(start).getActionItem().getEventualByDate()));
+				itemPanel.add(makeDateLabel(items.get(start).getActionItem().getActiveByDate()));
 				itemPanel.add(Box.createVerticalStrut(5));
 			}
 			renderItemList(items.subList(start, items.size()));
@@ -498,10 +458,6 @@ class MainScreen extends JPanel implements ActionListener{
 		ActionItem test = new ActionItem();
 		test.setTitle(NewActionItem.getText());
 		test.setPriority(Priority.URGENT);
-		//test.setUrgentByDate(LocalDateTime.now());
-		//test.setEventualByDate(LocalDateTime.now());
-		//test.setCurrentByDate(LocalDateTime.now());
-		//test.setCompletedByDate(LocalDateTime.now());
 		test.setComment("");
 		userList.addActionItem(test);
 		scrollPane.getViewport().remove(itemPanel);

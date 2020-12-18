@@ -164,12 +164,15 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		} else if (eventName.equals("Back")) {
 			if (prevPanels.empty()) {
 				frame.setContentPane(main);
+				main.rerenderItemLists();
 				resetBar();
 			} else {
 				JPanel last = prevPanels.pop();
 				frame.setContentPane(last);
 				if (last instanceof HistoryScreen) {
 					((HistoryScreen) last).refreshEvents();
+				} else if (last instanceof ClosedActionItemsScreen) {
+					((ClosedActionItemsScreen) last).refreshEvents();
 				}
 			}
 			frame.revalidate();
