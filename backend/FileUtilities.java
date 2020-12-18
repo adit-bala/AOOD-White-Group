@@ -16,7 +16,7 @@ import org.json.*;
 
 public class FileUtilities {
 
-	public static void writeBackup(ToDoList toDoList, String filePath) {
+	public static void writeBackup(ToDoList toDoList, String filePath) throws IOException {
 		JSONObject json = new JSONObject();
 		JSONArray incompletes = new JSONArray();
 		for (int i = 0; i < toDoList.getNumIncompleteItems(); i++) {
@@ -29,34 +29,24 @@ public class FileUtilities {
 		}
 		json.put("completeItems", completes);
 		
-		try {
-			FileWriter file = new FileWriter(filePath);
-			file.write(json.toString(4));
-			file.flush();
-			file.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileWriter file = new FileWriter(filePath);
+		file.write(json.toString(4));
+		file.flush();
+		file.close();
 	}
 
-	public static ToDoList restoreFrom(String filePath) {
+	public static ToDoList restoreFrom(String filePath) throws JSONException, FileNotFoundException {
 		ToDoList list = new ToDoList();
-		try {
-			JSONObject source = new JSONObject(new JSONTokener(new FileReader(filePath)));
-			JSONArray completeItems = source.getJSONArray("completeItems");
-			for (int i = completeItems.length() - 1; i >= 0; i--) {
-				JSONObject itemSource = completeItems.getJSONObject(i);
-				list.addCompleteActionItem(JSONToActionItem(itemSource));
-			}
-			JSONArray incompleteItems = source.getJSONArray("incompleteItems");
-			for (int i = incompleteItems.length() - 1; i >= 0; i--) {
-				JSONObject itemSource = incompleteItems.getJSONObject(i);
-				list.addActionItem(JSONToActionItem(itemSource));
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		JSONObject source = new JSONObject(new JSONTokener(new FileReader(filePath)));
+		JSONArray completeItems = source.getJSONArray("completeItems");
+		for (int i = completeItems.length() - 1; i >= 0; i--) {
+			JSONObject itemSource = completeItems.getJSONObject(i);
+			list.addCompleteActionItem(JSONToActionItem(itemSource));
+		}
+		JSONArray incompleteItems = source.getJSONArray("incompleteItems");
+		for (int i = incompleteItems.length() - 1; i >= 0; i--) {
+			JSONObject itemSource = incompleteItems.getJSONObject(i);
+			list.addActionItem(JSONToActionItem(itemSource));
 		}
 		return list;
 	}
