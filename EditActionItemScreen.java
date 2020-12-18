@@ -348,7 +348,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			actionItem.updateActionItem(actionItem.getTitle(),
 					Priority.INACTIVE, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
 					actionItem.getEventualByDate(), actionItem.getComment());
-		} else if (eventName.contentEquals("Completed")) {
+		} else if (eventName.contentEquals("Complete")) {
 			actionItem.updateActionItem(actionItem.getTitle(),
 					Priority.COMPLETED, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
 					actionItem.getEventualByDate(), actionItem.getComment());
