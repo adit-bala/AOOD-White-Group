@@ -86,22 +86,27 @@ public class ToDoList {
 		List<ActionItem> eventual = new ArrayList<ActionItem>();
 		List<ActionItem> unsortedInactive = new ArrayList<ActionItem>();
 		List<ActionItem> inactive = new ArrayList<ActionItem>();
+		List<ActionItem> completed = new ArrayList<ActionItem>();
 		for (int i = 0; i < this.incompleteItems.size(); i++) {
 			this.incompleteItems.get(i).updatePriority();
 			if (this.incompleteItems.get(i).getPriority() == Priority.URGENT) {
 				urgent.add(this.incompleteItems.get(i));
 			}
-			if (this.incompleteItems.get(i).getPriority() == Priority.CURRENT) {
+			else if (this.incompleteItems.get(i).getPriority() == Priority.CURRENT) {
 				current.add(this.incompleteItems.get(i));
 			}
-			if (this.incompleteItems.get(i)
-					.getPriority() == Priority.EVENTUAL) {
+			else if (this.incompleteItems.get(i).getPriority() == Priority.EVENTUAL) {
 				eventual.add(this.incompleteItems.get(i));
 			}
-			if (this.incompleteItems.get(i)
-					.getPriority() == Priority.INACTIVE) {
+			else if (this.incompleteItems.get(i).getPriority() == Priority.INACTIVE) {
 				unsortedInactive.add(this.incompleteItems.get(i));
 			}
+			else if (this.incompleteItems.get(i).getPriority() == Priority.COMPLETED) {
+				completed.add(this.incompleteItems.get(i));
+			}
+		}
+		for (int i=0;i<completed.size();i++) {
+			completeActionItem(completed.get(i));
 		}
 		while (unsortedInactive.size() > 0) {
 			ActionItem earliest = unsortedInactive.get(0);
@@ -117,14 +122,6 @@ public class ToDoList {
 			unsortedInactive.remove(earliest);
 			inactive.add(earliest);
 		}
-		/*
-		 * for (int j = 0; j < unsortedInactive.size(); j++) { ActionItem
-		 * earliest = unsortedInactive.get(0); for (int i = 0; i <
-		 * unsortedInactive.size() - 1; i++) { if
-		 * (unsortedInactive.get(i).getActiveByDate().isBefore(unsortedInactive.
-		 * get(i + 1).getActiveByDate())) { earliest = unsortedInactive.get(i);
-		 * unsortedInactive.remove(i); } } inactive.add(earliest); }
-		 */
 		for (ActionItem item : urgent) {
 			incompleteItems.add(item);
 		}
@@ -183,5 +180,23 @@ public class ToDoList {
 	// this is for restoring from a backup
 	public void addCompleteActionItem(ActionItem item) {
 		completeItems.add(item);
+	}
+	public static void main(String[] arg) {
+		ToDoList list = new ToDoList();
+		for (int i = 0; i < 5; i++) {
+			ActionItem item1 = new ActionItem();
+			item1.setPriority(Priority.URGENT);
+			ActionItem item2 = new ActionItem();
+			item2.setPriority(Priority.CURRENT);
+			ActionItem item3 = new ActionItem();
+			item3.setPriority(Priority.EVENTUAL);
+			list.addActionItem(item1);
+			list.addActionItem(item2);
+			list.addActionItem(item3);
+		}
+		list.updateListOrder();
+		for (int i = 0; i < list.getNumIncompleteItems(); i++) {
+			System.out.println(list.getIncompleteItemAtIndex(i).getPriority());
+		}
 	}
 }

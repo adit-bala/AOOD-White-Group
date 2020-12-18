@@ -222,14 +222,6 @@ class MainScreen extends JPanel implements ActionListener{
 	}
 	public void rerenderItemLists() {
 		scrollPane.getViewport().remove(itemPanel);
-		ArrayList<ActionItem> completed = new ArrayList<ActionItem>();
-		for (int i=0;i<userList.getNumIncompleteItems();i++) {
-    		if (userList.getIncompleteItemAtIndex(i).getPriority() == Priority.COMPLETED)
-    			completed.add(userList.getIncompleteItemAtIndex(i));
-		}
-		for (int i=0;i<completed.size();i++) {
-			userList.completeActionItem(completed.get(i));
-		}
 		userList.updateListOrder();
 		initItemList();
 		renderAllItemLists();
