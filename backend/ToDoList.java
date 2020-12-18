@@ -106,9 +106,13 @@ public class ToDoList {
 		while (unsortedInactive.size() > 0) {
 			ActionItem earliest = unsortedInactive.get(0);
 			for (int i = 1; i < unsortedInactive.size(); i++) {
-				if (unsortedInactive.get(i).getActiveByDate()
-						.isBefore(earliest.getActiveByDate()))
+				if (unsortedInactive.get(i).getActiveByDate() != null && earliest.getActiveByDate() == null) {	
 					earliest = unsortedInactive.get(i);
+				} else if (unsortedInactive.get(i).getActiveByDate() != null && earliest.getActiveByDate() != null) {
+					if (unsortedInactive.get(i).getActiveByDate()
+							.isBefore(earliest.getActiveByDate()))
+						earliest = unsortedInactive.get(i);
+				}
 			}
 			unsortedInactive.remove(earliest);
 			inactive.add(earliest);

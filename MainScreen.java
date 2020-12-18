@@ -387,7 +387,7 @@ class MainScreen extends JPanel implements ActionListener{
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(Color.white);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu");
-		String formattedString = d.format(formatter);
+		String formattedString = d != null ? d.format(formatter) : "Undated";
 		JLabel label = new JLabel(formattedString);
 		label.setFont(HEADING_FONT);
 		panel.add(label);
@@ -417,11 +417,13 @@ class MainScreen extends JPanel implements ActionListener{
 					if (prevPriority != Priority.INACTIVE) {
 						renderItemList(items.subList(start, i));
 						start = i;
-					} else if (!prevDate.toString().equals(currDate.toString())) {
-						itemPanel.add(makeDateLabel(prevDate));
-						itemPanel.add(Box.createVerticalStrut(5));
-						renderItemList(items.subList(start, i));
-						start = i;
+					} else {
+						if (prevDate != null && (currDate == null || (!prevDate.toString().equals(currDate.toString())))) {
+							itemPanel.add(makeDateLabel(prevDate));
+							itemPanel.add(Box.createVerticalStrut(5));
+							renderItemList(items.subList(start, i));
+							start = i;
+						}
 					}
 				}
 			}
