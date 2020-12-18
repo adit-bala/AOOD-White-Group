@@ -7,6 +7,7 @@ import backend.samples.SampleActionItem1;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
+import java.time.LocalDateTime;
 
 import javax.swing.*;
 
@@ -24,6 +25,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	private JCheckBox urgentBy, currentBy, eventualBy;
 	JButton save, cancel, comment, history, print;
 	private ActionItem actionItem;
+	private int um=0,ud=0,uy=0,cm=0,cd=0,cy=0,em=0,ed=0,ey=0;
 
 	// added JLabels for "Priority" and "Scheduling" headers
 	private JLabel pHead, sHead;
@@ -143,6 +145,16 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		eventual.addActionListener(this);
 		inactive.addActionListener(this);
 		complete.addActionListener(this);
+		if (item.getPriority()==Priority.URGENT)
+			urgent.setSelected(true);
+		else if (item.getPriority()==Priority.CURRENT)
+			current.setSelected(true);
+		else if (item.getPriority()==Priority.EVENTUAL)
+			eventual.setSelected(true);
+		else if (item.getPriority()==Priority.INACTIVE)
+			inactive.setSelected(true);
+		else if (item.getPriority()==Priority.COMPLETED)
+			complete.setSelected(true);
 
 		/* add priority panel to main */
 		gbc.gridx=0;
@@ -174,13 +186,16 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		urgentBy.setBackground(Color.WHITE);
 		currentBy.setBackground(Color.WHITE);
 		eventualBy.setBackground(Color.WHITE);
+		urgentBy.addActionListener(this);
+		currentBy.addActionListener(this);
+		eventualBy.addActionListener(this);
 		sgbc.gridy=1;
 		sPane.add(urgentBy,sgbc);
 		sgbc.gridy=2;
 		sPane.add(currentBy,sgbc);
 		sgbc.gridy=3;
 		sPane.add(eventualBy,sgbc);
-
+			// months
 		sgbc.gridx=1;
 		String[] months = {"mm","Jan", "Feb", "Mar", "Apr", "May", 
 				"Jun","Jul","Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -196,19 +211,17 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		uMonth.setBackground(DUST);
 		cMonth.setBackground(DUST);
 		eMonth.setBackground(DUST);
-		uMonth.setSelectedIndex(0);
-		cMonth.setSelectedIndex(0);
-		eMonth.setSelectedIndex(0);
-		uMonth.addActionListener(uMonth);
-		cMonth.addActionListener(cMonth);
-		eMonth.addActionListener(eMonth);
+		uMonth.addActionListener(this);
+		cMonth.addActionListener(this);
+		eMonth.addActionListener(this);
 		sgbc.gridy=1;
 		sPane.add(uMonth,sgbc);
 		sgbc.gridy=2;
 		sPane.add(cMonth,sgbc);
 		sgbc.gridy=3;
 		sPane.add(eMonth,sgbc);
-
+		
+			// days
 		sgbc.gridx=2;
 		String[] days = new String[32];
 		days[0]="dd";
@@ -227,19 +240,16 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		uDay.setBackground(DUST);
 		cDay.setBackground(DUST);
 		eDay.setBackground(DUST);
-		uDay.setSelectedIndex(0);
-		cDay.setSelectedIndex(0);
-		eDay.setSelectedIndex(0);
-		uDay.addActionListener(uDay);
-		cDay.addActionListener(cDay);
-		eDay.addActionListener(eDay);
+		uDay.addActionListener(this);
+		cDay.addActionListener(this);
+		eDay.addActionListener(this);
 		sgbc.gridy=1;
 		sPane.add(uDay,sgbc);
 		sgbc.gridy=2;
 		sPane.add(cDay,sgbc);
 		sgbc.gridy=3;
 		sPane.add(eDay,sgbc);
-
+			// years
 		sgbc.gridx=3;
 		uYear = new JTextField("yyyy");
 		cYear = new JTextField("yyyy");
@@ -259,6 +269,9 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		uYear.setSelectedTextColor(Color.WHITE);
 		cYear.setSelectedTextColor(Color.WHITE);
 		eYear.setSelectedTextColor(Color.WHITE);
+		uYear.addActionListener(this);
+		cYear.addActionListener(this);
+		eYear.addActionListener(this);
 		sgbc.gridy=1;
 		sPane.add(uYear,sgbc);
 		sgbc.gridy=2;
@@ -275,16 +288,37 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		uYear.setEnabled(false);
 		cYear.setEnabled(false);
 		eYear.setEnabled(false);
-		
+		// set existing values
+		if (!(item.getUrgentByDate()==null)) {
+			uMonth.setEnabled(true);
+			uDay.setEnabled(true);
+			uYear.setEnabled(true);
+			urgentBy.setSelected(true);
+			uMonth.setSelectedIndex(item.getUrgentByDate().getMonthValue());
+			uDay.setSelectedIndex(item.getUrgentByDate().getDayOfMonth());
+			uYear.setText(Integer.toString(item.getUrgentByDate().getYear()));
+		} else if (!(item.getCurrentByDate()==null)) {
+			cMonth.setEnabled(true);
+			cDay.setEnabled(true);
+			cYear.setEnabled(true);
+			currentBy.setSelected(true);
+			cMonth.setSelectedIndex(item.getCurrentByDate().getMonthValue());
+			cDay.setSelectedIndex(item.getCurrentByDate().getDayOfMonth());
+			cYear.setText(Integer.toString(item.getCurrentByDate().getYear()));		
+		} else if (!(item.getEventualByDate()==null)) {
+			eMonth.setEnabled(true);
+			eDay.setEnabled(true);
+			eYear.setEnabled(true);
+			eventualBy.setSelected(true);
+			eMonth.setSelectedIndex(item.getEventualByDate().getMonthValue());
+			eDay.setSelectedIndex(item.getEventualByDate().getDayOfMonth());
+			eYear.setText(Integer.toString(item.getEventualByDate().getYear()));		
+		}
 
 		/* add scheduling panel to main */
 		gbc.gridx=1;
 		gbc.gridy=2;
 		add(sPane, gbc);
-
-		// top buttons -- need or not?
-		save = new JButton("Save");
-		cancel = new JButton("Cancel");
 
 		/* bottom buttons and pane */
 		buttonsPane = new JPanel();
@@ -332,6 +366,8 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 
 	public void actionPerformed(ActionEvent event) {
 		String eventName = event.getActionCommand();
+
+		/* priority radio buttons */
 		if (eventName.contentEquals("Urgent")) {
 			actionItem.updateActionItem(actionItem.getTitle(),
 					Priority.URGENT, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
@@ -353,10 +389,10 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 					Priority.COMPLETED, actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
 					actionItem.getEventualByDate(), actionItem.getComment());
 		}
-		
+
+		/* scheduling checkboxes */
 		else if (event.getSource()==urgentBy) {
-			System.out.println("urgent by");
-			uMonth.setEnabled(true);
+			uMonth.setEnabled(urgentBy.isSelected());
 			uDay.setEnabled(urgentBy.isSelected());
 			uYear.setEnabled(urgentBy.isSelected());
 		} else if (event.getSource()==currentBy) {
@@ -368,10 +404,80 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			eDay.setEnabled(eventualBy.isSelected());
 			eYear.setEnabled(eventualBy.isSelected());
 		}
+
+		/* scheduling drop downs */
 		
-		
-		
-		if (eventName.contentEquals("COMMENT")) {
+		LocalDateTime newDate=null;
+		if (event.getSource()==uMonth||event.getSource()==cMonth||event.getSource()==eMonth
+				||event.getSource()==uDay||event.getSource()==cDay||event.getSource()==eDay) {
+			JComboBox cb = (JComboBox)event.getSource();
+			String choice = (String)cb.getSelectedItem();
+			
+			if (event.getSource()==uMonth) {
+				um=getMonth(choice);
+				if (um!=0&&ud!=0&&uy!=0) {
+					newDate=LocalDateTime.of(uy,um,ud,0,0);
+					updateUBD(newDate);
+				}
+				uDay.requestFocusInWindow();
+			} else if (event.getSource()==cMonth) {
+				cm=getMonth(choice);
+				if (cm!=0&&cd!=0&&cy!=0) {
+					newDate=LocalDateTime.of(cy,cm,cd,0,0);
+					updateCBD(newDate);
+				}
+				cDay.requestFocusInWindow();
+			} else if (event.getSource()==eMonth) {
+				em=getMonth(choice);
+				if (em!=0&&ed!=0&&ey!=0) {
+					newDate=LocalDateTime.of(ey,em,ed,0,0);
+					updateEBD(newDate);
+				}
+				eDay.requestFocusInWindow();
+			} else if (event.getSource()==uDay) {
+				ud=getDay(choice);
+				if (um!=0&&ud!=0&&uy!=0) {
+					newDate=LocalDateTime.of(uy,um,ud,0,0);
+					updateUBD(newDate);
+				}
+				uYear.requestFocusInWindow();
+			} else if (event.getSource()==cDay) {
+				cd=getDay(choice);
+				if (cm!=0&&cd!=0&&cy!=0) {
+					newDate=LocalDateTime.of(cy,cm,cd,0,0);
+					updateCBD(newDate);
+				}
+				cYear.requestFocusInWindow();
+			} else if (event.getSource()==eDay) {
+				ed=getDay(choice);
+				if (em!=0&&ed!=0&&ey!=0) {
+					newDate=LocalDateTime.of(ey,em,ed,0,0);
+					updateEBD(newDate);
+				}
+				eYear.requestFocusInWindow();
+			}
+		} else if (event.getSource()==uYear) {
+			uy=getYear(uYear.getText());
+			if (um!=0&&ud!=0&&uy!=0) {
+				newDate=LocalDateTime.of(uy,um,ud,0,0);
+				updateUBD(newDate);
+			}
+		} else if (event.getSource()==cYear) {
+			cy=getYear(cYear.getText());
+			if (cm!=0&&cd!=0&&cy!=0) {
+				newDate=LocalDateTime.of(cy,cm,cd,0,0);
+				updateCBD(newDate);
+			}
+		} else if (event.getSource()==eYear) {
+			ey=getYear(eYear.getText());
+			if (em!=0&&ed!=0&&ey!=0) {
+				newDate=LocalDateTime.of(ey,em,ed,0,0);
+				updateEBD(newDate);
+			}
+		}
+
+		/* c,h,p buttons and name */
+		else if (eventName.contentEquals("COMMENT")) {
 			setCommentScreen();
 		} else if (eventName.contentEquals("HISTORY")) {
 			setHistoryScreen();
@@ -382,7 +488,8 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 					actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
 					actionItem.getEventualByDate(), actionItem.getComment());
 			System.out.println("pressed enter, current name: "+actionItem.getTitle());
-}
+		}
+		
 	}
 
 	private void setCommentScreen() {
@@ -422,7 +529,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	public void focusGained(FocusEvent e) {
 		System.out.println("focus gained, current name: "+
 				actionItem.getTitle());}
-		
+
 	@Override
 	public void focusLost(FocusEvent e) {
 		actionItem.updateActionItem(name.getText(),
@@ -430,4 +537,60 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 				actionItem.getEventualByDate(), actionItem.getComment());	
 		System.out.println("focus lost, current name: "+actionItem.getTitle());
 	}
+
+	private int getMonth(String month) {
+		if (month.equals("Jan"))
+			return 1;
+		else if (month.equals("Feb"))
+			return 2;
+		else if (month.equals("Mar"))
+			return 3;
+		else if (month.equals("Apr"))
+			return 4;
+		else if (month.equals("May"))
+			return 5;
+		else if (month.equals("Jun"))
+			return 6;
+		else if (month.equals("Jul"))
+			return 7;
+		else if (month.equals("Aug"))
+			return 8;
+		else if (month.equals("Sep"))
+			return 9;
+		else if (month.equals("Oct"))
+			return 10;
+		else if (month.equals("Nov"))
+			return 11;
+		else if (month.equals("Dec"))
+			return 12;
+		else
+			return 0;
+	}
+
+	private int getDay(String day) {
+		return Integer.parseInt(day);
+	}
+
+	private int getYear(String year) {
+		return Integer.parseInt(year);
+	}
+
+	private void updateUBD(LocalDateTime date) {
+		actionItem.updateActionItem(actionItem.getTitle(),
+				actionItem.getPriority(), date, actionItem.getCurrentByDate(),
+				actionItem.getEventualByDate(), actionItem.getComment());
+	}
+
+	private void updateCBD(LocalDateTime date) {
+		actionItem.updateActionItem(actionItem.getTitle(),
+				actionItem.getPriority(), actionItem.getUrgentByDate(), date,
+				actionItem.getEventualByDate(), actionItem.getComment());
+	}
+
+	private void updateEBD(LocalDateTime date) {
+		actionItem.updateActionItem(actionItem.getTitle(),
+				actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+				date, actionItem.getComment());
+	}
+
 }
