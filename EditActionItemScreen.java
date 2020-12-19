@@ -434,7 +434,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		add(print, gbc);
 	}
 	
-	private DefaultComboBoxModel<String> customComboBoxModel(String unselectable) {
+	private DefaultComboBoxModel<String> customComboBoxModel(final String unselectable) {
 		return new DefaultComboBoxModel<String>() {
 			boolean selectionAllowed = true;
 		    public void setSelectedItem(Object object) {
