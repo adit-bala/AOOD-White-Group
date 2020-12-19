@@ -65,8 +65,6 @@ public class CommentScreen extends JPanel implements ActionListener {
 		underline.setMaximumSize(new Dimension(610, 10));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
-		titleLabel = new JLabel("Comment");
-		titleLabel.setFont(TITLE_FONT);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -174,6 +172,7 @@ public class CommentScreen extends JPanel implements ActionListener {
 		frame.setContentPane(screen);
 		frame.pack();
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
 }

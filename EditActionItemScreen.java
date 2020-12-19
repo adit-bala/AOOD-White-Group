@@ -10,6 +10,7 @@ import java.awt.print.PrinterException;
 import java.time.LocalDateTime;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 /* Displays ways for users to manipulate action item data.
 
@@ -28,21 +29,20 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	private int um=0,ud=0,uy=0,cm=0,cd=0,cy=0,em=0,ed=0,ey=0;
 
 	// added JLabels for "Priority" and "Scheduling" headers
-	private JLabel pHead, sHead;
+	private JLabel nHead, pHead, sHead;
 	JPanel titlePane;
 	JPanel namePane;
 	JPanel pPane;
 	JPanel sPane;
-	JPanel buttonsPane;
 
 	public static final Font TITLE_FONT = FontLoader.loadFont
 			("src/res/EBGaramond/static/EBGaramond-ExtraBold"
-					+ ".ttf", 72);
+					+ ".ttf", 80);
 	public static final Font HEAD_FONT = FontLoader.loadFont
 			("src/res/EBGaramond/static/EBGaramond-ExtraBold"
-					+ ".ttf", 36);
+					+ ".ttf", 50);
 	public static final Font BODY_FONT = FontLoader.loadFont
-			("src/res/Chivo/Chivo-Regular.ttf", 30);
+			("src/res/Chivo/Chivo-Regular.ttf", 36);
 	public static final Font BUTTON_FONT = FontLoader.loadFont
 			("src/res/Chivo/Chivo-Bold.ttf", 30);
 
@@ -51,54 +51,63 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	public static final Color DUST = new Color(235,235,235);
 	public static final Color TEAL_SELECT = new Color(86,153,127,200);
 
-	GridBagConstraints gbc = new GridBagConstraints();
-
 	EditActionItemScreen(ActionItem item, JFrame frame) {
 		this.frame = frame;
 		actionItem = item;
 
 		/* main panel setup */
+		setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30));
 		setLayout(new GridBagLayout());
-		gbc.insets = new Insets(5,5,5,5);
 		setBackground(Color.white);
-		gbc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
-
-		/* title */
-		titlePane = new JPanel();
-		titlePane.setLayout(new BoxLayout(titlePane,
-				BoxLayout.Y_AXIS));
-		pageTitle = new JLabel("Edit Action Item");
-		pageTitle.setFont(TITLE_FONT);
-		titlePane.setBackground(Color.WHITE);
-		titlePane.add(pageTitle);
-		GreenLinePanel greenLine = new GreenLinePanel();
-		greenLine.setBackground(Color.WHITE);
-		greenLine.setBounds(0,120,250,25);
-		titlePane.add(greenLine);
-		gbc.gridwidth=3;
-		gbc.gridx=0;
-		gbc.gridy=0;
-		add(titlePane,gbc);
-		gbc.gridwidth=1;
+		
+		JLabel titleLabel = new JLabel("Edit Action Item");
+		titleLabel.setFont(TITLE_FONT);
+		JPanel titlePanel = new JPanel();
+		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+		titlePanel.setBackground(Color.WHITE);
+		JPanel underline = new JPanel();
+		underline.setBorder(new LineBorder(Color.decode("#56997F"), 5, true));
+		underline.setMaximumSize(new Dimension(610, 10));
+		titlePanel.add(titleLabel);
+		titlePanel.add(underline);
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 3;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		add(titlePanel, gbc);
 
 		/* action item name */
+		namePane = new JPanel();
+		namePane.setBackground(Color.WHITE);
+		namePane.setLayout(new BoxLayout(namePane, BoxLayout.Y_AXIS));
+		nHead = new JLabel("Name");
+		nHead.setFont(HEAD_FONT);
+		nHead.setAlignmentX(LEFT_ALIGNMENT);
+		namePane.add(nHead);
 		name = new JTextField(actionItem.getTitle());
+		name.setMaximumSize(new Dimension(500, 9999));
 		name.setFont(BODY_FONT);
 		name.setBackground(DUST);
 		name.setForeground(EMERALD);
-		name.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+		name.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		name.setSelectionColor(TEAL_SELECT);
 		name.setSelectedTextColor(Color.white);
 		name.addActionListener(this);
 		name.addFocusListener(this);
+		name.setAlignmentX(LEFT_ALIGNMENT);
+		namePane.add(Box.createVerticalStrut(5));
+		namePane.add(name);
+		gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx=0;
 		gbc.gridy=1;
 		gbc.gridwidth=3;
-		add(name,gbc);
-		gbc.gridwidth=1;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(10, 10, 20, 0);
+		add(namePane, gbc);
 
 		/* priority panel and header */
 		pPane = new JPanel();
@@ -106,19 +115,30 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		pPane.setBackground(Color.WHITE);
 		pHead = new JLabel("Priority");
 		pHead.setFont(HEAD_FONT);
+		pHead.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(pHead);
 
 		/* priority radio buttons */
 		ButtonGroup group = new ButtonGroup();
-		urgent = new JRadioButton("Urgent");
-		current = new JRadioButton("Current");
-		eventual = new JRadioButton("Eventual");
-		inactive = new JRadioButton("Inactive");
-		complete = new JRadioButton("Complete");
-		urgent.setFont(BODY_FONT);
+		urgent = new JRadioButton("Urgent", new CustomRadioButton());
+		urgent.setSelectedIcon(new CustomSelectedRadioButton());
+		urgent.setIconTextGap(12);
+		current = new JRadioButton("Current", new CustomRadioButton());
+		current.setSelectedIcon(new CustomSelectedRadioButton());
+		current.setIconTextGap(12);
+		eventual = new JRadioButton("Eventual", new CustomRadioButton());
+		eventual.setSelectedIcon(new CustomSelectedRadioButton());
+		eventual.setIconTextGap(12);
+		inactive = new JRadioButton("Inactive", new CustomRadioButton());
+		inactive.setSelectedIcon(new CustomSelectedRadioButton());
+		inactive.setIconTextGap(12);
+		complete = new JRadioButton("Complete", new CustomRadioButton());
+		complete.setSelectedIcon(new CustomSelectedRadioButton());
+		complete.setIconTextGap(12);
+		urgent.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 36));
 		current.setFont(BODY_FONT);
-		eventual.setFont(BODY_FONT);
-		inactive.setFont(BODY_FONT);
+		eventual.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 36));
+		inactive.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 36));
 		complete.setFont(BODY_FONT);
 		urgent.setForeground(EMERALD);
 		current.setForeground(EMERALD);
@@ -135,10 +155,20 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		group.add(eventual);
 		group.add(inactive);
 		group.add(complete);
+		pPane.add(Box.createVerticalStrut(10));
+		urgent.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(urgent);
+		pPane.add(Box.createVerticalStrut(10));
+		current.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(current);
+		pPane.add(Box.createVerticalStrut(10));
+		eventual.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(eventual);
+		pPane.add(Box.createVerticalStrut(10));
+		inactive.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(inactive);
+		pPane.add(Box.createVerticalStrut(10));
+		complete.setAlignmentX(LEFT_ALIGNMENT);
 		pPane.add(complete);
 		urgent.addActionListener(this);
 		current.addActionListener(this);
@@ -157,26 +187,40 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			complete.setSelected(true);
 
 		/* add priority panel to main */
+		gbc = new GridBagConstraints();
 		gbc.gridx=0;
 		gbc.gridy=2;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		add(pPane, gbc);
 
 		/* scheduling panel and header */
 		sPane = new JPanel();
 		GridBagConstraints sgbc = new GridBagConstraints();
-		sgbc.anchor=GridBagConstraints.LINE_START;
+		sgbc.anchor=GridBagConstraints.FIRST_LINE_START;
 		sPane.setLayout(new GridBagLayout());
 		sPane.setBackground(Color.WHITE);
 		sgbc.gridx=0;
 		sgbc.gridy=0;
+		sgbc.gridwidth = 4;
+		sgbc.insets = new Insets(0, 0, 10, 0);
 		sHead = new JLabel("Scheduling");
 		sHead.setFont(HEAD_FONT);
 		sPane.add(sHead,sgbc);
-
+		sgbc.gridwidth = 1;
+		
 		/* scheduling checkboxes and comboboxes */
-		urgentBy = new JCheckBox("Urgent by: ");
-		currentBy = new JCheckBox("Current by: ");
-		eventualBy = new JCheckBox("Eventual by: ");
+		urgentBy = new JCheckBox("Urgent by: ", new CustomCheckBox());
+		urgentBy.setSelectedIcon(new CustomSelectedCheckBox());
+		urgentBy.setIconTextGap(12);
+		currentBy = new JCheckBox("Current by: ", new CustomCheckBox());
+		currentBy.setSelectedIcon(new CustomSelectedCheckBox());
+		currentBy.setIconTextGap(12);
+		eventualBy = new JCheckBox("Eventual by: ", new CustomCheckBox());
+		eventualBy.setSelectedIcon(new CustomSelectedCheckBox());
+		eventualBy.setIconTextGap(12);
 		urgentBy.setFont(BODY_FONT);
 		currentBy.setFont(BODY_FONT);
 		eventualBy.setFont(BODY_FONT);
@@ -196,12 +240,17 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		sgbc.gridy=3;
 		sPane.add(eventualBy,sgbc);
 			// months
+		sgbc.insets = new Insets(0, 0, 10, 5);
 		sgbc.gridx=1;
-		String[] months = {"mm","Jan", "Feb", "Mar", "Apr", "May", 
-				"Jun","Jul","Aug", "Sep", "Oct", "Nov", "Dec"};
-		uMonth = new JComboBox<>(months);
-		cMonth = new JComboBox<>(months);
-		eMonth = new JComboBox<>(months);
+		uMonth = new JComboBox<>();
+		uMonth.setModel(customComboBoxModel("mm"));
+		addMonths(uMonth);
+		cMonth = new JComboBox<>();
+		cMonth.setModel(customComboBoxModel("mm"));
+		addMonths(cMonth);
+		eMonth = new JComboBox<>();
+		eMonth.setModel(customComboBoxModel("mm"));
+		addMonths(eMonth);
 		uMonth.setFont(BODY_FONT);
 		cMonth.setFont(BODY_FONT);
 		eMonth.setFont(BODY_FONT);
@@ -223,14 +272,15 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		
 			// days
 		sgbc.gridx=2;
-		String[] days = new String[32];
-		days[0]="dd";
-		for (int i=1;i<32;i++) {
-			days[i]=Integer.toString(i);
-		}
-		uDay = new JComboBox<>(days);
-		cDay = new JComboBox<>(days);
-		eDay = new JComboBox<>(days);
+		uDay = new JComboBox<>();
+		uDay.setModel(customComboBoxModel("dd"));
+		addDays(uDay);
+		cDay = new JComboBox<>();
+		cDay.setModel(customComboBoxModel("dd"));
+		addDays(cDay);
+		eDay = new JComboBox<>();
+		eDay.setModel(customComboBoxModel("dd"));
+		addDays(eDay);
 		uDay.setFont(BODY_FONT);
 		cDay.setFont(BODY_FONT);
 		eDay.setFont(BODY_FONT);
@@ -252,8 +302,17 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			// years
 		sgbc.gridx=3;
 		uYear = new JTextField("yyyy");
+		uYear.setMinimumSize(new Dimension(100, 53));
+		uYear.setPreferredSize(new Dimension(100, 53));
+		uYear.addFocusListener(this);
 		cYear = new JTextField("yyyy");
+		cYear.setMinimumSize(new Dimension(100, 53));
+		cYear.setPreferredSize(new Dimension(100, 53));
+		cYear.addFocusListener(this);
 		eYear = new JTextField("yyyy");
+		eYear.setMinimumSize(new Dimension(100, 53));
+		eYear.setPreferredSize(new Dimension(100, 53));
+		eYear.addFocusListener(this);
 		uYear.setFont(BODY_FONT);
 		cYear.setFont(BODY_FONT);
 		eYear.setFont(BODY_FONT);
@@ -297,31 +356,40 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			uMonth.setSelectedIndex(item.getUrgentByDate().getMonthValue());
 			uDay.setSelectedIndex(item.getUrgentByDate().getDayOfMonth());
 			uYear.setText(Integer.toString(item.getUrgentByDate().getYear()));
-		} else if (!(item.getCurrentByDate()==null)) {
+			uy = item.getUrgentByDate().getYear();
+		}
+		if (!(item.getCurrentByDate()==null)) {
 			cMonth.setEnabled(true);
 			cDay.setEnabled(true);
 			cYear.setEnabled(true);
 			currentBy.setSelected(true);
 			cMonth.setSelectedIndex(item.getCurrentByDate().getMonthValue());
 			cDay.setSelectedIndex(item.getCurrentByDate().getDayOfMonth());
-			cYear.setText(Integer.toString(item.getCurrentByDate().getYear()));		
-		} else if (!(item.getEventualByDate()==null)) {
+			cYear.setText(Integer.toString(item.getCurrentByDate().getYear()));	
+			cy = item.getCurrentByDate().getYear();
+		}
+		if (!(item.getEventualByDate()==null)) {
 			eMonth.setEnabled(true);
 			eDay.setEnabled(true);
 			eYear.setEnabled(true);
 			eventualBy.setSelected(true);
 			eMonth.setSelectedIndex(item.getEventualByDate().getMonthValue());
 			eDay.setSelectedIndex(item.getEventualByDate().getDayOfMonth());
-			eYear.setText(Integer.toString(item.getEventualByDate().getYear()));		
+			eYear.setText(Integer.toString(item.getEventualByDate().getYear()));	
+			ey = item.getEventualByDate().getYear();
 		}
 
 		/* add scheduling panel to main */
+		gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx=1;
 		gbc.gridy=2;
+		gbc.gridwidth = 2;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(0, 10, 0, 10);
 		add(sPane, gbc);
 
 		/* bottom buttons and pane */
-		buttonsPane = new JPanel();
 		comment = new JButton("COMMENT");
 		comment.addActionListener(this);
 		comment.setActionCommand("COMMENT");
@@ -343,24 +411,59 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		comment.setFont(BUTTON_FONT);
 		history.setFont(BUTTON_FONT);
 		print.setFont(BUTTON_FONT);
-		buttonsPane.add(comment);
-		buttonsPane.add(history);
-		buttonsPane.add(print);
+		comment.setPreferredSize(new Dimension(0, 60));
+		comment.setMinimumSize(new Dimension(0, 60));
+		history.setPreferredSize(new Dimension(0, 60));
+		history.setMinimumSize(new Dimension(0, 60));
+		print.setPreferredSize(new Dimension(0, 60));
+		print.setMinimumSize(new Dimension(0, 60));
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(20, 10, 0, 10);
+		gbc.weightx = 1;
+		gbc.weighty = 0.1;
 		gbc.gridx=0;
 		gbc.gridy=3;
-		gbc.gridwidth=3;
-		buttonsPane.setAlignmentX(CENTER_ALIGNMENT);
-		buttonsPane.setBackground(Color.WHITE);
-		add(buttonsPane,gbc);
-		gbc.gridwidth=1;
-
+		gbc.anchor = GridBagConstraints.LINE_START;
+		add(comment,gbc);
+		gbc.gridx = 1;
+		gbc.anchor = GridBagConstraints.CENTER;
+		add(history, gbc);
+		gbc.gridx = 2;
+		gbc.anchor = GridBagConstraints.LINE_END;
+		add(print, gbc);
 	}
-
-	public class GreenLinePanel extends JPanel {
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.setColor(TEAL);
-			g.fillRect(50, 0, 250, 10);
+	
+	private DefaultComboBoxModel<String> customComboBoxModel(String unselectable) {
+		return new DefaultComboBoxModel<String>() {
+			boolean selectionAllowed = true;
+		    public void setSelectedItem(Object object) {
+		    	if (!unselectable.equals(object)) {
+		    		super.setSelectedItem(object);
+		    	} else if (selectionAllowed) {
+		    		selectionAllowed = false;
+		    		super.setSelectedItem(object);
+		    	}
+		    }
+	    };
+	}
+	
+	private void addMonths(JComboBox c) {
+		String[] months = {"mm","Jan", "Feb", "Mar", "Apr", "May", 
+			"Jun","Jul","Aug", "Sep", "Oct", "Nov", "Dec"};
+		for (String month : months) {
+			c.addItem(month);
+		}
+	}
+	
+	private void addDays(JComboBox c) {
+		String[] days = new String[32];
+		days[0]="dd";
+		for (int i=1;i<32;i++) {
+			days[i]=Integer.toString(i);
+		}
+		for (String day : days) {
+			c.addItem(day);
 		}
 	}
 
@@ -395,101 +498,110 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			uMonth.setEnabled(urgentBy.isSelected());
 			uDay.setEnabled(urgentBy.isSelected());
 			uYear.setEnabled(urgentBy.isSelected());
+			if (urgentBy.isSelected()) {
+				if (um!=0&&ud!=0&&uy!=0) {
+					updateUBD(LocalDateTime.of(uy,um,ud,0,0));
+				}
+			} else {
+				updateUBD(null);
+			}
 		} else if (event.getSource()==currentBy) {
 			cMonth.setEnabled(currentBy.isSelected());
 			cDay.setEnabled(currentBy.isSelected());
 			cYear.setEnabled(currentBy.isSelected());
+			if (currentBy.isSelected()) {
+				if (cm!=0&&cd!=0&&cy!=0) {
+					updateUBD(LocalDateTime.of(cy,cm,cd,0,0));
+				}
+			} else {
+				updateCBD(null);
+			}
 		} else if (event.getSource()==eventualBy) {
 			eMonth.setEnabled(eventualBy.isSelected());
 			eDay.setEnabled(eventualBy.isSelected());
 			eYear.setEnabled(eventualBy.isSelected());
-		}
-
-		/* scheduling drop downs */
-		
-		LocalDateTime newDate=null;
-		if (event.getSource()==uMonth||event.getSource()==cMonth||event.getSource()==eMonth
-				||event.getSource()==uDay||event.getSource()==cDay||event.getSource()==eDay) {
-			JComboBox cb = (JComboBox)event.getSource();
-			String choice = (String)cb.getSelectedItem();
-			
-			if (event.getSource()==uMonth) {
-				um=getMonth(choice);
-				if (um!=0&&ud!=0&&uy!=0) {
-					newDate=LocalDateTime.of(uy,um,ud,0,0);
-					updateUBD(newDate);
-				}
-				uDay.requestFocusInWindow();
-			} else if (event.getSource()==cMonth) {
-				cm=getMonth(choice);
-				if (cm!=0&&cd!=0&&cy!=0) {
-					newDate=LocalDateTime.of(cy,cm,cd,0,0);
-					updateCBD(newDate);
-				}
-				cDay.requestFocusInWindow();
-			} else if (event.getSource()==eMonth) {
-				em=getMonth(choice);
+			if (eventualBy.isSelected()) {
 				if (em!=0&&ed!=0&&ey!=0) {
-					newDate=LocalDateTime.of(ey,em,ed,0,0);
-					updateEBD(newDate);
+					updateUBD(LocalDateTime.of(ey,em,ed,0,0));
 				}
-				eDay.requestFocusInWindow();
-			} else if (event.getSource()==uDay) {
-				ud=getDay(choice);
-				if (um!=0&&ud!=0&&uy!=0) {
-					newDate=LocalDateTime.of(uy,um,ud,0,0);
-					updateUBD(newDate);
-				}
-				uYear.requestFocusInWindow();
-			} else if (event.getSource()==cDay) {
-				cd=getDay(choice);
-				if (cm!=0&&cd!=0&&cy!=0) {
-					newDate=LocalDateTime.of(cy,cm,cd,0,0);
-					updateCBD(newDate);
-				}
-				cYear.requestFocusInWindow();
-			} else if (event.getSource()==eDay) {
-				ed=getDay(choice);
-				if (em!=0&&ed!=0&&ey!=0) {
-					newDate=LocalDateTime.of(ey,em,ed,0,0);
-					updateEBD(newDate);
-				}
-				eYear.requestFocusInWindow();
+			} else {
+				updateEBD(null);
 			}
-		} else if (event.getSource()==uYear) {
-			uy=getYear(uYear.getText());
-			if (um!=0&&ud!=0&&uy!=0) {
-				newDate=LocalDateTime.of(uy,um,ud,0,0);
-				updateUBD(newDate);
-			}
-		} else if (event.getSource()==cYear) {
-			cy=getYear(cYear.getText());
-			if (cm!=0&&cd!=0&&cy!=0) {
-				newDate=LocalDateTime.of(cy,cm,cd,0,0);
-				updateCBD(newDate);
-			}
-		} else if (event.getSource()==eYear) {
-			ey=getYear(eYear.getText());
-			if (em!=0&&ed!=0&&ey!=0) {
-				newDate=LocalDateTime.of(ey,em,ed,0,0);
-				updateEBD(newDate);
-			}
-		}
-
-		/* c,h,p buttons and name */
-		else if (eventName.contentEquals("COMMENT")) {
-			setCommentScreen();
-		} else if (eventName.contentEquals("HISTORY")) {
-			setHistoryScreen();
-		} else if (eventName.contentEquals("PRINT")) {
-			setPrintScreen();
 		} else {
-			actionItem.updateActionItem(name.getText(),
-					actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
-					actionItem.getEventualByDate(), actionItem.getComment());
-			System.out.println("pressed enter, current name: "+actionItem.getTitle());
+
+			/* scheduling drop downs */
+			int dateChange = -1;
+			LocalDateTime newDate=null;
+			if (event.getSource()==uMonth||event.getSource()==cMonth||event.getSource()==eMonth
+					||event.getSource()==uDay||event.getSource()==cDay||event.getSource()==eDay) {
+				JComboBox cb = (JComboBox)event.getSource();
+				String choice = (String)cb.getSelectedItem();
+				if (event.getSource()==uMonth) {
+					um=getMonth(choice);
+					dateChange = 0;
+					uDay.requestFocusInWindow();
+				} else if (event.getSource()==cMonth) {
+					cm=getMonth(choice);
+					dateChange = 1;
+					cDay.requestFocusInWindow();
+				} else if (event.getSource()==eMonth) {
+					em=getMonth(choice);
+					dateChange = 2;
+					eDay.requestFocusInWindow();
+				} else if (event.getSource()==uDay) {
+					ud=getDay(choice);
+					dateChange = 0;
+					uYear.requestFocusInWindow();
+				} else if (event.getSource()==cDay) {
+					cd=getDay(choice);
+					dateChange = 1;
+					cYear.requestFocusInWindow();
+				} else if (event.getSource()==eDay) {
+					ed=getDay(choice);
+					dateChange = 2;
+					eYear.requestFocusInWindow();
+				}
+			} else if (event.getSource()==uYear) {
+				uy=getYear(uYear.getText());
+				dateChange = 0;
+			} else if (event.getSource()==cYear) {
+				cy=getYear(cYear.getText());
+				dateChange = 1;
+			} else if (event.getSource()==eYear) {
+				ey=getYear(eYear.getText());
+				dateChange = 2;
+			}
+			if (dateChange == 0) {
+				if (um!=0&&ud!=0&&uy!=0) {
+					newDate=LocalDateTime.of(uy,um,ud,0,0);
+					updateUBD(newDate);
+				}
+			} else if (dateChange == 1) {
+				if (cm!=0&&cd!=0&&cy!=0) {
+					newDate=LocalDateTime.of(cy,cm,cd,0,0);
+					updateCBD(newDate);
+				}
+			} else if (dateChange == 2) {
+				if (em!=0&&ed!=0&&ey!=0) {
+					newDate=LocalDateTime.of(ey,em,ed,0,0);
+					updateEBD(newDate);
+				}
+			}
+	
+			/* c,h,p buttons and name */
+			else if (eventName.contentEquals("COMMENT")) {
+				setCommentScreen();
+			} else if (eventName.contentEquals("HISTORY")) {
+				setHistoryScreen();
+			} else if (eventName.contentEquals("PRINT")) {
+				setPrintScreen();
+			} else {
+				actionItem.updateActionItem(name.getText(),
+						actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+						actionItem.getEventualByDate(), actionItem.getComment());
+//				System.out.println("pressed enter, current name: "+actionItem.getTitle());
+			}
 		}
-		
 	}
 
 	private void setCommentScreen() {
@@ -527,15 +639,33 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		System.out.println("focus gained, current name: "+
-				actionItem.getTitle());}
+//		System.out.println("focus gained, current name: "+
+//				actionItem.getTitle());
+	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		actionItem.updateActionItem(name.getText(),
-				actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
-				actionItem.getEventualByDate(), actionItem.getComment());	
-		System.out.println("focus lost, current name: "+actionItem.getTitle());
+		if (e.getSource()==uYear) {
+			uy=getYear(uYear.getText());
+			if (um!=0&&ud!=0&&uy!=0) {
+				updateUBD(LocalDateTime.of(uy,um,ud,0,0));
+			}
+		} else if (e.getSource()==cYear) {
+			cy=getYear(cYear.getText());
+			if (cm!=0&&cd!=0&&cy!=0) {
+				updateCBD(LocalDateTime.of(cy,cm,cd,0,0));
+			}
+		} else if (e.getSource()==eYear) {
+			ey=getYear(eYear.getText());
+			if (em!=0&&ed!=0&&ey!=0) {
+				updateEBD(LocalDateTime.of(ey,em,ed,0,0));
+			}
+		} else {
+			actionItem.updateActionItem(name.getText(),
+					actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
+					actionItem.getEventualByDate(), actionItem.getComment());	
+		}
+//		System.out.println("focus lost, current name: "+actionItem.getTitle());
 	}
 
 	private int getMonth(String month) {
@@ -568,11 +698,19 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	}
 
 	private int getDay(String day) {
-		return Integer.parseInt(day);
+		try {
+			return Integer.parseInt(day);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	private int getYear(String year) {
-		return Integer.parseInt(year);
+		try {
+			return Integer.parseInt(year);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	private void updateUBD(LocalDateTime date) {
@@ -592,5 +730,112 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 				actionItem.getPriority(), actionItem.getUrgentByDate(), actionItem.getCurrentByDate(),
 				date, actionItem.getComment());
 	}
-
+	
+	class CustomRadioButton implements Icon {
+		  private int w, h;
+		
+		  public CustomRadioButton() {
+		    this.w = 30;
+		    this.h = 30;
+		  }
+		
+		  @Override
+		  public void paintIcon(Component c, Graphics g, int x, int y) {
+		    g.setColor(DUST);
+		    ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		    g.fillOval(x, y, w, h);
+		  }
+		
+		  @Override
+		  public int getIconWidth() {
+		    return w;
+		  }
+		
+		  @Override
+		  public int getIconHeight() {
+		    return h;
+		  }
+	}
+	
+	class CustomSelectedRadioButton implements Icon {
+		  private int w, h;
+		
+		  public CustomSelectedRadioButton() {
+		    this.w = 30;
+		    this.h = 30;
+		  }
+		
+		  @Override
+		  public void paintIcon(Component c, Graphics g, int x, int y) {
+		    g.setColor(DUST);
+		    ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		    g.fillOval(x, y, w, h);
+		    g.setColor(TEAL);
+		    g.fillOval(x + 6, y + 6, w - 12, h - 12);
+		  }
+		
+		  @Override
+		  public int getIconWidth() {
+		    return w;
+		  }
+		
+		  @Override
+		  public int getIconHeight() {
+		    return h;
+		  }
+	}
+	
+	class CustomCheckBox implements Icon {
+		  private int w, h;
+		
+		  public CustomCheckBox() {
+		    this.w = 30;
+		    this.h = 30;
+		  }
+		
+		  @Override
+		  public void paintIcon(Component c, Graphics g, int x, int y) {
+		    g.setColor(DUST);
+		    ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		    g.fillRect(x, y, w, h);
+		  }
+		
+		  @Override
+		  public int getIconWidth() {
+		    return w;
+		  }
+		
+		  @Override
+		  public int getIconHeight() {
+		    return h;
+		  }
+	}
+	
+	class CustomSelectedCheckBox implements Icon {
+		  private int w, h;
+		
+		  public CustomSelectedCheckBox() {
+		    this.w = 30;
+		    this.h = 30;
+		  }
+		
+		  @Override
+		  public void paintIcon(Component c, Graphics g, int x, int y) {
+		    g.setColor(DUST);
+		    ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		    g.fillRect(x, y, w, h);
+		    g.setColor(TEAL);
+		    g.fillRect(x + 6, y + 6, w - 12, h - 12);
+		  }
+		
+		  @Override
+		  public int getIconWidth() {
+		    return w;
+		  }
+		
+		  @Override
+		  public int getIconHeight() {
+		    return h;
+		  }
+	}
 }
