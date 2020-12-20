@@ -9,6 +9,7 @@ import backend.FontLoader;
 import backend.ToDoList;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.io.File;
@@ -155,12 +156,17 @@ public class MenuBar extends JMenuBar implements ActionListener{
 				}
             } 
 		} else if (eventName.equals("Print")) {
+			Dimension temp = frame.getSize();
 			try {
-				FileUtilities.printPanel(main);
-				JOptionPane.showMessageDialog(frame, "Now printing your to-do list.", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
+				frame.setSize(500, 10000);
+				frame.repaint();
+				frame.revalidate();
+				if (FileUtilities.printPanel(main))
+					JOptionPane.showMessageDialog(frame, "Now printing your to-do list.", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
 			} catch (PrinterException e) {
 				JOptionPane.showMessageDialog(frame, "Failed to print your to-do list.", "Print Unsuccessful", JOptionPane.ERROR_MESSAGE);
 			}
+			frame.setSize(temp);
 		} else if (eventName.equals("Back")) {
 			if (prevPanels.empty()) {
 				frame.setContentPane(main);

@@ -1,39 +1,19 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.LineBorder;
 
 import backend.ActionItem;
 import backend.FontLoader;
 import backend.HistoryEvent;
 import backend.Priority;
-import backend.samples.SampleActionItem1;
 
 /*
  * This class shows all events in an Action Item's history
@@ -46,15 +26,15 @@ public class PrintActionItemPanel extends JPanel {
 	private ActionItem actionItem;
 
 	public static final Font TITLE_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 70);
-	public static final Font HEADER_FONT = FontLoader
 			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
+	public static final Font HEADER_FONT = FontLoader
+			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 25);
 	public static final Font ITEM_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Regular.ttf", 30);
-	public static final Font TEXT_FONT = FontLoader
 			.loadFont("src/res/Chivo/Chivo-Regular.ttf", 20);
+	public static final Font TEXT_FONT = FontLoader
+			.loadFont("src/res/Chivo/Chivo-Regular.ttf", 16);
 	public static final Font LABEL_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
+			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 16);
 
 	boolean isAlreadyOneClick;
 
@@ -62,12 +42,9 @@ public class PrintActionItemPanel extends JPanel {
 		actionItem = item;
 		setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
 		setBackground(Color.WHITE);
-
-		// set size to A4 dimensions
-		setMinimumSize(new Dimension(1190, 1684));
-		setPreferredSize(new Dimension(1190, 1684));
-		setMaximumSize(new Dimension(1190, 1684));
-
+		setMinimumSize(new Dimension(500, 648));
+		setMaximumSize(new Dimension(500, 9999));
+		
 		events = actionItem.getHistory();
 		/*
 		 * title
@@ -77,9 +54,9 @@ public class PrintActionItemPanel extends JPanel {
 		titleLabel.setFont(TITLE_FONT);
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
-		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"),
+		JPanel underline = new RoundedPanel(6, Color.decode("#56997F"),
 				Color.WHITE);
-		underline.setMaximumSize(new Dimension(610, 10));
+		underline.setMaximumSize(new Dimension(360, 6));
 		titlePanel.add(titleLabel);
 		titlePanel.add(underline);
 		titlePanel.setBackground(Color.WHITE);
@@ -157,7 +134,7 @@ public class PrintActionItemPanel extends JPanel {
 			add(Box.createRigidArea(new Dimension(0, 5)));
 
 			JLabel comment = new JLabel(
-					"<html>" + actionItem.getComment() + "</html>");
+					"<html><p style=\"width:300px\">" + actionItem.getComment() + "</p></html>");
 			comment.setFont(TEXT_FONT);
 			comment.setAlignmentX(LEFT_ALIGNMENT);
 			add(comment);
@@ -172,7 +149,7 @@ public class PrintActionItemPanel extends JPanel {
 			dividerLabel.setFont(HEADER_FONT);
 			dividerLabel.setAlignmentX(LEFT_ALIGNMENT);
 			add(dividerLabel);
-			add(Box.createRigidArea(new Dimension(0, 15)));
+			add(Box.createRigidArea(new Dimension(0, 10)));
 
 			for (int i = 0; i < events.size(); i++) {
 				JLabel eventTime = new JLabel(events.get(events.size() - 1 - i)
@@ -187,7 +164,7 @@ public class PrintActionItemPanel extends JPanel {
 				eventDescription.setFont(LABEL_FONT);
 				eventDescription.setForeground(Color.decode("#56997F"));
 				eventDescription.setText(
-						"<html>" + events.get(events.size() - 1 - i).label() + "</html>");
+						"<html><p style=\"width:280px\">" + events.get(events.size() - 1 - i).label() + "</p></html>");
 				eventDescription
 						.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 				eventDescriptionPanel.add(eventDescription);
@@ -203,7 +180,7 @@ public class PrintActionItemPanel extends JPanel {
 				eventPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 				eventPanel.add(eventDescriptionPanel);
 				add(eventPanel);
-				add(Box.createRigidArea(new Dimension(0, 20)));
+				add(Box.createRigidArea(new Dimension(0, 15)));
 				eventPanel.setBackground(Color.WHITE);
 			}
 		}
