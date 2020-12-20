@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.BevelBorder;
 
 import backend.ActionItem;
 import backend.FileUtilities;
@@ -87,8 +89,11 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		c.anchor = GridBagConstraints.NORTH;
 		c.weighty = 1;
 		c.insets = new Insets(50, 50, 50, 50);
-		preview.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), preview.getBorder()));
-		container.add(preview, c);
+		JPanel paper = new JPanel();
+		paper.setLayout(new BorderLayout());
+		paper.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		paper.add(preview);
+		container.add(paper, c);
 
 		JScrollPane scroll = new JScrollPane(container,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -138,8 +143,8 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		String eventName = e.getActionCommand();
 		if (eventName.contentEquals("print")) {
 			try {
-				FileUtilities.printPanel(preview);
-				JOptionPane.showMessageDialog(frame, "Now printing " + item.getTitle() + ".", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
+				if (FileUtilities.printPanel(preview))
+					JOptionPane.showMessageDialog(frame, "Now printing " + item.getTitle() + ".", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
 			} catch (PrinterException e1) {
 				JOptionPane.showMessageDialog(frame, "Failed to print " + item.getTitle() + ".", "Print Unsuccessful", JOptionPane.ERROR_MESSAGE);
 			}

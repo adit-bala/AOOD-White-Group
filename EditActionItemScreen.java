@@ -20,6 +20,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 
 	private JLabel pageTitle;
 	private JTextField name, uYear, cYear, eYear;
+	private String uYearText, cYearText, eYearText;
 	private JComboBox<String> uMonth, cMonth, eMonth, uDay, cDay, eDay;
 	private JRadioButton urgent, current, eventual, inactive,
 	complete;
@@ -106,7 +107,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		gbc.gridy=1;
 		gbc.gridwidth=3;
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(10, 10, 20, 0);
+		gbc.insets = new Insets(0, 10, 15, 0);
 		add(namePane, gbc);
 
 		/* priority panel and header */
@@ -331,6 +332,39 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		uYear.addActionListener(this);
 		cYear.addActionListener(this);
 		eYear.addActionListener(this);
+		uYear.addFocusListener(new FocusListener() {  
+		    public void focusGained(FocusEvent e) {  
+		    	uYear.setText(uYearText);  
+		    }  
+		    public void focusLost(FocusEvent e) { 
+	        	uYearText = uYear.getText();
+		        if (uYearText.length() == 0) {  
+		        	uYear.setText("yyyy");  
+		        }
+		    }  
+		});
+		cYear.addFocusListener(new FocusListener() {  
+		    public void focusGained(FocusEvent e) {  
+		    	cYear.setText(cYearText);  
+		    }  
+		    public void focusLost(FocusEvent e) { 
+	        	cYearText = cYear.getText();
+		        if (cYearText.length() == 0) {  
+		        	cYear.setText("yyyy");  
+		        }
+		    }  
+		});
+		eYear.addFocusListener(new FocusListener() {  
+		    public void focusGained(FocusEvent e) {  
+		    	eYear.setText(eYearText);  
+		    }  
+		    public void focusLost(FocusEvent e) { 
+	        	eYearText = eYear.getText();
+		        if (eYearText.length() == 0) {  
+		        	eYear.setText("yyyy");  
+		        }
+		    }  
+		});
 		sgbc.gridy=1;
 		sPane.add(uYear,sgbc);
 		sgbc.gridy=2;
@@ -357,6 +391,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			uDay.setSelectedIndex(item.getUrgentByDate().getDayOfMonth());
 			uYear.setText(Integer.toString(item.getUrgentByDate().getYear()));
 			uy = item.getUrgentByDate().getYear();
+			uYearText = uy + "";
 		}
 		if (!(item.getCurrentByDate()==null)) {
 			cMonth.setEnabled(true);
@@ -367,6 +402,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			cDay.setSelectedIndex(item.getCurrentByDate().getDayOfMonth());
 			cYear.setText(Integer.toString(item.getCurrentByDate().getYear()));	
 			cy = item.getCurrentByDate().getYear();
+			cYearText = cy + "";
 		}
 		if (!(item.getEventualByDate()==null)) {
 			eMonth.setEnabled(true);
@@ -377,6 +413,7 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 			eDay.setSelectedIndex(item.getEventualByDate().getDayOfMonth());
 			eYear.setText(Integer.toString(item.getEventualByDate().getYear()));	
 			ey = item.getEventualByDate().getYear();
+			eYearText = ey + "";
 		}
 
 		/* add scheduling panel to main */

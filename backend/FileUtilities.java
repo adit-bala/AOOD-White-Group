@@ -1,6 +1,7 @@
 package backend;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.*;
@@ -10,7 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 
 import org.json.*;
 
@@ -84,14 +87,17 @@ public class FileUtilities {
 		return item;
 	}
 
-	public static void printPanel(JPanel panel) throws PrinterException {
+	public static boolean printPanel(JPanel panel) throws PrinterException {
 		PrinterJob job = PrinterJob.getPrinterJob();
-		PageFormat pf = job.pageDialog(job.defaultPage());
-		job.setPrintable(new Printer(panel), pf);
+		Printer p = new Printer(panel);
+		p.setPageFormat(job.pageDialog(job.defaultPage()));
+		job.setPrintable(p);
+		job.setPageable(p);
 		boolean ok = job.printDialog();
 		if (ok) {
 			job.print();
 		}
+		return ok;
 	}
 
 //	public static void main(String[] args) {
@@ -101,23 +107,59 @@ public class FileUtilities {
 //	}
 }
 
-class Printer implements Printable {
+class Printer implements Printable, Pageable {
 
 	private Component compToPrint;
+	private PageFormat format;
+	private int numPages;
 
 	Printer(Component comp) {
 		this.compToPrint = comp;
+		Dimension totalSpace = this.compToPrint.getSize();
+		format = PrinterJob.getPrinterJob().defaultPage();
+		numPages = (int) Math.ceil(totalSpace.height / format.getImageableHeight());
 	}
 
 	@Override
 	public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
-		if (page > 0)
+		if (page < 0 || page >= numPages)
 			return NO_SUCH_PAGE;
 
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.translate(pf.getImageableX(), pf.getImageableY());
-		compToPrint.printAll(g);
+		g2d.translate(pf.getImageableX() - 40, pf.getImageableY() - page * pf.getImageableHeight() - 20);
+		disableDoubleBuffering(compToPrint);
+		compToPrint.paint(g2d);
+		enableDoubleBuffering(compToPrint);
 
 		return PAGE_EXISTS;
+	}
+	
+    public static void disableDoubleBuffering(Component c) {
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(false);
+    }
+
+    public static void enableDoubleBuffering(Component c) {
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(true);
+    }
+
+	@Override
+	public int getNumberOfPages() {
+		return numPages;
+	}
+
+	@Override
+	public PageFormat getPageFormat(int arg0) throws IndexOutOfBoundsException {
+		return format;
+	}
+	
+	public void setPageFormat(PageFormat format) {
+		this.format = format;
+	}
+
+	@Override
+	public Printable getPrintable(int arg0) throws IndexOutOfBoundsException {
+		return this;
 	}
 }
