@@ -41,14 +41,10 @@ class Window {
 		});
 	}
 
-	private static void runGUI() {
-		new Window();
-	}
-
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				runGUI();
+				new Window();
 			}
 		});
 	}

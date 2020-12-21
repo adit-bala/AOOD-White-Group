@@ -181,22 +181,4 @@ public class ToDoList {
 	public void addCompleteActionItem(ActionItem item) {
 		completeItems.add(item);
 	}
-	public static void main(String[] arg) {
-		ToDoList list = new ToDoList();
-		for (int i = 0; i < 5; i++) {
-			ActionItem item1 = new ActionItem();
-			item1.setPriority(Priority.URGENT);
-			ActionItem item2 = new ActionItem();
-			item2.setPriority(Priority.CURRENT);
-			ActionItem item3 = new ActionItem();
-			item3.setPriority(Priority.EVENTUAL);
-			list.addActionItem(item1);
-			list.addActionItem(item2);
-			list.addActionItem(item3);
-		}
-		list.updateListOrder();
-		for (int i = 0; i < list.getNumIncompleteItems(); i++) {
-			System.out.println(list.getIncompleteItemAtIndex(i).getPriority());
-		}
-	}
 }

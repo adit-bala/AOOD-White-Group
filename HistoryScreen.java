@@ -29,7 +29,6 @@ import javax.swing.border.LineBorder;
 import backend.ActionItem;
 import backend.FontLoader;
 import backend.HistoryEvent;
-import backend.samples.SampleActionItem1;
 
 /*
  * This class shows all events in an Action Item's history
@@ -47,12 +46,10 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	private List<HistoryEvent> events;
 	private ActionItem actionItem;
 
-	public static final Font TITLE_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
-	public static final Font HEADER_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
-	public static final Font LABEL_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
+	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
+			40);
+	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
 	private final Color bgColor = new Color(230, 230, 230);
 
 	boolean isAlreadyOneClick;
@@ -98,7 +95,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.anchor = GridBagConstraints.LINE_START;
 		titlePanel.setBackground(Color.WHITE);
 		add(titlePanel, c);
-		
+
 		addEvents();
 	}
 
@@ -126,23 +123,18 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.weightx = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		for (int i = 0; i < events.size(); i++) {
-			DateTimeFormatter formatter = DateTimeFormatter
-					.ofPattern("EEEE, d MMMM uuuu 'at' hh:mm a");
-			JLabel eventTime = new JLabel(events.get(events.size() - 1 - i)
-					.getDateTime().format(formatter));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu 'at' hh:mm a");
+			JLabel eventTime = new JLabel(events.get(events.size() - 1 - i).getDateTime().format(formatter));
 			eventTime.setFont(LABEL_FONT);
 			eventTime.setAlignmentX(LEFT_ALIGNMENT);
-			JPanel eventDescriptionPanel = new RoundedPanel(20,
-					Color.WHITE, bgColor);
+			JPanel eventDescriptionPanel = new RoundedPanel(20, Color.WHITE, bgColor);
 			eventDescriptionPanel.setBackground(bgColor);
 			JLabel eventDescription = new JLabel();
 			eventDescription.setFont(LABEL_FONT);
 			eventDescription.setForeground(Color.decode("#56997F"));
-			eventDescription.setText("<html><p style=\"width:640px\">"
-					+ events.get(events.size() - 1 - i).label()
-					+ "</p></html>");
-			eventDescription
-					.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			eventDescription.setText(
+					"<html><p style=\"width:640px\">" + events.get(events.size() - 1 - i).label() + "</p></html>");
+			eventDescription.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			eventDescriptions[i] = eventDescription;
 			eventDescriptionPanel.add(eventDescription);
 			eventDescriptionPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -153,8 +145,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			eventPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 			eventPanel.add(eventDescriptionPanel);
 			historyPanel.add(eventPanel, c);
-			eventPanel
-					.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
+			eventPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
 			eventPanel.setBackground(bgColor);
 
 			if (events.get(i).getType() == 2) {
@@ -162,7 +153,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}
 			c.gridy++;
 		}
-		
+
 		JPanel container = new JPanel();
 		container.setBackground(bgColor);
 		container.setLayout(new GridBagLayout());
@@ -171,10 +162,9 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		c.weighty = 1;
 		container.add(historyPanel, c);
 
-		historyScroll = new JScrollPane(container,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		historyScroll = new JScrollPane(container, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 1;
@@ -186,15 +176,13 @@ public class HistoryScreen extends JPanel implements MouseListener {
 
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
-				int newWidth = Math.min(640, Math.max(280,
-						(int) (e.getComponent().getWidth() / 1.3) - 130));
+				int newWidth = Math.min(640, Math.max(280, (int) (e.getComponent().getWidth() / 1.3) - 130));
 				for (JLabel eventDescription : eventDescriptions) {
-					eventDescription.setText(eventDescription.getText()
-							.replaceFirst("[0-9]+px", newWidth + "px"));
+					eventDescription.setText(eventDescription.getText().replaceFirst("[0-9]+px", newWidth + "px"));
 				}
 			}
 		});
-		
+
 		historyPanel.add(Box.createRigidArea(new Dimension(0, 30)), c);
 	}
 
@@ -217,7 +205,7 @@ public class HistoryScreen extends JPanel implements MouseListener {
 			}, 500);
 		}
 	}
-	
+
 	public void refreshEvents() {
 		remove(historyScroll);
 		addEvents();
@@ -253,16 +241,4 @@ public class HistoryScreen extends JPanel implements MouseListener {
 		// TODO Auto-generated method stub
 
 	}
-
-	public static void main(String[] args) {
-		SampleActionItem1 item = new SampleActionItem1();
-		JFrame frame = new JFrame();
-		HistoryScreen screen = new HistoryScreen(item, frame);
-		screen.setPreferredSize(new Dimension(1024, 1366));
-		frame.setContentPane(screen);
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
 }

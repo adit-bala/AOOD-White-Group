@@ -193,7 +193,4 @@ public class MenuBar extends JMenuBar implements ActionListener{
 			System.exit(0);
 		}
 	}
-	public static void main (String[] args) {
-		//MenuBar bar = new MenuBar();
-	}
 }

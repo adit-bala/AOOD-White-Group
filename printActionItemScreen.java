@@ -22,7 +22,6 @@ import javax.swing.border.BevelBorder;
 import backend.ActionItem;
 import backend.FileUtilities;
 import backend.FontLoader;
-import backend.samples.SampleActionItem1;
 
 /*
  * This class shows all events in an Action Item's history
@@ -34,11 +33,10 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 	private JFrame frame;
 	private PrintActionItemPanel preview;
 	private ActionItem item;
-	
-	public static final Font TITLE_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
-	public static final Font HEADER_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 50);
+
+	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
+	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
+			50);
 	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
 
 	PrintActionItemScreen(ActionItem item, JFrame frame) {
@@ -47,7 +45,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		this.preview = new PrintActionItemPanel(item);
 		setBackground(Color.WHITE);
 		setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
-		
+
 		/*
 		 * title
 		 */
@@ -66,7 +64,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(titlePanel, c);
-		
+
 		/*
 		 * name of item
 		 */
@@ -78,7 +76,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(10, 0, 0, 0);
 		add(itemLabel, c);
-		
+
 		/*
 		 * scroll pane
 		 */
@@ -95,8 +93,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		paper.add(preview);
 		container.add(paper, c);
 
-		JScrollPane scroll = new JScrollPane(container,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scroll = new JScrollPane(container, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		c = new GridBagConstraints();
@@ -107,7 +104,7 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		c.weighty = 1;
 		c.insets = new Insets(10, 0, 20, 0);
 		add(scroll, c);
-		
+
 		JButton commitButton = new JButton("PRINT");
 		commitButton.addActionListener(this);
 		commitButton.setActionCommand("print");
@@ -127,26 +124,17 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 		add(commitButton, c);
 	}
 
-	public static void main(String[] args) {
-		SampleActionItem1 item = new SampleActionItem1();
-		JFrame frame = new JFrame();
-		PrintActionItemScreen screen = new PrintActionItemScreen(item, frame);
-		screen.setPreferredSize(new Dimension(1024, 1366));
-		frame.setContentPane(screen);
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String eventName = e.getActionCommand();
 		if (eventName.contentEquals("print")) {
 			try {
 				if (FileUtilities.printPanel(preview))
-					JOptionPane.showMessageDialog(frame, "Now printing " + item.getTitle() + ".", "Print Confirmation", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Now printing " + item.getTitle() + ".", "Print Confirmation",
+							JOptionPane.INFORMATION_MESSAGE);
 			} catch (PrinterException e1) {
-				JOptionPane.showMessageDialog(frame, "Failed to print " + item.getTitle() + ".", "Print Unsuccessful", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Failed to print " + item.getTitle() + ".", "Print Unsuccessful",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

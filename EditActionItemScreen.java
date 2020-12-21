@@ -2,7 +2,6 @@ import backend.ActionItem;
 import backend.FileUtilities;
 import backend.FontLoader;
 import backend.Priority;
-import backend.samples.SampleActionItem1;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -660,18 +659,6 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		((MenuBar) frame.getJMenuBar()).addPrevPanel(this);
 		frame.revalidate();
 		frame.repaint();
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		SampleActionItem1 item = new SampleActionItem1();
-		EditActionItemScreen screen = new 
-				EditActionItemScreen(item, frame);
-		screen.setPreferredSize(new Dimension(1024, 1366));
-		frame.setContentPane(screen);
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	@Override

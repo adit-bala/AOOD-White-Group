@@ -17,7 +17,6 @@ import javax.swing.border.EmptyBorder;
 import backend.ActionItem;
 import backend.Priority;
 import backend.ToDoList;
-import backend.samples.SampleToDoList;
 import backend.FontLoader;
 
 import java.awt.BasicStroke;
@@ -77,7 +76,7 @@ class MainScreen extends JPanel implements ActionListener{
 	};
 	MainScreen(JFrame frame) {
 		this.frame = frame;
-		userList = new SampleToDoList(); // where does this come from ?
+		userList = new ToDoList(); // where does this come from ?
 		//TEST(); // adds example action items
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBackground(Color.white);
