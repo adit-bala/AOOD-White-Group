@@ -44,12 +44,12 @@ class MainScreen extends JPanel implements ActionListener{
 	private JTextField NewActionItem;
 	private String newActionItemName = "";
 	public static final Color THEME_MEDIUM = Color.decode("#56997F");
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
-	public static final Font HEADING_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
-	public static final Font BOLD_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 15);
-	public static final Font NORMAL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 15);
-	public static final Font ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 15);
-	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 15);
+	public static final Font TITLE_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 100);
+	public static final Font HEADING_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 30);
+	public static final Font BOLD_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 15);
+	public static final Font NORMAL_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Regular.ttf", 15);
+	public static final Font ITALIC_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Italic.ttf", 15);
+	public static final Font LIGHT_ITALIC_FONT = FontLoader.loadFont("/res/Chivo/Chivo-LightItalic.ttf", 15);
 	private MouseListener mouseListener = new MouseAdapter() {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -103,7 +103,7 @@ class MainScreen extends JPanel implements ActionListener{
 		NewActionItem = new JTextField("New Action Item...", 100);
 		NewActionItem.setToolTipText("Please enter the name of a new action item");
 		NewActionItem.setHorizontalAlignment(JTextField.CENTER);
-		NewActionItem.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 18));
+		NewActionItem.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Regular.ttf", 18));
 		NewActionItem.setBackground(Color.white);
 		NewActionItem.setForeground(Color.gray.brighter());
 		NewActionItem.setColumns(30);

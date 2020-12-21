@@ -26,15 +26,15 @@ public class PrintActionItemPanel extends JPanel {
 	private ActionItem actionItem;
 
 	public static final Font TITLE_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
+			.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 40);
 	public static final Font HEADER_FONT = FontLoader
-			.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 25);
+			.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 25);
 	public static final Font ITEM_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Regular.ttf", 20);
+			.loadFont("/res/Chivo/Chivo-Regular.ttf", 20);
 	public static final Font TEXT_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Regular.ttf", 16);
+			.loadFont("/res/Chivo/Chivo-Regular.ttf", 16);
 	public static final Font LABEL_FONT = FontLoader
-			.loadFont("src/res/Chivo/Chivo-Bold.ttf", 16);
+			.loadFont("/res/Chivo/Chivo-Bold.ttf", 16);
 
 	boolean isAlreadyOneClick;
 
@@ -88,11 +88,11 @@ public class PrintActionItemPanel extends JPanel {
 		Priority p = actionItem.getPriority();
 		Font f;
 		if (p == Priority.URGENT)
-			f = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
+			f = FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 30);
 		else if (p == Priority.INACTIVE)
-			f = FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 30);
+			f = FontLoader.loadFont("/res/Chivo/Chivo-Italic.ttf", 30);
 		else if (p == Priority.EVENTUAL)
-			f = FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 30);
+			f = FontLoader.loadFont("/res/Chivo/Chivo-LightItalic.ttf", 30);
 		else
 			f = ITEM_FONT;
 		addLabel("Priority", p.toString(), f);

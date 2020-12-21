@@ -34,10 +34,10 @@ public class PrintActionItemScreen extends JPanel implements ActionListener {
 	private PrintActionItemPanel preview;
 	private ActionItem item;
 
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
-	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
+	public static final Font TITLE_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
+	public static final Font HEADER_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
 			50);
-	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
+	public static final Font LABEL_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 30);
 
 	PrintActionItemScreen(ActionItem item, JFrame frame) {
 		this.item = item;

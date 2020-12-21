@@ -36,15 +36,15 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 	JPanel sPane;
 
 	public static final Font TITLE_FONT = FontLoader.loadFont
-			("src/res/EBGaramond/static/EBGaramond-ExtraBold"
+			("/res/EBGaramond/static/EBGaramond-ExtraBold"
 					+ ".ttf", 80);
 	public static final Font HEAD_FONT = FontLoader.loadFont
-			("src/res/EBGaramond/static/EBGaramond-ExtraBold"
+			("/res/EBGaramond/static/EBGaramond-ExtraBold"
 					+ ".ttf", 50);
 	public static final Font BODY_FONT = FontLoader.loadFont
-			("src/res/Chivo/Chivo-Regular.ttf", 36);
+			("/res/Chivo/Chivo-Regular.ttf", 36);
 	public static final Font BUTTON_FONT = FontLoader.loadFont
-			("src/res/Chivo/Chivo-Bold.ttf", 30);
+			("/res/Chivo/Chivo-Bold.ttf", 30);
 
 	public static final Color EMERALD = new Color(19,77,55);
 	public static final Color TEAL = new Color(86,153,127);
@@ -135,10 +135,10 @@ public class EditActionItemScreen extends JPanel implements ActionListener, Focu
 		complete = new JRadioButton("Complete", new CustomRadioButton());
 		complete.setSelectedIcon(new CustomSelectedRadioButton());
 		complete.setIconTextGap(12);
-		urgent.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 36));
+		urgent.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 36));
 		current.setFont(BODY_FONT);
-		eventual.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-LightItalic.ttf", 36));
-		inactive.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Italic.ttf", 36));
+		eventual.setFont(FontLoader.loadFont("/res/Chivo/Chivo-LightItalic.ttf", 36));
+		inactive.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Italic.ttf", 36));
 		complete.setFont(BODY_FONT);
 		urgent.setForeground(EMERALD);
 		current.setForeground(EMERALD);

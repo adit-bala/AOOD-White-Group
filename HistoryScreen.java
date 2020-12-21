@@ -46,10 +46,10 @@ public class HistoryScreen extends JPanel implements MouseListener {
 	private List<HistoryEvent> events;
 	private ActionItem actionItem;
 
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
-	public static final Font HEADER_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
+	public static final Font TITLE_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80);
+	public static final Font HEADER_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
 			40);
-	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20);
+	public static final Font LABEL_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 20);
 	private final Color bgColor = new Color(230, 230, 230);
 
 	boolean isAlreadyOneClick;

@@ -54,7 +54,7 @@ public class ClosedActionItemsScreen extends JPanel implements MouseListener, Ac
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.setBackground(Color.WHITE);
 		JLabel titleLabel = new JLabel("Closed Action Items");
-		titleLabel.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80));
+		titleLabel.setFont(FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf", 80));
 		JPanel underline = new RoundedPanel(10, Color.decode("#56997F"), Color.WHITE);
 		underline.setMaximumSize(new Dimension(610, 10));
 		JPanel titlePanel = new JPanel();
@@ -76,7 +76,7 @@ public class ClosedActionItemsScreen extends JPanel implements MouseListener, Ac
 			itemPanel.add(Box.createVerticalStrut(15));
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu");
 			JLabel newDate = new JLabel(date.format(formatter));
-			newDate.setFont(FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-Bold.ttf", 30));
+			newDate.setFont(FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-Bold.ttf", 30));
 			newDate.setAlignmentX(LEFT_ALIGNMENT);
 			itemPanel.add(newDate);
 			itemPanel.add(Box.createVerticalStrut(5));

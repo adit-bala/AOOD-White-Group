@@ -33,20 +33,20 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		this.main = main;
 		setBackground(BAR_COLOR);
 		file = new JMenu("File");
-		file.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
+		file.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 20));
 		file.setBackground(BAR_COLOR);
 		file.setForeground(Color.white);
 		
 		createBackup = new JMenuItem("Create Backup");
-		createBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
+		createBackup.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 18));
 		createBackup.setActionCommand("Create");
 		createBackup.addActionListener(this);
 		restoreBackup = new JMenuItem("Restore Backup");
-		restoreBackup.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
+		restoreBackup.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 18));
 		restoreBackup.setActionCommand("Restore");
 		restoreBackup.addActionListener(this);
 		printList = new JMenuItem("Print List");
-		printList.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 18));
+		printList.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 18));
 		printList.setActionCommand("Print");
 		printList.addActionListener(this);
 		file.add(createBackup);
@@ -54,7 +54,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		file.add(printList);
 		
 		completedActionItems = new JButton("Completed Action Items");
-		completedActionItems.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
+		completedActionItems.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 20));
 		completedActionItems.setBackground(BAR_COLOR);
 		completedActionItems.setForeground(Color.white);
 		completedActionItems.setOpaque(true);
@@ -62,7 +62,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		completedActionItems.setActionCommand("Completed Action Items");
 		completedActionItems.addActionListener(this);
 		quit = new JButton("Quit");
-		quit.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
+		quit.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 20));
 		quit.setBackground(BAR_COLOR);
 		quit.setOpaque(true);
 		quit.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -72,7 +72,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		
 		for (int i = 0; i < 2; i++) {
 			JLabel separator = new JLabel(" | ");
-			separator.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 20));
+			separator.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 20));
 			separator.setForeground(Color.WHITE);
 			separators[i] = separator;
 		}
@@ -101,7 +101,7 @@ public class MenuBar extends JMenuBar implements ActionListener{
 		add(back);
 		back.setActionCommand("Back");
 		back.addActionListener(this);
-		back.setFont(FontLoader.loadFont("src/res/Chivo/Chivo-Regular.ttf", 18));
+		back.setFont(FontLoader.loadFont("/res/Chivo/Chivo-Regular.ttf", 18));
 		back.setBackground(BAR_COLOR);
 		back.setForeground(Color.white);
 		back.setOpaque(true);

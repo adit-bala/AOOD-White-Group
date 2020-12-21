@@ -41,9 +41,9 @@ public class CommentScreen extends JPanel implements ActionListener {
 	JButton deleteButton;
 
 	CommentChangeEvent commentEvent;
-	public static final Font TITLE_FONT = FontLoader.loadFont("src/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
+	public static final Font TITLE_FONT = FontLoader.loadFont("/res/EBGaramond/static/EBGaramond-ExtraBold.ttf",
 			100);
-	public static final Font LABEL_FONT = FontLoader.loadFont("src/res/Chivo/Chivo-Bold.ttf", 30);
+	public static final Font LABEL_FONT = FontLoader.loadFont("/res/Chivo/Chivo-Bold.ttf", 30);
 	private ActionItem actionItem;
 
 	CommentScreen(ActionItem item, JFrame frame) {
