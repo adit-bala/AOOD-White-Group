@@ -1,14 +1,39 @@
-# AOOD-White-Group
-ToDo List
+# To-Do List Application
+A school project for the course Advanced Object-Oriented Design G/T. As Team Leader, I led the development as Team Lead of a To-Do List Application along with 7 other group members. 
 
-## How to use Github Desktop with Eclipse
-### Getting Started
-- Install Github Desktop at https://desktop.github.com/ 
-- Fork the repository in your browser
-- Go to https://github.com/adit-bala/AOOD-White-Group
-- Click Fork in the top right
-- Click your account
-- Leave the tab open
+## How to Install
+- Download the Jar File and run it
+
+## Repository Organization
+```
+AOOD-White-Group
+|   ToDoList.jar - Executable Jar
+|   ActionItemEntry.java - Represents an item in the action item list
+|   ClosedActionItems.java - Allows users to view already completed ActionItems
+|   CommentScreen.java - Allows the user to enter a comment
+|   ConfirmationPopup.java - Shows confirmation boxes for the user for various tasks
+|   EditActionItemScreen.java - Displays ways for users to manipulate ActionItem data.
+|   HistoryScreen.java - Shows all events in an Action Item’s history
+|   MainScreen.java - Displays screen with the list
+|   MenuBar.java - Displays different menu options
+|   PrintActionItemScreen.java - Displays preview of printing one ActionItem
+|   PrintScreen.java - Allows user to print out an action item
+|   Window.java - Displays current screen
+│   backend
+    └───ActionItem.java - Represents an Action Item or Task
+    └───CommentChangeEvent.java - Represents a change of the action item’s comment
+    └───FileUtilities.Java - Handles all modification of files
+    └───FontLoader.java - Used to load in fonts
+    └───HistoryEvent.java - Represents the history of an event
+    └───Priority.java - Represents different Priorties for an item
+    └───PriorityChangeEvent.java - Represents a change of priority of the action item
+    └───TitleChangeEvent.java - Represents a change of the action item’s title
+    └───ToDoList.java - Represents a user’s to do list
+│   res
+    └───Chivo - Fonts
+    └───EBGaramond - Fonts
+```
+# Previous Instructions for Team Members
 ### Create a new Java Project in Eclipse
 - File > New > Java Project
 - Name it ToDoList
