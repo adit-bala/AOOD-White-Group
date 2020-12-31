@@ -1,5 +1,5 @@
 # To-Do List Application
-A school project for the course Advanced Object-Oriented Design G/T. As Team Leader, I led the development as Team Lead of a To-Do List Application along with 7 other group members. 
+A school project for the course Advanced Object-Oriented Design G/T. As Team Leader, I led the development of a To-Do List Application along with 7 other group members. 
 
 ## How to Install
 - Download the Jar File and run it
